@@ -52,6 +52,12 @@ A small frog fights its way up the food chain in a 2D roguelite fighting game se
 
 What should the gameplay be like? What is the goal of the game, and what kind of obstacles are in the way? What tactics should the player use to overcome them?
 
+The player controls a small frog moving through swamp areas filled with mosquitoes, obstacles, and boss encounters. Mosquitoes act as a currency and are collected using the frog's tongue while navigating platforming sections and preparing for fights.
+
+Combat happens in 1v1 boss battles against animals higher in the food chain. Before each run, the player chooses a small set of power-up cards (3 cards to be exact), which the frog eats during combat to activate special abilities like speed boots, poison attacks, shields, or stronger jumps. Each boss has a unique attack pattern and weakness, encouraging players to experiment with different card combinations and strategies.
+
+If the player dies, the run ends and the collected mosquitoes can be spent in the shop to unlock new cards or upgrades, making future runs stronger and allowing the player to progress in the game.
+
 ### **Mindset**
 
 What kind of mindset do you want to provoke in the player? Do you want them to feel powerful, or weak? Adventurous, or nervous? Hurried, or calm? How do you intend to provoke those emotions?
