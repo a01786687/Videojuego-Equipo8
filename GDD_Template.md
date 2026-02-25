@@ -1,4 +1,4 @@
-# **Game Name Here**
+# **Anura**
 
 ## _Game Design Document_
 
@@ -46,7 +46,7 @@
 
 ### **Summary**
 
-Sum up your game idea in 2 sentences. A kind of elevator pitch. Keep it simple!
+A small frog fights its way up the food chain in a 2D roguelite fighting game set in a swamp. Players collect mosquitoes, defeat increasingly larger animal bosses, and use power-up cards the frog eats to gain abilities and survive each run.
 
 ### **Gameplay**
 
