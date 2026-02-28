@@ -62,6 +62,33 @@ If the player dies, the run ends and the collected mosquitoes can be spent in th
 
 What kind of mindset do you want to provoke in the player? Do you want them to feel powerful, or weak? Adventurous, or nervous? Hurried, or calm? How do you intend to provoke those emotions?
 
+Anura is built around a strong emotional contrast between calmness and tension.
+
+The main mindset can be summarized as:
+“Small creature, big world, smart survival.”
+
+At the beginning of each run, the player should feel vulnerable and cautious. The frog is small, visually cute and at a first glance quite fragile. When encountering the enemies they seem intimidating in size and presence to the player. This creates tension and a sense of danger.
+
+Between boss encounters, platforming sections are designed to feel calm and cozy. The swamp environment is soft and atmospheric even though it still has some obstacles for the player. This peaceful exploration and obstacle course phase reinforces the feeling of safety.
+
+However, this calm state is disrupted during boss fights and shifts the player's mentality from relaxed exploration and casual game to tension and alertness. 
+
+As the player progresses, learns boss patterns, experiments with card combinations and purchases permanent upgrades, the mindset changes from trying to survive to dominating the game. 
+
+The game aims to provoke:
+
+- Strategic thinking (not just randomly smashing buttons)
+- Tension during boss fights
+- Experimentation through card combinations
+- Satisfaction from defeating more dangerous bosses
+- Resilience through the roguelite loop which would be "failure is progress"
+
+Visually, the game supports this whole mindset through a blend of cute, cozy aesthetics and dangerous bosses. The intended emotional experience is for the player to think:
+
+"I'm just a cute little frog in a peaceful swamp" right before facing a 1v1 boss fight that forces them to adapt and survive.
+
+
+
 ## _Technical_
 
 ---
@@ -69,8 +96,39 @@ What kind of mindset do you want to provoke in the player? Do you want them to f
 ### **Screens**
 
 1. Title Screen
+
+    The title screen sets the identity and tone of Anura
+
+    Visually there's:
+    The frog sitting peacefully on a lily pad
+    Soft swamp ambience in the background
+    The game title ANURA in big letters centered
+
+    This screen transmits calmness and charm before the tension of the gameplay
+
+    ![alt text](<Open Drawing 5.png>)
+
     1. Options
-2. Level Select
+    
+        Accessible from the Title screen
+        Includes:
+        
+        New game
+
+        Continue Run (if available)
+        
+        Settings: audio, volume, music on/off (NOTA: SIENTO QUE NO ES TAN ESENCIAL PARA PROPOSITOS DEL PROYECTO POR LO TANTO UNICAMENTE SE DESARROLLARÁ SI HAY TIEMPO SUFICIENTE)
+        
+        Quit
+
+        
+
+2. Level Select -> Run Prep Screen
+
+    The player selects 3 cards before starting a run
+    The player can review unlocked cards
+    The player can see base stats like health, damage, speed
+
 3. Game
     1. Inventory
     2. Assessment / Next Level
