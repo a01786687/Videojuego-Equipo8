@@ -140,9 +140,58 @@ _(example)_
 
 How will the player interact with the game? Will they be able to choose the controls? What kind of in-game events are they going to be able to trigger, and how? (e.g. pressing buttons, opening doors, etc.)
 
+The player interacts with the game through direct character control in a 2D side environment. The controls are designed to be simple, supporting fast reactions during boss fights while remaining comfortable throughout the platform sections.
+
+#### **Basic Movement Controls**
+
+- Walk to the right -> D button
+- Walk to the left -> A button
+- Crouch -> S button
+- Jump -> spacebar
+- Double jump (if unlocked) -> Press jump (space button) again mid air
+
+#### **Combat controls**
+- Basic attack (tongue strike) -> left click button
+- Activate card 1 -> #1 button 
+- Activate card 2 -> #2 button
+- Activate card 3 -> #3 button
+
+Cards are activated manually during combat
+
+#### **Interaction with the environment**
+Players can trigger in game events such as:
+
+- Collecting mosquitoes by hitting them with the tongue
+- Entering boss arenas by walking through doors or caves
+- Navigating obstacles by jumping, dodging or using abilities
+
+#### **Menu and system controls**
+
+- Pause menu -> esc
+
 ### **Mechanics**
 
 Are there any interesting mechanics? If so, how are you going to accomplish them? Physics, algorithms, etc.
+
+Anura combines platforming, 1v1 boss combat, and a strategic card activation system within a roguelite progression loop. 
+
+The following are the core mechanics and how they function at a systems level.
+
+1. Tongue collection and attack system
+    
+    The frog uses its tongue as both a collection and combat mechanic. (tongue = weapon)
+    
+    - Mosquitoes are collected then the tongue collider overlaps with their hitbox.
+
+    La lengua tiene una caja invisible, el mosquito tiene otra caja invisible, las dos cajas se tocan, el mosquito desaparece y se incrementa el contador de monedas disponibles
+
+    - The tongue acts as a short range directional attack, it will funcion as a fast meele hitbox in front of the frog.
+
+    need: collision detection system for mosquito collection, hitbox activation during attack animation frames, cooldown timer to prevent spamming.
+
+    La lengua hace daño en corto alcance hacia donde se este mirando, el ataque sera meele, es decir golpe corto, rapido, no viaja lejos
+
+
 
 ## _Level Design_
 
