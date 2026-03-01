@@ -318,44 +318,138 @@ _(Note : These sections can safely be skipped if they&#39;re not relevant, or yo
 
 ### **Themes**
 
-1. Forest
+
+
+1. Swamp Surface (Initial Zone)
     1. Mood
-        1. Dark, calm, foreboding
+        1. Calm, humid, cozy, slightly tense, natural and alive
     2. Objects
         1. _Ambient_
             1. Fireflies
-            2. Beams of moonlight
-            3. Tall grass
+            2. lily pads floating
+            3. Swamp cane (reeds)
+            4. Soft water reflections
+            5. Tiny flying insects
+            6. Swamp fauna
+
         2. _Interactive_
-            1. Wolves
-            2. Goblins
-            3. Rocks
-2. Castle
+            1. Mosquitoes (coin)
+            2. Shallow water pools
+            3. Mud and moss platforms
+            4. Floating logs
+            4. boss arena entrance (possibly a cave)
+
+2. Dense Swamp (mid game zone): this area reflects progression, the frog is no longer in a safe space, the environment starts to feel more hostile.
+
     1. Mood
-        1. Dangerous, tense, active
+        1. Darker, more enclosed, slightly oppressive, more dangerous, less visually open
     2. Objects
         1. _Ambient_
-            1. Rodents
-            2. Torches
-            3. Suits of armor
+            1. Thick tree trunks
+            2. Large exposed roots
+            3. Light mist or fod
+            4. Glowing mushrooms
+            5. distant predator sounds
         2. _Interactive_
-            1. Guards
-            2. Giant rats
-            3. Chests
+            1. Narrow platforms
+            2. Thorny plants (Damage on contact)
+            3. Deep water (slows movement)
+            2. Unstable logs
+            3. MAYBE MINOR ENEMIES (aggressive insects)
+
+
+3. Predator Arena (boss zone)
+
+    1. Mood
+        1. Tense, focused, quiet before combat, isolated
+    2. Objects
+        1. _Ambient_
+            1. broken vegetations
+            2. bone fragments
+            3. Darker water
+            4. Heavy shadows
+        2. _Interactive_
+            1. Boss entity
+            2. Arena boundaries (invisible walls or natural barriers)
+            3. Terrain elements that influence movement (roots, shallow/deep patches)
+
+         en el 3. roots -> serian como raices que sobresalen del suelo, pueden bloquear el paso, hacer que el jugador tenga que saltar, etc y las shallow deep patches son zonas de agua que reduzcan la velocidad, mas dificil esquivar ataques, etc
+    
+    Gameplay purpose
+    - 1v1 confrontation
+    - pattern recognition
+    - card strategy execution
+    - shift from calm to danger
+    - smart survival
 
 _(example)_
 
 ### **Game Flow**
 
-1. Player starts in forest
-2. Pond to the left, must move right
-3. To the right is a hill, player jumps to traverse it (&quot;jump&quot; taught)
-4. Player encounters castle - door&#39;s shut and locked
-5. There&#39;s a window within jump height, and a rock on the ground
-6. Player picks up rock and throws at glass (&quot;throw&quot; taught)
-7. … etc.
+**Run Flow**
+1. Title screen
+2. Hub (if player previously died)
+3. Card selection (run prep)
+4. Platform section 1
+5. Boss 1
+6. Platform section 2 (increased difficulty)
+7. Boss 2
+8. Platform Section 3 (increased difficulty)
+9. Final Boss
+10. Victory Screen
 
-_(example)_
+If the player dies at any point during the run:
+
+- The run ends immediately
+- The player respawns in the Hub
+- The Shop becomes available
+- The player may unlock new cards
+- The player starts a new run
+
+#### Level Structure
+
+The game uses environmental teaching instead of explicit tutorials
+
+Mechanics are introduced naturally:
+- Early mosquito placement encourages tongue usage
+- Small gaps teach jumping
+- Moving platforms teach timing
+- Boss teaches pattern recognition
+
+
+#### Difficulty progression
+
+Boss 1
+- Simple attack pattern
+- Clear visual signal before excecuting the attack
+- Long recovery window
+
+Boss 2 
+- Faster attacks
+- Shorter recovery window
+- Requires better positioning
+
+Boss 3
+- Multiple phases
+- Combined attack patterns
+- Higher tension
+
+Platform sections between bosses gradually increase in:
+
+- Obstacle density
+- Precision requirements
+- Environmental hazards
+
+The difficulty escalates without introducing entirely new mechanics late in the run. Instead it demands mastery of the existing systems.
+
+#### Hub Structure (post death area)
+The hub is a safe, calm area only accessible after death
+
+It contains:
+- Shop (permanent card unlocks)
+- Card inventory view
+- Option to start a new run
+
 
 ## _Development_
 
