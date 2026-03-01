@@ -58,6 +58,19 @@ Combat happens in 1v1 boss battles against animals higher in the food chain. Bef
 
 If the player dies, the run ends and the collected mosquitoes can be spent in the shop to unlock new cards or upgrades, making future runs stronger and allowing the player to progress in the game.
 
+
+Roguelite Structure:
+
+Anura follows a run-based progression system. Each run is self contained, and death resets the current attempt. However, collected mosquitoes function as persistent currency that can be spent in the shop to permanently unlock new cards.
+
+This creates a classic roguelite loop:
+
+- Attempt run
+- Defeat bosses or die
+- Earn currency
+- Unlock stronger or more complex cards
+- Start a new run with improved strategic options
+
 ### **Mindset**
 
 What kind of mindset do you want to provoke in the player? Do you want them to feel powerful, or weak? Adventurous, or nervous? Hurried, or calm? How do you intend to provoke those emotions?
@@ -191,9 +204,113 @@ The following are the core mechanics and how they function at a systems level.
 
     La lengua hace daño en corto alcance hacia donde se este mirando, el ataque sera meele, es decir golpe corto, rapido, no viaja lejos
 
+2. Card System
+
+    Cards are activated by selecting them during combat
+
+    Mechanically:
+
+    - The player has a deck of 3 equipped cards:
+        
+        - Pressing the assigned key to the card slot triggers a shiny border around the selected card, each card has a cooldown, effecto modifier.
+
+    Card activation logic
+
+    Each card functions as an ability object with:
+
+    - cooldown timer
+    - effect value (damage, shield, speed modifier, etc)
+    - activation condition
+    - optional synergy interaction
+
+    Cards are stored in a structured array representing the player's active build:
+
+
+    playerDeck = [card1, card2, card3]
+
+    When a key (1, 2, 3) is pressed:
+
+    - the system checks if cooldown <= 0
+    - if true -> applies the card effect
+    - cooldown resets
+    - visual feeback is triggered
+
+    Strategic component
+    
+    Although the player only equips 3 cards per run, the full collection of unlocked cards creates build diversity. Different combinations lead to different playstyles (aggressive, defensive, sustain based, mobility focused)
+
+    This limited deck size reinforces strategic pre run decision making, aligning with TCG design principles.
+
+    NOTES:
+
+    CARDS ARE OBJECTS WITH PROPERTIES
+    
+    THERE'S COOLDOWN
+
+    POSSIBLE SINERGY
+
+    Sinergy: synergistic deck is one where every card benefits from every other card 
+
+
+
+3. Boss pattern system
+
+    Boss behavior is driven by structured pattern based logic, implemented through *state management* in JavaScript.
+
+    Each boss operates using a *Finite State Machine (FSM) model. This means the boss can only be in one state at a time, and it transitions between states based on predefined conditions such as timers, player distance or remaining health.
+
+    Example boss states:
+
+    - Idle - the boss waits or prepares an attack.
+    - Attack - the boss performs a specific attack animation and activates its hitbox.
+    - Recovery - a short vulnerability window afer attacking
+    - Phase 2 - activated when health drops below a certain threshold (ex. 50% can vary)
+
+    State transitions are controlled using conditional logic an timers. For example:
+
+    - Afer a certain time in idle -> transition to attack
+    - After Attack completes -> transition to recovery
+    - When health is below or 50% -> activate phase 2 behavior
+
+    This system ensures predictable but challenging encounters, reinforcing pattern recognition and startegic gameplay instead of complete randomness.
+
+    Since the game is built using HTML and JS mechanics are implemented using:
+
+    - Game loop logic (e.g., requestAnimationFrame)
+
+    - Collision detection systems (hitboxes and bounding boxes)
+
+    - State variables
+
+    - Timers and cooldown counters
+
+    - Health threshold checks
+
+    ----------------------------------------------
+
+    logica programada con estados
+
+    necesitamos un sistema de estados (state machine), es decir pura logica con if, variables y temporizadores.
+
+    un boss pattern system es:
+
+    el boss tiene un estado actual ya sea idle, attacking, recovering, etc, y se cambia ese estado dependiendo del tiempo o la vida, se implementara de la siguiente forma:
 
 
 ## _Level Design_
+
+#### Game Flow
+
+**Run Flow**
+1. Title Screen
+2. Card Selection (Run Prep)
+3. Platform Section
+4. Boss Fight
+5. Reward / Death
+6. Shop (unlock cards)
+7. New Run
+
+
 
 ---
 
