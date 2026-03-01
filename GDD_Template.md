@@ -339,6 +339,8 @@ _(Note : These sections can safely be skipped if they&#39;re not relevant, or yo
             4. Floating logs
             4. boss arena entrance (possibly a cave)
 
+        ![alt text](SurfaceSwampCollage.png)
+
 2. Dense Swamp (mid game zone): this area reflects progression, the frog is no longer in a safe space, the environment starts to feel more hostile.
 
     1. Mood
@@ -356,6 +358,9 @@ _(Note : These sections can safely be skipped if they&#39;re not relevant, or yo
             3. Deep water (slows movement)
             2. Unstable logs
             3. MAYBE MINOR ENEMIES (aggressive insects)
+
+
+            ![alt text](DenseSwampCollage.png)
 
 
 3. Predator Arena (boss zone)
@@ -382,6 +387,9 @@ _(Note : These sections can safely be skipped if they&#39;re not relevant, or yo
     - shift from calm to danger
     - smart survival
 
+
+        ![alt text](image.png)
+        
 _(example)_
 
 ### **Game Flow**
