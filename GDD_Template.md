@@ -46,7 +46,7 @@
 
 ### **Summary**
 
-A small frog fights its way up the food chain in a 2D roguelite fighting game set in a swamp. Players collect mosquitoes, defeat increasingly larger animal bosses, and use power-up cards the frog eats to gain abilities and survive each run.
+A small frog fights its way up the food chain in a 2D roguelite fighting game set in a swamp. Players collect mosquitoes, build strategic card combinations, and defeat increasingly larger predator bosses to survive each run.
 
 ### **Gameplay**
 
@@ -196,6 +196,9 @@ The following are the core mechanics and how they function at a systems level.
     
     - Mosquitoes are collected then the tongue collider overlaps with their hitbox.
 
+    Defining how the currency (mosquitoes) will work:
+    - Mosquitoes are collected then the tongue collider overlaps with their hitbox.
+
     La lengua tiene una caja invisible, el mosquito tiene otra caja invisible, las dos cajas se tocan, el mosquito desaparece y se incrementa el contador de monedas disponibles
 
     - The tongue acts as a short range directional attack, it will funcion as a fast meele hitbox in front of the frog.
@@ -203,6 +206,26 @@ The following are the core mechanics and how they function at a systems level.
     need: collision detection system for mosquito collection, hitbox activation during attack animation frames, cooldown timer to prevent spamming.
 
     La lengua hace daño en corto alcance hacia donde se este mirando, el ataque sera meele, es decir golpe corto, rapido, no viaja lejos
+
+    - In terms of physics, we want to implement the movement of the tongue attack as a MRU movement that will stop at a short distance and will always move in “x” direction, we also want to assign these attack the hitpoints that will deal to the boss
+
+    - Moving to the spit attack, we want to implement it the same way as the melee attack but the only thing is this movement will not have a limit in distance and it will only stop if it hits the enemy or if its surpasses the frame of what you see in the screen
+
+    - Also we need to implement a cooldown on these attacks so it doesn’t become a spam and break the game.
+
+    Movement: The character will have 3 types of movement: the regular running (since its 2D it can move sideways only), jumping and a dash.
+
+    - Running will be the basic constant movement that the character will have, we will define a certain velocity that fits the pace of the game and it will specifically move in the x axis only. The keybinds “a” (left)  and “d” (right) will be the keys that trigger the move
+
+    - Its also defined as a MRU movement only the x axis
+
+    - The jump mechanic will be attached to the space bar key and will function a bit more complex than the other mechanics, it will work as a parabolic movement so this means it works as a MRUA and will have an initial velocity in “y” that's a predetermined velocity attached to the space bar and also an initial velocity in “x” that will be attached to the running mechanic. (Esta parte del salto está un poco difícil de implementar pero hay q ir viendo)
+
+    - Finally the dash will be a movement that will have cooldowns so it can't be spammed and it will be a faster movement in “x” axis that will give invulnerability to the player (podemos cambiar eso) and this dash will have a limited distance reached.
+
+
+
+
 
 2. Card System
 
