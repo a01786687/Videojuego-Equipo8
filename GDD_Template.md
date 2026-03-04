@@ -644,3 +644,14 @@ _(define the main activities and the expected dates when they should be finished
 7. design music
 
 _(example)_
+
+
+_Options_
+
+---
+
+We are considering two distinct approaches for our card mechanics:
+
+The Shop & Inventory System: Players earn "Mosquitoes" (in-game currency) and spend them in a dedicated shop to purchase specific cards. These cards provide strategic advantages during the adventure. This system includes an Inventory Management mechanic where players manually organize and equip their deck.
+
+The Drop & Round-Based System: A more streamlined approach where cards are acquired via enemy drops or at the end of specific rounds. Players are presented with random card choices and must decide on the spot whether to equip a card to a specific slot or skip it to optimize their current run.
