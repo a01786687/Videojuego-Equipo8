@@ -326,11 +326,11 @@ The following are the core mechanics and how they function at a systems level.
 
 **Run Flow**
 1. Title Screen
-2. Card Selection (Run Prep)
+2. Card Selection (Run Prep) 
 3. Platform Section
 4. Boss Fight
 5. Reward / Death
-6. Shop (unlock cards)
+6. Shop (unlock cards) **Only if we have enough time**
 7. New Run
 
 
@@ -480,7 +480,7 @@ It contains:
 - Shop (permanent card unlocks)
 - Card inventory view
 - Option to start a new run
-
+This is only if we could do it, if not we're gonna skip this part and make the cards appear in drops
 
 ## _Development_
 
@@ -500,25 +500,26 @@ _(example)_
 ### **Derived Classes / Component Compositions**
 
 1. BasePlayer
-    1. PlayerMain
-    2. PlayerUnlockable
+    1. PlayerMain(Frog)
 2. BaseEnemy
-    1. EnemyWolf
-    2. EnemyGoblin
-    3. EnemyGuard (may drop key)
-    4. EnemyGiantRat
-    5. EnemyPrisoner
+    1. EnemyMosquitoes
+    2. Enemyspider
+    3. EnemySnake
+    4. EnemyBoss1
+    5. EnemyBoss2
+    6. EnemyFinalBoss
+    
 3. BaseObject
-    1. ObjectRock (pick-up-able, throwable)
-    2. ObjectChest (pick-up-able, throwable, spits gold coins with key)
-    3. ObjectGoldCoin (cha-ching!)
-    4. ObjectKey (pick-up-able, throwable)
+    1. ObjectCard(Makes a screen for card Selection)
+    2. ObjectChest (pick-up-able)
 4. BaseObstacle
-    1. ObstacleWindow (destroyed with rock)
+    1. ObstacleSpike
     2. ObstacleWall
-    3. ObstacleGate (watches to see if certain buttons are pressed)
+    3. ObstaclePlatform
 5. BaseInteractable
     1. InteractableButton
+    2. InteractableCards
+    3. InteractableCardspot   
 
 _(example)_
 
