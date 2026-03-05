@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <!--
 
 File: index.html
@@ -10,27 +9,41 @@ the stylesheet, and connects the game engine.
 -->
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Anura</title>
+
+    <!-- Google pixel font -->
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- Stylesheet -->
     <link rel="stylesheet" href="style.css">
+
+    <!-- Game engine-->
+    <script src="index.js"></script>
+
 </head>
 
 <body>
-    <div id="headerContainer">
-        <h1>Anura</h1>
-    </div>
-    <div id="examplesContainer">
-        <div class="exampleGroup">
-            <h2>Basic examples</h2>
-            <ul>
-                <li><a>Holaaa</a></li>
-            </ul>
 
-            <button>Start Game</button>
-        </div>
-    </div>
+    <!-- Header section-->
+    <header id="headerContainer">
+        <h1 class="header">Anura</h1>
+    </header>
+
+    <!-- Main game canvas -->
+    <main>
+        <canvas id="canvas"></canvas>
+    </main>
+
+    <script> main(); </script>
+
+
 </body>
 
 </html>
