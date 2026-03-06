@@ -36,7 +36,7 @@ let currentScene = "title";
 
 function main() {
     // Get a reference to the object with id 'canvas' in the page
-    const canvas = document.getElementById('canvas');
+    canvas = document.getElementById('canvas');
 
     // Resize the element, internal resolution
     canvas.width = canvasWidth;
@@ -45,6 +45,11 @@ function main() {
     // Get the context for drawing in 2D
     ctx = canvas.getContext('2d');
     ctx.imageSmoothingEnabled = false;
+
+    // event listener, dentro de main ya que el canvas es global
+    // click -> evento que queremos escuchar
+    // handleClick -> funcion que se ejecutara cuando ocurra
+    canvas.addEventListener("click", handleClick);
 
     backgroundImage.onload = () => {
         bgReady = true;
@@ -57,7 +62,6 @@ function main() {
     logo.src = "./assets/logoTemp2.png";
 
     requestAnimationFrame(draw);
-
 
 }
 
@@ -72,7 +76,7 @@ function drawTitleScreen() {
 
         // Draw a square
         ctx.fillStyle = "#ffffff";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillRect(0, 0, canvasWidth, canvasHeight);
     }
 
     // medidas logo
@@ -103,7 +107,7 @@ function draw() { // draw dibuja la escena actual
             drawPlayScene();
             break;
 
-        case "setting":
+        case "settings":
             drawSettingScene();
             break;
     }
@@ -167,8 +171,11 @@ function play() {
     const buttonWidth = 200;
     const buttonHeight = 60;
 
-    const buttonX = 240 - buttonWidth / 2;
-    const buttonY = 400;
+    const buttonX = 240 - buttonWidth / 2; // 140
+    const buttonY = 400; // 400
+
+    // X: 140 a 340
+    // Y: 400 a 460
 
     ctx.fillStyle = "#000000";
     ctx.fillRect(buttonX + 4, buttonY + 4, buttonWidth, buttonHeight);
@@ -194,8 +201,12 @@ function logIn() {
     const buttonWidth = 200;
     const buttonHeight = 60;
 
-    const buttonX = 480 - buttonWidth / 2;
-    const buttonY = 400;
+    const buttonX = 480 - buttonWidth / 2; // 380
+    const buttonY = 400; // 400
+
+    // X: 380 a 580 ( buttonX + buttonWidth)
+    // Y: 400 a 460 ( buttonY + buttonHeight)
+
 
     ctx.fillStyle = "#000000";
     ctx.fillRect(buttonX + 4, buttonY + 4, buttonWidth, buttonHeight);
@@ -222,8 +233,11 @@ function settings() {
     const buttonWidth = 200;
     const buttonHeight = 60;
 
-    const buttonX = 720 - buttonWidth / 2;
-    const buttonY = 400;
+    const buttonX = 720 - buttonWidth / 2; // 620
+    const buttonY = 400; // 400
+
+    // X: 620 a 820 ( buttonX + buttonWidth)
+    // Y: 400 a 460 ( buttonY + buttonHeight)
 
     ctx.fillStyle = "#000000";
     ctx.fillRect(buttonX + 4, buttonY + 4, buttonWidth, buttonHeight);
@@ -244,4 +258,53 @@ function settings() {
     ctx.fillText("Settings", buttonX + buttonWidth / 2, buttonY + buttonHeight / 2);
 
 }
+
+// cada vez que haga click dentro del canvas, la consola mostrará el mensaje
+function handleClick(event) {
+    console.log("Canvas clicked");
+
+    // convertimos coordenadas de la pantalla a coordenadas del canvas
+    // getBoundingClientRect()
+    // This method handles CSS transforms and borders accurately by subtracting the canvas position from the click position
+    const rect = canvas.getBoundingClientRect(); // getBoundingClientRect() obtiene la posición del canvas en la página.
+
+    const mouseX = event.clientX - rect.left;
+    const mouseY = event.clientY - rect.top;
+
+    console.log(mouseX, mouseY);
+
+    /*
+    PLAY
+    X: 140 a 340
+    Y: 400 a 460
+
+    LOGIN
+    X: 380 a 580 ( buttonX + buttonWidth)
+    Y: 400 a 460
+
+    SETTINGS
+    X: 620 a 820 ( buttonX + buttonWidth)
+    Y: 400 a 460
+
+    */
+
+    // PLAY BUTTON
+    // si las coordenadas de mouseX son mayor o igual a 140 Y las coordenadas de mouseY son menor o igual a 340 Y 
+    if (mouseX >= 140 && mouseX <= 340 && mouseY >= 400 && mouseY <= 460) {
+        currentScene = "play";
+    }
+
+    // LOG IN BUTTON 
+    if (mouseX >= 380 && mouseX <= 580 && mouseY >= 400 && mouseY <= 460) {
+        currentScene = "login";
+    }
+
+    // SETTINGS BUTTON
+    if (mouseX >= 620 && mouseX <= 820 && mouseY >= 400 && mouseY <= 460) {
+        currentScene = "settings";
+    }
+    // ESTO LO UTILIZAREMOS PARA DETECTAR BOTONES
+}
+
+
 
