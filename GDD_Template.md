@@ -538,33 +538,23 @@ Visual feedback is our primary tool for teaching mechanics without lengthy tutor
 ### **Graphics Needed**
 
 1. Characters
-    1. Human-like
-        1. Goblin (idle, walking, throwing)
-        2. Guard (idle, walking, stabbing)
-        3. Prisoner (walking, running)
-    2. Other
-        1. Wolf (idle, walking, running)
-        2. Giant Rat (idle, scurrying)
-2. Blocks
-    1. Dirt
-    2. Dirt/Grass
-    3. Stone Block
-    4. Stone Bricks
-    5. Tiled Floor
-    6. Weathered Stone Block
-    7. Weathered Stone Bricks
-3. Ambient
-    1. Tall Grass
-    2. Rodent (idle, scurrying)
-    3. Torch
-    4. Armored Suit
-    5. Chains (matching Weathered Stone Bricks)
-    6. Blood stains (matching Weathered Stone Bricks)
-4. Other
-    1. Chest
-    2. Door (matching Stone Bricks)
-    3. Gate
-    4. Button (matching Weathered Stone Bricks)
+    1. Anura Principal Character
+    2. Bosses
+        - Snake
+        - Hawk
+        - Fox (Can change to 2)
+    3. Enemies
+        - Slimes
+        - Spiders
+        - Mosquitoes
+2. Environment & Blocks
+
+Tilesets for mud, moss-covered platforms, climbing roots, and hollow logs that serve as transitions between platforming sections and boss arenas.
+
+3. UI & HUD Elements
+
+A clean interface featuring a mosquito counter, a health bar for the frog, and three distinct card slots with a visual overlay to indicate cooldown progress.
+
 
 _(example)_
 
@@ -583,14 +573,18 @@ Stylistically, what kind of sound effects are you looking for? Do you want to ex
 
 ### **Sounds Needed**
 
-1. Effects
-    1. Soft Footsteps (dirt floor)
-    2. Sharper Footsteps (stone floor)
-    3. Soft Landing (low vertical velocity)
-    4. Hard Landing (high vertical velocity)
-    5. Glass Breaking
-    6. Chest Opening
-    7. Door Opening
+1. Player Effects
+        - Wet Step: A squelching sound for walking on mud or moss.
+        - Tongue Flick: A fast "thwip" sound for the melee attack.
+        - Card Gulp: A satisfying "glug" or eating sound when a card is activated.
+        - Dash: A sharp "whoosh" of air to indicate rapid movement.
+
+2. Environmental & Feedback
+        - Mosquito Pop: A light, high-pitched "ding" or "pop" upon collection.
+        - Water Splash: Different sounds for jumping into shallow vs. deep water.
+        - Boss Roar: Low-frequency growls or screeched signals before a boss attacks.
+        - Death Croak: A sad, brief vocalization when a run ends.
+
 2. Feedback
     1. Relieved &quot;Ahhhh!&quot; (health)
     2. Shocked &quot;Ooomph!&quot; (attacked)
@@ -601,11 +595,7 @@ _(example)_
 
 ### **Music Needed**
 
-1. Slow-paced, nerve-racking &quot;forest&quot; track
-2. Exciting &quot;castle&quot; track
-3. Creepy, slow &quot;dungeon&quot; track
-4. Happy ending credits track
-5. Rick Astley&#39;s hit #1 single &quot;Never Gonna Give You Up&quot;
+ 
 
 _(example)_
 
