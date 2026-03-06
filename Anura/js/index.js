@@ -16,6 +16,9 @@ const canvasWidth = 960;
 const canvasHeight = 540;
 const boxSize = 50;
 
+// variable global canvas
+let canvas;
+
 // Context of the Canvas
 let ctx;
 
@@ -27,7 +30,8 @@ let bgReady = false;
 let logo = new Image(); // Image() constructor
 logo.src = "./assets/logoTemp.png";
 
-
+// variable global para guardar la pantalla en la que está
+let currentScene = "title";
 
 
 function main() {
@@ -50,15 +54,15 @@ function main() {
     };
 
     backgroundImage.src = "./assets/titleScreenBG.png"
-    logo.src = "./assets/logoTemp.png";
+    logo.src = "./assets/logoTemp2.png";
 
     requestAnimationFrame(draw);
 
 
 }
 
-function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+// funcion a parte para separar lo visual de la title screen a una funcion nueva
+function drawTitleScreen() {
 
     // fondo primero
     if (bgReady) {
@@ -82,13 +86,67 @@ function draw() {
     logIn();
     settings();
 
-    // TODO: Make different shapes using the canvas 2d functions
+}
+
+function draw() { // draw dibuja la escena actual
+    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+    switch (currentScene) { // usamos switch para cambiar de scene 
+        case "title": drawTitleScreen();
+            break;
+
+        case "login":
+            drawLoginScene();
+            break;
+
+        case "play":
+            drawPlayScene();
+            break;
+
+        case "setting":
+            drawSettingScene();
+            break;
+    }
 
     requestAnimationFrame(draw);
 
 }
 
 window.addEventListener("load", main);
+
+// creamos las otras pantallas como placeholders
+function drawLoginScene() {
+    ctx.fillStyle = "#2c3e50"
+    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+    ctx.fillStyle = "white";
+    ctx.font = "40px 'Pixelify Sans'";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("LOGIN SCREEN", canvasWidth / 2, canvasHeight / 2);
+}
+
+function drawPlayScene() {
+    ctx.fillStyle = "#2c3e50"
+    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+    ctx.fillStyle = "white";
+    ctx.font = "40px 'Pixelify Sans'";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("PLAY SCREEN", canvasWidth / 2, canvasHeight / 2);
+}
+
+function drawSettingScene() {
+    ctx.fillStyle = "#2c3e50"
+    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+    ctx.fillStyle = "white";
+    ctx.font = "40px 'Pixelify Sans'";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("SETTING SCREEN", canvasWidth / 2, canvasHeight / 2);
+}
 
 function resizeCanvas() {
 
@@ -99,6 +157,7 @@ function resizeCanvas() {
     const scaleY = Math.floor(window.innerHeight / canvasHeight);
 
 }
+
 
 
 
@@ -186,59 +245,3 @@ function settings() {
 
 }
 
-function drawBunny() {
-    // Draw another shape
-    ctx.fillStyle = "white";
-    ctx.strokeStyle = "black";
-
-    const bunny = {
-        x: 500,
-        y: 100,
-        size: 150
-    }
-
-    // Left ear
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.ellipse(bunny.x + bunny.size / 2 - bunny.size / 4, bunny.y + bunny.size / 2 - bunny.size / 6,
-        bunny.size / 6, bunny.size / 3, -Math.PI / 4, 0, Math.PI * 2, false);
-    ctx.fill();
-    ctx.stroke();
-
-    // Right ear
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.ellipse(bunny.x + bunny.size / 2 + bunny.size / 4, bunny.y + bunny.size / 2 - bunny.size / 6,
-        bunny.size / 6, bunny.size / 3, Math.PI / 4, 0, Math.PI * 2, false);
-    ctx.fill();
-    ctx.stroke();
-
-    // Face
-    ctx.beginPath();
-    ctx.ellipse(bunny.x + bunny.size / 2, bunny.y + bunny.size / 2 + bunny.size / 6,
-        bunny.size / 3, bunny.size / 3, 0, 0, Math.PI * 2, false);
-    ctx.fill();
-    ctx.stroke();
-
-}
-
-function house() {
-    // Set line width
-    ctx.lineWidth = 10;
-
-    ctx.fillStyle = "black";
-
-    // Wall
-    ctx.strokeRect(75, 140, 150, 110);
-
-    // Door
-    ctx.fillRect(130, 190, 40, 60);
-
-    // Roof
-    ctx.beginPath();
-    ctx.moveTo(50, 140);
-    ctx.lineTo(150, 60);
-    ctx.lineTo(250, 140);
-    ctx.closePath();
-    ctx.stroke();
-}
