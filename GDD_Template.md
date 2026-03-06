@@ -326,11 +326,11 @@ The following are the core mechanics and how they function at a systems level.
 
 **Run Flow**
 1. Title Screen
-2. Card Selection (Run Prep)
+2. Card Selection (Run Prep) 
 3. Platform Section
 4. Boss Fight
 5. Reward / Death
-6. Shop (unlock cards)
+6. Shop (unlock cards) **Only if we have enough time**
 7. New Run
 
 
@@ -480,7 +480,7 @@ It contains:
 - Shop (permanent card unlocks)
 - Card inventory view
 - Option to start a new run
-
+This is only if we could do it, if not we're gonna skip this part and make the cards appear in drops
 
 ## _Development_
 
@@ -500,25 +500,26 @@ _(example)_
 ### **Derived Classes / Component Compositions**
 
 1. BasePlayer
-    1. PlayerMain
-    2. PlayerUnlockable
+    1. PlayerMain(Frog)
 2. BaseEnemy
-    1. EnemyWolf
-    2. EnemyGoblin
-    3. EnemyGuard (may drop key)
-    4. EnemyGiantRat
-    5. EnemyPrisoner
+    1. EnemyMosquitoes
+    2. Enemyspider
+    3. EnemySnake
+    4. EnemyBoss1
+    5. EnemyBoss2
+    6. EnemyFinalBoss
+    
 3. BaseObject
-    1. ObjectRock (pick-up-able, throwable)
-    2. ObjectChest (pick-up-able, throwable, spits gold coins with key)
-    3. ObjectGoldCoin (cha-ching!)
-    4. ObjectKey (pick-up-able, throwable)
+    1. ObjectCard(Makes a screen for card Selection)
+    2. ObjectChest (pick-up-able)
 4. BaseObstacle
-    1. ObstacleWindow (destroyed with rock)
+    1. ObstacleSpike
     2. ObstacleWall
-    3. ObstacleGate (watches to see if certain buttons are pressed)
+    3. ObstaclePlatform
 5. BaseInteractable
     1. InteractableButton
+    2. InteractableCards
+    3. InteractableCardspot   
 
 _(example)_
 
@@ -528,42 +529,32 @@ _(example)_
 
 ### **Style Attributes**
 
-What kinds of colors will you be using? Do you have a limited palette to work with? A post-processed HSV map/image? Consistency is key for immersion.
+The visual identity of Anura relies on a high-contrast color palette that reinforces the dual nature of the swamp. For the exploration phases, we will use a "Surface Swamp" palette consisting of mossy greens, earthy browns, and soft turquoise to evoke a calm, humid, and cozy atmosphere. However, as the player enters "Predator Zones," the colors will shift toward saturated deep purples and dark greys to immediately signal danger and heighten tension. By using a limited 16-bit color palette, we ensure that interactive elements remain distinct from the background, maintaining visual clarity even during chaotic boss fights.
 
-What kind of graphic style are you going for? Cartoony? Pixel-y? Cute? How, specifically? Solid, thick outlines with flat hues? Non-black outlines with limited tints/shades? Emphasize smooth curvatures over sharp angles? Describe a set of general rules depicting your style here.
+The art direction follows a detailed pixel-art aesthetic characterized as "Cute but Deadly." The protagonist, Anura, and the ambient insects will feature soft outlines and rounded shapes to appear charming and vulnerable. In contrast, the predators and bosses will be designed with sharper angles, heavy shadows, and intimidating proportions to establish them as clear threats. To make the world feel alive, we will implement environmental particles such as subtle fireflies and floating lily pads.
 
-Well-designed feedback, both good (e.g. leveling up) and bad (e.g. being hit), are great for teaching the player how to play through trial and error, instead of scripting a lengthy tutorial. What kind of visual feedback are you going to use to let the player know they&#39;re interacting with something? That they \*can\* interact with something?
+Visual feedback is our primary tool for teaching mechanics without lengthy tutorials. To indicate interactivity, mosquitoes will look with a subtle white outline. When a card is activated, Anura will emit a light. During combat, we will use "Flash on Hit" effects and camera shakes to provide tactile weight to every strike, ensuring the player feels the impact of both their successes and their mistakes.
 
 ### **Graphics Needed**
 
 1. Characters
-    1. Human-like
-        1. Goblin (idle, walking, throwing)
-        2. Guard (idle, walking, stabbing)
-        3. Prisoner (walking, running)
-    2. Other
-        1. Wolf (idle, walking, running)
-        2. Giant Rat (idle, scurrying)
-2. Blocks
-    1. Dirt
-    2. Dirt/Grass
-    3. Stone Block
-    4. Stone Bricks
-    5. Tiled Floor
-    6. Weathered Stone Block
-    7. Weathered Stone Bricks
-3. Ambient
-    1. Tall Grass
-    2. Rodent (idle, scurrying)
-    3. Torch
-    4. Armored Suit
-    5. Chains (matching Weathered Stone Bricks)
-    6. Blood stains (matching Weathered Stone Bricks)
-4. Other
-    1. Chest
-    2. Door (matching Stone Bricks)
-    3. Gate
-    4. Button (matching Weathered Stone Bricks)
+    1. Anura Principal Character
+    2. Bosses
+        - Snake
+        - Hawk
+        - Fox (Can change to 2)
+    3. Enemies
+        - Slimes
+        - Spiders
+        - Mosquitoes
+2. Environment & Blocks
+
+Tilesets for mud, moss-covered platforms, climbing roots, and hollow logs that serve as transitions between platforming sections and boss arenas.
+
+3. UI & HUD Elements
+
+A clean interface featuring a mosquito counter, a health bar for the frog, and three distinct card slots with a visual overlay to indicate cooldown progress.
+
 
 _(example)_
 
@@ -582,14 +573,18 @@ Stylistically, what kind of sound effects are you looking for? Do you want to ex
 
 ### **Sounds Needed**
 
-1. Effects
-    1. Soft Footsteps (dirt floor)
-    2. Sharper Footsteps (stone floor)
-    3. Soft Landing (low vertical velocity)
-    4. Hard Landing (high vertical velocity)
-    5. Glass Breaking
-    6. Chest Opening
-    7. Door Opening
+1. Player Effects
+        - Wet Step: A squelching sound for walking on mud or moss.
+        - Tongue Flick: A fast "thwip" sound for the melee attack.
+        - Card Gulp: A satisfying "glug" or eating sound when a card is activated.
+        - Dash: A sharp "whoosh" of air to indicate rapid movement.
+
+2. Environmental & Feedback
+        - Mosquito Pop: A light, high-pitched "ding" or "pop" upon collection.
+        - Water Splash: Different sounds for jumping into shallow vs. deep water.
+        - Boss Roar: Low-frequency growls or screeched signals before a boss attacks.
+        - Death Croak: A sad, brief vocalization when a run ends.
+
 2. Feedback
     1. Relieved &quot;Ahhhh!&quot; (health)
     2. Shocked &quot;Ooomph!&quot; (attacked)
@@ -600,11 +595,7 @@ _(example)_
 
 ### **Music Needed**
 
-1. Slow-paced, nerve-racking &quot;forest&quot; track
-2. Exciting &quot;castle&quot; track
-3. Creepy, slow &quot;dungeon&quot; track
-4. Happy ending credits track
-5. Rick Astley&#39;s hit #1 single &quot;Never Gonna Give You Up&quot;
+ 
 
 _(example)_
 
