@@ -6,7 +6,6 @@
 
 ##### **Copyright notice / author information / boring legal stuff nobody likes**
 
-##
 ## _Index_
 
 ---
@@ -322,21 +321,6 @@ The following are the core mechanics and how they function at a systems level.
 
 ## _Level Design_
 
-#### Game Flow
-
-**Run Flow**
-1. Title Screen
-2. Card Selection (Run Prep) 
-3. Platform Section
-4. Boss Fight
-5. Reward / Death
-6. Shop (unlock cards) **Only if we have enough time**
-7. New Run
-
-
-
----
-
 _(Note : These sections can safely be skipped if they&#39;re not relevant, or you&#39;d rather go about it another way. For most games, at least one of them should be useful. But I&#39;ll understand if you don&#39;t want to use them. It&#39;ll only hurt my feelings a little bit.)_
 
 ### **Themes**
@@ -418,24 +402,38 @@ _(example)_
 ### **Game Flow**
 
 **Run Flow**
-1. Title screen
-2. Hub (if player previously died)
-3. Card selection (run prep)
-4. Platform section 1
-5. Boss 1
-6. Platform section 2 (increased difficulty)
-7. Boss 2
-8. Platform Section 3 (increased difficulty)
-9. Final Boss
-10. Victory Screen
+1. Title screen: has 3 buttons (start game, log in, settings).
 
-If the player dies at any point during the run:
+    - log in: allows the user to log in with credentials so their data is saved in the database.
 
-- The run ends immediately
-- The player respawns in the Hub
-- The Shop becomes available
-- The player may unlock new cards
-- The player starts a new run
+    - settings: turn on/off sounds, brightness, reset progress. (MAY CHANGE)
+
+2. First normal run: player has no cards and no mosquito currency, in this first run the player starts to obtain their first mosquitoes. Player may get to the first boss or die in the platform section.
+
+    - First platform section
+    - First boss
+    - Second platform section
+    - Second boss
+
+2. If player dies at any point of the run a "you died" screen will appear with a new run button, the player reappears with the obtained mosquitoes on their profile.
+
+3. Random card selection screen:
+    - Three random cards appear on screen and player must select which one they want to buy with their mosquito currency. The available cards are randomly selected and there's a chance that there might be cheap cards or expensive ones, it depends of how many mosquitoes the player collected to buy the one they want. The player will have the option to skip if they don't have enough mosquitoes to buy the desired card or if he doesn't want new ones and keep the ones that they already have on their deck. 
+
+
+4. New run: the same run structure is repeated but now the player may or may not have cards depending on their gameplay. 
+
+    - First platform section 
+    - First boss
+    - Second platform section
+    - Second boss
+
+    For the platform section: if the player has 3 cards on their deck, during this section they can only activate 1 single card.
+
+    For the boss fight: if the player has 1 - 3 cards on their deck, they can use all the cards they have on their deck to fight the boss.
+
+5. If player gets to the final boss fight, a victory screen will appear and a button to return to the menu.
+
 
 #### Level Structure
 
@@ -538,7 +536,7 @@ Visual feedback is our primary tool for teaching mechanics without lengthy tutor
 ### **Graphics Needed**
 
 1. Characters
-    1. Anura Principal Character
+    1. Anura Principal Character: frog
     2. Bosses
         - Snake
         - Hawk
@@ -547,13 +545,14 @@ Visual feedback is our primary tool for teaching mechanics without lengthy tutor
         - Slimes
         - Spiders
         - Mosquitoes
+
 2. Environment & Blocks
 
 Tilesets for mud, moss-covered platforms, climbing roots, and hollow logs that serve as transitions between platforming sections and boss arenas.
 
 3. UI & HUD Elements
 
-A clean interface featuring a mosquito counter, a health bar for the frog, and three distinct card slots with a visual overlay to indicate cooldown progress.
+A clean interface featuring a mosquito counter, a health bar for the frog, and a deck for the three distinct card slots with a visual overlay to indicate cooldown progress.
 
 
 _(example)_
@@ -646,3 +645,60 @@ We are considering two distinct approaches for our card mechanics:
 The Shop & Inventory System: Players earn "Mosquitoes" (in-game currency) and spend them in a dedicated shop to purchase specific cards. These cards provide strategic advantages during the adventure. This system includes an Inventory Management mechanic where players manually organize and equip their deck.
 
 The Drop & Round-Based System: A more streamlined approach where cards are acquired via enemy drops or at the end of specific rounds. Players are presented with random card choices and must decide on the spot whether to equip a card to a specific slot or skip it to optimize their current run.
+
+
+### Card List
+
+**Movement Cards**
+- Iron Hindlegs: Grants a double jump while airborne
+- Rocket Frog: Charged Jump
+- Glide Membrane: Slow fall / glide
+- Bubble dash: Air dash
+- Dragonfly Hop: Triple short jump
+
+**Combat Cards**
+- Fire Kiss: Area damage + burn
+- Venom Lash: Damage over time (DoT)
+- Thunder Tongue: Chance to stun
+- Chamaeleon Veil: Temporary invisibility
+- Toad Shockwave: Shockwave when damaged
+
+**Utility Cards**
+- Thorn Skin: Reflects a portion of meele damage
+- Spiked Whip: Extra damage on hit
+- Metamorphosis: Heal on kill
+- Lucky Pond: Increased mosquito drops
+- Tadpole heart: Revive once per run
+
+
+### Screens
+
+- Title screen 
+    - play screen
+    - log in
+    - settings
+- First platform section screen
+- First boss fight section screen
+- Second platform section screen
+- Second boss fight screen
+- Third platform section screen
+- Third boss fight screen
+- Victory/You died screen
+- Pause screen
+- Card selection screen
+
+### Sketches
+
+![Screen Sketches](./InspoImages/ScreenSketches.png)
+
+
+
+
+
+
+
+
+
+
+
+
