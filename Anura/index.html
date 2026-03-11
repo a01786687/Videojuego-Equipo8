@@ -1,0 +1,48 @@
+<!--
+
+File: index.html
+
+Description: this file is the starting point of the videogame.
+It defines the base structure of the HTML document, it links
+the stylesheet, and connects the game engine.
+
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Anura</title>
+
+    <!-- Google pixel font -->
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Game engine-->
+    <script src="./js/index.js"></script>
+
+    <!-- Play Scene-->
+     <script src="./js/scenes/playScene.js"></script>
+</head>
+
+<body>
+
+    <!-- Header section-->
+    <header id="headerContainer">
+        <h1 class="header">Anura</h1>
+    </header>
+
+    <!-- Main game canvas -->
+    <main>
+        <canvas id="canvas"></canvas>
+    </main>
+
+</body>
+
+</html>
