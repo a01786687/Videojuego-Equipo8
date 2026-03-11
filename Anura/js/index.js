@@ -24,11 +24,11 @@ let ctx;
 
 // Imagen de fondo
 let backgroundImage = new Image();
-let bgReady = false;
+
+// let bgReady = false;
 
 // Logo del juego
 let logo = new Image(); // Image() constructor
-logo.src = "./assets/logoTemp.png";
 
 // variable global para guardar la pantalla en la que está
 let currentScene = "title";
@@ -51,9 +51,12 @@ function main() {
     // handleClick -> funcion que se ejecutara cuando ocurra
     canvas.addEventListener("click", handleClick);
 
+    logo.src = "./assets/logoTemp.png";
+
     backgroundImage.onload = () => {
         bgReady = true;
     };
+
     backgroundImage.onerror = () => {
         console.log("Image failed to load.", backgroundImage.src);
     };
@@ -68,16 +71,7 @@ function main() {
 // funcion a parte para separar lo visual de la title screen a una funcion nueva
 function drawTitleScreen() {
 
-    // fondo primero
-    if (bgReady) {
-        ctx.drawImage(backgroundImage, 0, 0, canvasWidth, canvasHeight);
-    } else {
-        // fallback mientras carga
-
-        // Draw a square
-        ctx.fillStyle = "#ffffff";
-        ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-    }
+    ctx.drawImage(backgroundImage, 0, 0, canvasWidth, canvasHeight);
 
     // medidas logo
     const logoWidth = 400;
@@ -86,6 +80,7 @@ function drawTitleScreen() {
     // drawImage(image, dx, dy, dWidth, dHeight)
     let centerX = canvasWidth / 2 - logoWidth / 2
     ctx.drawImage(logo, centerX, 15, 400, 400)
+
     play();
     logIn();
     settings();
@@ -128,6 +123,8 @@ function drawLoginScene() {
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.fillText("LOGIN SCREEN", canvasWidth / 2, canvasHeight / 2);
+
+    backButton();
 }
 
 function drawPlayScene() {
@@ -139,6 +136,8 @@ function drawPlayScene() {
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.fillText("PLAY SCREEN", canvasWidth / 2, canvasHeight / 2);
+
+    backButton();
 }
 
 function drawSettingScene() {
@@ -150,6 +149,8 @@ function drawSettingScene() {
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.fillText("SETTING SCREEN", canvasWidth / 2, canvasHeight / 2);
+
+    backButton();
 }
 
 function resizeCanvas() {
@@ -162,9 +163,7 @@ function resizeCanvas() {
 
 }
 
-
-
-
+// BOTONES
 
 function play() {
 
@@ -259,6 +258,33 @@ function settings() {
 
 }
 
+function backButton() {
+    const buttonWidth = 140;
+    const buttonHeight = 50;
+
+    const buttonX = 30;
+    const buttonY = 30;
+
+    ctx.fillStyle = "#000000"
+    ctx.fillRect(buttonX + 4, buttonY + 4, buttonWidth, buttonHeight);
+
+    ctx.fillStyle = "#895654"
+    ctx.fillRect(buttonX, buttonY, buttonWidth, buttonHeight);
+
+    // border
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = "#61393b";
+    ctx.strokeRect(buttonX, buttonY, buttonWidth, buttonHeight);
+
+    // text
+    ctx.fillStyle = "white";
+    ctx.font = "15px 'Pixelify Sans'";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("Back to Title", buttonX + buttonWidth / 2, buttonY + buttonHeight / 2);
+}
+
+
 // cada vez que haga click dentro del canvas, la consola mostrará el mensaje
 function handleClick(event) {
     console.log("Canvas clicked");
@@ -272,6 +298,8 @@ function handleClick(event) {
     const mouseY = event.clientY - rect.top;
 
     console.log(mouseX, mouseY);
+
+    // TITLE SCREEN BOTONES
 
     /*
     PLAY
@@ -290,21 +318,42 @@ function handleClick(event) {
 
     // PLAY BUTTON
     // si las coordenadas de mouseX son mayor o igual a 140 Y las coordenadas de mouseY son menor o igual a 340 Y 
-    if (mouseX >= 140 && mouseX <= 340 && mouseY >= 400 && mouseY <= 460) {
-        currentScene = "play";
-    }
+    
+    if (currentScene == "title") {
+    
+        if (mouseX >= 140 && mouseX <= 340 && mouseY >= 400 && mouseY <= 460) {
+            currentScene = "play";
+        }
 
-    // LOG IN BUTTON 
-    if (mouseX >= 380 && mouseX <= 580 && mouseY >= 400 && mouseY <= 460) {
-        currentScene = "login";
-    }
+        // LOG IN BUTTON 
+        if (mouseX >= 380 && mouseX <= 580 && mouseY >= 400 && mouseY <= 460) {
+            currentScene = "login";
+        }
 
-    // SETTINGS BUTTON
-    if (mouseX >= 620 && mouseX <= 820 && mouseY >= 400 && mouseY <= 460) {
-        currentScene = "settings";
-    }
+        // SETTINGS BUTTON
+        if (mouseX >= 620 && mouseX <= 820 && mouseY >= 400 && mouseY <= 460) {
+            currentScene = "settings";
+        }
     // ESTO LO UTILIZAREMOS PARA DETECTAR BOTONES
+    }
+
+    // BACK BUTTON
+
+    // X: 30 a 170
+    // Y: 30 a 80
+
+    else {
+        if (mouseX >= 30 && mouseX <= 170 && mouseY >= 30 && mouseY <= 80) {
+            currentScene = "title";
+        }
+    }
 }
+
+
+
+
+
+
 
 
 
