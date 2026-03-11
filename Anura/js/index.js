@@ -25,7 +25,7 @@ let ctx;
 // Imagen de fondo
 let backgroundImage = new Image();
 
-// let bgReady = false;
+let bgReady = false;
 
 // Logo del juego
 let logo = new Image(); // Image() constructor
@@ -50,8 +50,8 @@ function main() {
     // click -> evento que queremos escuchar
     // handleClick -> funcion que se ejecutara cuando ocurra
     canvas.addEventListener("click", handleClick);
-
-    logo.src = "./assets/logoTemp.png";
+    window.addEventListener("keydown", handleKeyDown); // capturamos teclas
+    window.addEventListener("keyup", handleKeyUp);
 
     backgroundImage.onload = () => {
         bgReady = true;
@@ -71,7 +71,14 @@ function main() {
 // funcion a parte para separar lo visual de la title screen a una funcion nueva
 function drawTitleScreen() {
 
-    ctx.drawImage(backgroundImage, 0, 0, canvasWidth, canvasHeight);
+    if (bgReady) {
+        ctx.drawImage(backgroundImage, 0, 0, canvasWidth, canvasHeight);
+    } else {
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+    }
+
+    // ctx.drawImage(backgroundImage, 0, 0, canvasWidth, canvasHeight);
 
     // medidas logo
     const logoWidth = 400;
@@ -123,19 +130,6 @@ function drawLoginScene() {
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.fillText("LOGIN SCREEN", canvasWidth / 2, canvasHeight / 2);
-
-    backButton();
-}
-
-function drawPlayScene() {
-    ctx.fillStyle = "#2c3e50"
-    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-
-    ctx.fillStyle = "white";
-    ctx.font = "40px 'Pixelify Sans'";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText("PLAY SCREEN", canvasWidth / 2, canvasHeight / 2);
 
     backButton();
 }
@@ -348,7 +342,6 @@ function handleClick(event) {
         }
     }
 }
-
 
 
 
