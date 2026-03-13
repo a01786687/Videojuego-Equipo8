@@ -87,3 +87,32 @@ Yo como administrador de la página web quiero tener algun metodo de autentifica
 **Historia de usuario #27 Despliegue Local y Cloud**\
 Yo como administrador de la página web quiero poder desplegar esa página web tanto de manera local como en la nube.
 
+**Historia de Usuario 28 Iniciar y terminar partida**\
+Yo como jugador quiero poder iniciar (start game) y terminar una partida (game over).
+
+**Historia de Usuario 29 Progresión tipo roguelite**\
+Yo como jugador quiero volverme más fuerte cada vez que muera para progresar.
+
+**Historia de Usuario 30 Pérdida y guardado de progreso**\
+Yo como jugador quiero que al morir parte de mi progreso se pierda y otra parte se guarde.
+
+**Historia de Usuario 31 Sistema de cartas que afecte el gameplay**\
+Yo como jugador quiero usar cartas que puedan afectar a mi personaje o a los enemigos para modificar las acciones durante el combate y afectar el gameplay.
+
+**Historia de Usuario 32 Obtención de cartas por nivel**\
+Yo como jugador quiero recibir nuevas cartas cada vez que complete un nivel.
+
+**Historia de Usuario 33 Recoleccion de estadisticas para mejoras y balanceo**\
+Yo como desarrollador quiero que el juego recabe estadísticas de las partidas para analizar la dificultad del juego y poder balancear enemigos y mecánicas.
+
+**Historia de Usuario 34 Estadísticas específicas por nivel y jefes**\
+Yo como dearrollador quiero tener estadísticas específicas de niveles, enemigos y jefes para identificar si alguno es demasiado difícil o demasiado fácil y ajustar su balance
+
+**Historia de Usuario 35 Sprites finales del juego**\
+Yo como jugador quiero que el juego utilice los sprites finales de los personajes, enemigos y elementos para tener una experiencia agradable y consistente con el diseño del juego.
+
+**Historia de Usuario 36 Estética de la página web**\
+Yo como usuario quiero que la página web tenga una estética coherente con el juego para mantener una identidad visual clara y una experiencia agradable
+
+**Historia de Usuario 37 Estilo pixel art/retro en el frontend**\
+Yo como usuario quiero que el frontend mantenga una estética pixel art consistente con el juego para mantener la identidad visual y mejorar la experiencia del jugador.
