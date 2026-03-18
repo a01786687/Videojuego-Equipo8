@@ -358,6 +358,8 @@ The following are the core mechanics and how they function at a systems level.
 
     Furthermore, its imperative to explain each type of the enemies, platforms, traps that will be described in a chart:
 
+    ![alt text](image-3.png)
+
 ### **Themes**
 
 
