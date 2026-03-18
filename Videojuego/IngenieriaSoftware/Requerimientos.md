@@ -91,7 +91,7 @@ _Requerimiento funcional -> describe algo que el sistema hace_
 **RF-26** El sistema no debe permitir tener más de una carta de la misma categoría en el deck activo del jugador
 *HU: #31*
 
-**RF-27** El sistema debe permitir al jugador intercambiar una carta de su deck por una nueva cuando el deck esté lleno (3 cartas), con pérdida permanente de la carta reemplazada
+**RF-27** El sistema debe permitir al jugador intercambiar una carta de su deck por una nueva cuando el deck esté lleno (3 cartas), sin embargo, puede volver a aparecer aleatoriamente. O también puede optar por no cambiar ninguna carta (skip)
 *HU: #31*
  
 
