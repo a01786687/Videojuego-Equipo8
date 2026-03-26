@@ -28,7 +28,8 @@ the stylesheet, and connects the game engine.
     <script src="./js/index.js"></script>
 
     <!-- Play Scene-->
-     <script src="./js/scenes/playScene.js"></script>
+    <script src="./js/scenes/playScene.js"></script>
+
 </head>
 
 <body>
@@ -40,7 +41,55 @@ the stylesheet, and connects the game engine.
 
     <!-- Main game canvas -->
     <main>
-        <canvas id="canvas"></canvas>
+        <div id="game-container">
+            <canvas id="canvas"></canvas>
+
+            <!-- Login form -->
+            <div id="login-form" class="auth-form hidden">
+                <h2>Log In</h2>
+                
+                <input 
+                    type="text" 
+                    id="login-username"
+                    placeholder="Enter username"
+
+                >
+
+                <input 
+                    type="password" 
+                    id="login-password"
+                    placeholder="Enter password"
+
+                >
+
+                <button id="login-button">Log In</button>
+
+                <p id="go-register" class="auth-link">Don’t have an account? Register</p>
+                <p id="login-message"></p>
+            </div>
+
+            <!-- register form -->
+            <div id="register-form" class="auth-form hidden">
+                <h2>Register</h2>
+
+                <input
+                    type="text"
+                    id="register-username"
+                    placeholder="Choose a username"
+                >
+
+                <input 
+                    type="password" 
+                    id="register-password"
+                    placeholder="Choose a password"
+                >
+
+                <button id="register-button">Create Account</button>
+
+                <p id="go-login" class="auth-link">Already have an account? Log In</p>
+                <p id="register-message"></p>
+            </div>
+        </div>
     </main>
 
 </body>

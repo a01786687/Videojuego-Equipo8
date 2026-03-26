@@ -55,49 +55,49 @@ A small frog fights its way up the food chain in a 2D roguelite fighting game se
 ### **Gameplay**
 
 The player controls a small frog moving through swamp areas filled with mosquitoes, obstacles, and boss encounters. Mosquitoes act as a currency and are collected using the frog's tongue while navigating platforming sections and preparing for fights.
-
-Combat happens in 1v1 boss battles against animals higher in the food chain. Before each run, the player chooses 1 card of the set of power-up cards displayed(3 cards to be exact), this will be only possible to select if the player has enough currency collected (mosquitoes) to buy the card. Each boss has a unique attack pattern and weakness, encouraging players to experiment with different card combinations and strategies.
-
-If the player dies, the run ends and the collected mosquitoes can be spent in the newly displayed card selection at the beginning of the run to unlock new cards or upgrades, making future runs stronger and allowing the player to progress in the game.
+ 
+Combat happens in 1v1 boss battles against animals higher in the food chain. Each boss has a unique attack pattern and weakness, encouraging players to experiment with different card combinations and strategies.
+ 
+The player begins their first run with 0 cards and no mosquito currency. Upon dying, a Card Selection Screen appears showing 3 random cards. The player may purchase at most 1 card per death using their accumulated mosquitoes, or skip the selection entirely to keep their current deck unchanged. Cards accumulate across runs until the player reaches the 3-card deck limit. Once the deck is full, purchasing a new card requires discarding one of the existing 3 cards.
 
 
 Roguelite Structure:
 
-Anura follows a run-based progression system. Each run is self contained, and death resets the current attempt. However, collected mosquitoes function as persistent currency that can be spent in the shop to permanently unlock new cards.
+Anura follows a run-based progression system. Each run is self contained, and death resets the current attempt. Mosquitoes function as persistent currency, they are never lost upon death and carry over indefinitely across all runs. Upon dying, the player reaches the Card Selection Screen where they can spend their accumulated mosquitoes to purchase one new card, then start a fresh run.
 
 This creates a classic roguelite loop:
 
 - Attempt run
 - Defeat bosses or die
-- Earn currency
-- Unlock stronger or more complex cards
+- Earn persistent mosquito currency
+- Unlock stronger or more complex cards (max 1 per death)
 - Start a new run with improved strategic options
 
 ### **Mindset**
-
+ 
 Anura is built around a strong emotional contrast between calmness and tension.
-
+ 
 The main mindset can be summarized as:
 “Small creature, big world, smart survival.”
-
+ 
 At the beginning of each run, the player should feel vulnerable and cautious. The frog is small, visually cute and at a first glance quite fragile. When encountering the enemies they seem intimidating in size and presence to the player. This creates tension and a sense of danger.
-
+ 
 Between boss encounters, platforming sections are designed to feel calm and cozy. The swamp environment is soft and atmospheric even though it still has some obstacles for the player. This peaceful exploration and obstacle course phase reinforces the feeling of safety.
-
+ 
 However, this calm state is disrupted during boss fights and shifts the player's mentality from relaxed exploration and casual game to tension and alertness. 
-
+ 
 As the player progresses, learns boss patterns, experiments with card combinations and purchases permanent upgrades, the mindset changes from trying to survive to dominating the game. 
-
+ 
 The game aims to provoke:
-
+ 
 - Strategic thinking (not just randomly smashing buttons)
 - Tension during boss fights
 - Experimentation through card combinations
 - Satisfaction from defeating more dangerous bosses
 - Resilience through the roguelite loop which would be "failure is progress"
-
+ 
 Visually, the game supports this whole mindset through a blend of cute, cozy aesthetics and dangerous bosses. The intended emotional experience is for the player to think:
-
+ 
 "I'm just a cute little frog in a peaceful swamp" right before facing a 1v1 boss fight that forces them to adapt and survive.
 
 
@@ -136,9 +136,16 @@ Visually, the game supports this whole mindset through a blend of cute, cozy aes
 
         
 
-2. Level Select -> Run Prep Screen
-
-    The player reviews their current deck (up to 3 cards) before starting a run.
+2. Card Selection & Run Prep Screen
+ 
+    This screen appears exclusively after dying. It handles two sequential steps in one flow:
+ 
+    **Step 1: Card Selection:** Three random cards are displayed with their mosquito cost. The player may purchase one card, skip the selection, or keep their current deck unchanged.
+ 
+    **Step 2: Deck Preview:** Once the card decision is made (whether a card was purchased or skipped), the screen transitions to show the player's current deck (up to 3 card slots). This gives the player a moment to review their build before committing to the next run. A single "Start Run" button launches the new attempt from here.
+ 
+    This replaces the original "Level Select" concept — there is no level selection in Anura, as the run structure is fixed (Platform → Boss → Platform → Boss → Final Boss).
+ 
 
 3. Game
     1. Inventory
@@ -188,91 +195,94 @@ _Pause menu:_
 * Exit: The player will be able to exit the game but the progress they made will not be safed, they to finish the run by either dying or defeating the boss.
 
 ### **Mechanics**
-
+ 
 Anura combines platforming, 1v1 boss combat, and a strategic card activation system within a roguelite progression loop. 
-
+ 
 The following are the core mechanics and how they function at a systems level.
-
+ 
 1. Tongue collection and attack system
     
     The frog uses its tongue as both a collection and combat mechanic. (tongue = weapon)
     
     - Mosquitoes are collected then the tongue collider overlaps with their hitbox.
-
+ 
     Defining how the currency (mosquitoes) will work:
     - Mosquitoes are collected then the tongue collider overlaps with their hitbox.
-
+ 
     - Tongue itself will have a hitbox as well as all the mosquitoes. When these hitboxes interact the counter will increment counter++ and the mosquito will disappear.
-
+ 
     - The tongue acts as a short range directional attack, it will funcion as a fast meele hitbox in front of the frog.
-
+ 
     need: collision detection system for mosquito collection, hitbox activation during attack animation frames, cooldown timer to prevent spamming.
-
+ 
     The tongue attack will be a melee attack that will only depend on the direction the player is looking. This can be right,left, up, diagonally right and diagonally left, and it will have a limited distance so it'll be effective to use short range.
-
+ 
     - In terms of physics, we want to implement the movement of the tongue attack as a MRU movement that will stop at a short distance and will always move in “x” direction, we also want to assign these attack the hitpoints that will deal to the boss
-
+ 
     - Moving to the spit attack, we want to implement it the same way as the melee attack but the only thing is this movement will not have a limit in distance and it will only stop if it hits the enemy or if its surpasses the frame of what you see in the screen
-
+ 
     - Also we need to implement a cooldown on these attacks so it doesn’t become a spam and break the game.
-
+ 
     Movement: The character will have 3 types of movement: the regular running (since its 2D it can move sideways only), jumping and a dash.
-
+ 
     - Running will be the basic constant movement that the character will have, we will define a certain velocity that fits the pace of the game and it will specifically move in the x axis only. The keybinds “a” (left)  and “d” (right) will be the keys that trigger the move
-
+ 
     - Its also defined as a MRU movement only the x axis
-
+ 
     - The jump mechanic will be attached to the space bar key and will function a bit more complex than the other mechanics, it will work as a parabolic movement so this means it works as a MRUA and will have an initial velocity in “y” that's a predetermined velocity attached to the space bar and also an initial velocity in “x” that will be attached to the running mechanic. 
-
+ 
     - Finally the dash will be a movement that will have cooldowns so it can't be spammed and it will be a faster movement in “x” axis that will give better reaction time to enemies abilities to the player and this dash will have a limited distance reached.
-
-
+ 
+ 
 2. Card System
-
-    Cards are activated by selecting them at the beginning of each run, this means you will only select 1 card at the very beginning of a run after dying and it will have a display of 3 options and you will also need to have enough currency with the mosquitoes to buy it.
-
+ 
+    Cards are activated by pressing their assigned key (1, 2, or 3) at any time. However, activation rules differ between game sections:
+ 
+    - **Platform sections:** The player can carry up to 3 cards in their deck, but may only activate 1 card during the entire platforming section. Once a card is activated, the other two are locked for the remainder of that section.
+    - **Boss fights:** All 3 cards in the deck are unlocked and usable simultaneously. Cards remain active and available for the full duration of the boss fight.
+ 
     Mechanically:
-
+ 
     - The player has a deck of 3 equipped cards
     -  Each card will be able to impact players abilities like dash, attacks that will make the gameplay different and more effective against enemies, making progression possible
       
-
+ 
     Card activation logic
-
+ 
     Each card functions as an ability object with:
-
+ 
     - cooldown timer (depends on whether the card impacts the players abilities or it triggers a newly assigned effect that requires another key)
     - effect value (damage, shield, speed modifier, etc)
     - optional synergy interaction
-
+ 
     Cards are stored in a structured array representing the player's active build:
-
-
+ 
+ 
     playerDeck = [card1, card2, card3]
-
+ 
     If the card triggers a new ability, when a key (1, 2, 3) is pressed:
-
+ 
     - the system checks if cooldown <= 0
     - if true -> applies the card effect
     - cooldown resets
     - visual feeback is triggered
-
+ 
     else, the card isn't a new ability it will just impact the current gameplay to help the player progress significanlty in the run.
-
+ 
     _Strategic component:_
     
     Although the player only equips 3 cards per run, the full collection of unlocked cards creates build diversity. Different combinations lead to different playstyles (aggressive, defensive, sustain based, mobility focused)
-
+ 
     This limited deck size reinforces strategic pre run decision making, aligning with TCG design principles.
-
+ 
     This means players can adapt or keep certain cards that make their runs feel comfortable and easier to progress.
-
+ 
     The player can equip up to 3 cards per run.
     If the player already has 3 cards and decides to purchase a new one, they must choose which existing card to replace. Also mentioning that it exists the posibility of buying the discarded card in the future.
     This reinforces strategic decision-making when building a deck.
-
+ 
     _Cards defined_
-
+ 
     It's essential as well to define how we want to define each cards and what will do each card:
 
     ![alt text](image.png)
@@ -280,52 +290,52 @@ The following are the core mechanics and how they function at a systems level.
     ![alt text](image-2.png)
 
 3. Boss pattern system
-
+ 
     Boss behavior is driven by structured pattern based logic, implemented through *state management* in JavaScript.
-
+ 
     Each boss operates using a *Finite State Machine (FSM) model. This means the boss can only be in one state at a time, and it transitions between states based on predefined conditions such as timers, player distance or remaining health.
-
+ 
     Example boss states:
-
+ 
     - Idle - the boss waits or prepares an attack.
     - Attack - the boss performs a specific attack animation and activates its hitbox.
     - Recovery - a short vulnerability window afer attacking
     - Phase 2 - activated when health drops below a certain threshold (ex. 50% can vary)
-
+ 
     State transitions are controlled using conditional logic an timers. For example:
-
+ 
     - Afer a certain time in idle -> transition to attack
     - After Attack completes -> transition to recovery
     - When health is below or 50% -> activate phase 2 behavior
-
+ 
     This system ensures predictable but challenging encounters, reinforcing pattern recognition and startegic gameplay instead of complete randomness.
-
+ 
     Since the game is built using HTML and JS mechanics are implemented using:
-
+ 
     - Game loop logic (e.g., requestAnimationFrame)
-
+ 
     - Collision detection systems (hitboxes and bounding boxes)
-
+ 
     - State variables
-
+ 
     - Timers and cooldown counters
-
+ 
     - Health threshold checks
-
+ 
     ----------------------------------------------
-
+ 
     Thus we will need pure logical programming, so we will need state machine that signifies logic behavior through if, variables, temporizers.
-
+ 
     
     A boss pattern system is:
-
+ 
     When it currently has a determined state, this could be idle, attacking, recovering and this can be rotated in variables like time, HP.
 
 4. Platform levels
     
-    As we will describe further, our game will follow a cycle of having 3 sections levels and each one will have a boss. This means that each section will have platfrom and obstacle levels with enemies you will have to defeat before you reach the boss from the current level.
+    As we will describe further, our game will follow a cycle of having 2 sections levels and each one will have a boss. This means that each section will have platfrom and obstacle levels with enemies you will have to defeat before you reach the boss from the current level.
 
-    Since the game follows a rogue lite mechanic, this means each level has to vary in a way obstacles ad enemies are the same but only thing will change in the position in which they appear making every experience of the level different and not something the player can memorize.
+    Since the game follows a rogue lite mechanic, this means each level has to vary in a way obstacles and enemies are the same but only thing will change in the position in which they appear making every experience of the level different and not something the player can memorize.
 
     **Elements in levels**
 
@@ -446,30 +456,28 @@ _(example)_
     - settings: turn on/off sounds, brightness, reset progress. (MAY CHANGE)
 
 2. First normal run: player has no cards and no mosquito currency, in this first run the player starts to obtain their first mosquitoes. Player may get to the first boss or die in the platform section.
-
+ 
+    The run follows this fixed structure:
     - First platform section
     - First boss
     - Second platform section
     - Second boss
+    - Final boss (no platform section before it)
 
-2. If player dies at any point of the run a "you died" screen will appear with a new run button, the player reappears with the obtained mosquitoes on their profile.
+2. If player dies at any point of the run a "you died" screen will appear. The player's mosquitoes are preserved.
 
-3. Random card selection screen:
-    - Three random cards appear on screen and player must select which one they want to buy with their mosquito currency. The available cards are randomly selected and there's a chance that there might be cheap cards or expensive ones, it depends of how many mosquitoes the player collected to buy the one they want. The player will have the option to skip if they don't have enough mosquitoes to buy the desired card or if he doesn't want new ones and keep the ones that they already have on their deck. 
+3. Card Selection Screen (post-death only):
+    - Three random cards appear on screen. The player may purchase at most 1 card using their accumulated mosquitoes, or skip the selection. Cards vary in cost depending on their power. The player then chooses to start a new run or return to the main menu.
 
-
-4. New run: the same run structure is repeated but now the player may or may not have cards depending on their gameplay. 
-
-    - First platform section 
-    - First boss
-    - Second platform section
-    - Second boss
-
-    For the platform section: if the player has 3 cards on their deck, during this section they can only activate 1 single card.
-
-    For the boss fight: if the player has 1 - 3 cards on their deck, they can use all the cards they have on their deck to fight the boss.
-
-5. If player gets to the final boss fight, a victory screen will appear and a button to return to the menu.
+4. New run: the same run structure is repeated but now the player may or may not have cards depending on their previous runs.
+ 
+    - First platform section (max 1 card activation)
+    - First boss (all cards active)
+    - Second platform section (max 1 card activation)
+    - Second boss (all cards active)
+    - Final boss (all cards active)
+ 
+5. If player defeats the final boss, a victory screen will appear with a button to return to the menu.
 
 
 #### Level Structure
@@ -495,7 +503,7 @@ Boss 2
 - Shorter recovery window
 - Requires better positioning
 
-Boss 3
+Final Boss
 - Multiple phases
 - Combined attack patterns
 - Higher tension
@@ -508,14 +516,14 @@ Platform sections between bosses gradually increase in:
 
 The difficulty escalates without introducing entirely new mechanics late in the run. Instead it demands mastery of the existing systems.
 
-#### Hub Structure (post death area)
-The hub is a safe, calm area only accessible after death
-
-It contains:
-- Shop (permanent card unlocks)
-- Card inventory view
-- Option to start a new run
-This is only if we could do it, if not we're gonna skip this part and make the cards appear in drops
+#### Post-Death Screen
+After dying, the player is taken directly to the Card Selection Screen. This screen shows 3 randomly selected cards with their mosquito cost. The player may:
+- Purchase 1 card (if they have enough mosquitoes)
+- Skip the selection and keep their current deck unchanged
+- Start a new run
+- Return to the main menu
+ 
+There is no persistent hub area. Mosquito currency is preserved across all runs regardless of death.
 
 ## _Development_
 
@@ -577,8 +585,9 @@ Visual feedback is our primary tool for teaching mechanics without lengthy tutor
     2. Bosses
         - Snake
         - Hawk
-        - Fox (Can change to 2)
-    3. Enemies
+    3. Final Boss
+        - Fox 
+    4. Enemies
         - Slimes
         - Spiders
         - Mosquitoes
@@ -681,8 +690,7 @@ A clean interface featuring a mosquito counter, a health bar for the frog, and a
 - First boss fight section screen
 - Second platform section screen
 - Second boss fight screen
-- Third platform section screen
-- Third boss fight screen
+- Third and final boss fight screen
 - Victory/You died screen
 - Pause screen
 - Card selection screen
