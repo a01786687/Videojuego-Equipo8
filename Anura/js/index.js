@@ -33,6 +33,12 @@ let logo = new Image(); // Image() constructor
 // variable global para guardar la pantalla en la que está
 let currentScene = "title";
 
+// global variables with references to the html forms
+let loginForm;
+let registerForm;
+let goRegisterLink;
+let goLoginLink;
+
 
 function main() {
     // Get a reference to the object with id 'canvas' in the page
@@ -63,6 +69,22 @@ function main() {
 
     backgroundImage.src = "./assets/titleScreenBG.png"
     logo.src = "./assets/logoTemp2.png";
+
+    // connecting the HTML with JS
+    loginForm = document.getElementById("login-form");
+    registerForm = document.getElementById("register-form");
+    goRegisterLink = document.getElementById("go-register");
+    goLoginLink = document.getElementById("go-login");
+
+    goRegisterLink.addEventListener("click", () => {
+        currentScene = "register";
+    });
+
+    goLoginLink.addEventListener("click", () => {
+        currentScene = "login";
+    });
+
+
 
     requestAnimationFrame(draw);
 
@@ -105,6 +127,10 @@ function draw() { // draw dibuja la escena actual
             drawLoginScene();
             break;
 
+        case "register":
+            drawRegisterScene();
+            break;
+
         case "play":
             drawPlayScene();
             break;
@@ -113,6 +139,8 @@ function draw() { // draw dibuja la escena actual
             drawSettingScene();
             break;
     }
+
+    updateAuthForms();
 
     requestAnimationFrame(draw);
 
@@ -130,6 +158,19 @@ function drawLoginScene() {
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.fillText("LOGIN SCREEN", canvasWidth / 2, canvasHeight / 2);
+
+    backButton();
+}
+
+function drawRegisterScene() {
+    ctx.fillStyle = "#34495e";
+    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+    ctx.fillStyle = "white";
+    ctx.font = "40px 'Pixelify Sans'";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("REGISTER SCREEN", canvasWidth / 2, canvasHeight / 2);
 
     backButton();
 }
@@ -338,10 +379,39 @@ function handleClick(event) {
 
     else {
         if (mouseX >= 30 && mouseX <= 170 && mouseY >= 30 && mouseY <= 80) {
-            currentScene = "title";
+
+            if (currentScene === "login") {
+                currentScene = "title";
+            }
+
+            else if (currentScene === "register") {
+                currentScene = "login";
+            }
+
+            else {
+                currentScene = "title";
+            }
         }
     }
 }
+
+
+// function that will show and hide forms
+function updateAuthForms() {
+    if (currentScene === "login") {
+        loginForm.classList.remove("hidden");
+    } else {
+        loginForm.classList.add("hidden");
+    }
+
+    if (currentScene === "register") {
+        registerForm.classList.remove("hidden");
+    } else {
+        registerForm.classList.add("hidden");
+    }
+}
+
+
 
 
 
