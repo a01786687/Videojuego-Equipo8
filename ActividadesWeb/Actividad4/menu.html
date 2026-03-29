@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu - Meow Cat Cafe</title>
+    <link rel ="stylesheet" href="css/style.css">
+    <!-- fonts-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chewy&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- nav bar-->
+    <section id="nav-bar">
+        <div class="nav">
+            <div class="nav-one">
+                <h1>Meow Cat Cafe</h1>
+            </div>
+
+            <div class="list">
+                <ul>
+                    <li class="navBarItems"><a href="index.html">Home</a></li>
+                    <li class="navBarItems"><a href="menu.html">Menu</a></li>
+                    <li class="navBarItems"><a href="cats.html">Cats</a></li>
+                    <li class="navBarItems"><a href="index.html#gallery">Gallery</a></li>
+                    <li class="navBarItems"><a href="index.html#contact">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </section> 
+    
+
+    <!-- Menu title -->
+    <section class="menuHeader">
+        <h1>Our Menu</h1>
+        <p>Explore our daily specials</p>
+    </section>
+
+
+    <!-- day selector-->
+    
+    <section class="daySelector">
+        <!-- IMPORTANT-->
+        <!-- data-day tells JavaScript which menu to show when this button is clicked. -->
+        <button class="dayButton" data-day="monday">Monday</button>
+        <button class="dayButton" data-day="tuesday">Tuesday</button>
+        <button class="dayButton" data-day="wednesday">Wednesday</button>
+        <button class="dayButton" data-day="thursday">Thursday</button>
+        <button class="dayButton" data-day="friday">Friday</button>
+        <button class="dayButton" data-day="saturday">Saturday</button>
+        <button class="dayButton" data-day="sunday">Sunday</button>
+    </section>
+
+
+    <!-- menu -->
+    <section class="menuContainer">
+
+        <!-- Monday-->
+
+        <div class="menuLayout active" id="monday">
+            <div class="menuCard">
+                <h3>Latte</h3>
+                <p>Smooth espresso with steamed milk, finished with delicate latte art.</p>
+                <img src="assets/menuItems/catLatte.png">
+                <p>more</p>
+            </div>
+
+            <div class="menuCard">
+                <h3>Matcha Latte</h3>
+                <p>Creamy, earthy matcha whisked with milk for a calm, balanced drink.</p>
+                <img src="assets/menuItems/matchaLatte.png">
+            </div>
+
+            <div class="menuCard">    
+                <h3>Butter Cookies</h3>
+                <p>Soft, lightly sweet cookies with a rich buttery flavor (cat-shaped, obviously).</p>
+                <img src="assets/menuItems/catCookies.png">   
+            </div>  
+        </div>
+
+        <!-- TUESDAY -->
+
+        <div class="menuLayout active" id="tuesday">
+            <div class="menuCard">
+                <h3>Vanilla Cold Brew</h3>
+                <p>Slow-steeped coffee with a hint of vanilla, served chilled and refreshing.</p>
+                <img src="assets/menuItems/vainilla_cold_brew.png">
+            </div>
+
+            <div class="menuCard">
+                <h3>Strawberry Milk</h3>
+                <p>Fresh strawberries blended with milk for a soft, nostalgic sweetness.</p>
+                <img src="assets/menuItems/strawberry_milk.png">
+            </div>
+
+            <div class="menuCard">    
+                <h3>Mini Pancake Stack</h3>
+                <p>Fluffy bite-sized pancakes with syrup, perfect for sharing (or not).</p>
+                <img src="assets/menuItems/pancakes.png">   
+            </div>  
+        </div>
+
+        <!-- WEDNESDAY -->
+
+        <div class="menuLayout active" id="wednesday">
+            <div class="menuCard">
+                <h3>Honey Lavander Latte</h3>
+                <p>Subtle floral notes with honey sweetness over smooth espresso.</p>
+                <img src="assets/menuItems/honey_lavander_latte.png">
+            </div>
+
+            <div class="menuCard">
+                <h3>Iced Chai Latte</h3>
+                <p>Spiced chai tea with milk, lightly sweet and refreshing.</p>
+                <img src="assets/menuItems/iced_chai_latte.png">
+            </div>
+
+            <div class="menuCard">    
+                <h3>Banana Bread Slice</h3>
+                <p>Moist, warm banana bread with a hint of cinnamon.</p>
+                <img src="assets/menuItems/banana_bread_slice.png">   
+            </div>  
+        </div>
+
+        <!-- THURSDAY -->
+
+        <div class="menuLayout active" id="wednesday">
+            <div class="menuCard">
+                <h3>Mocha</h3>
+                <p>Espresso with chocolate and milk, rich but not too heavy.</p>
+                <img src="assets/menuItems/mocha.png">
+            </div>
+
+            <div class="menuCard">
+                <h3>Hazelnut Latte</h3>
+                <p>Nutty, warm flavors blended into a smooth classic latte.</p>
+                <img src="assets/menuItems/hazelnut_latte.png">
+            </div>
+
+            <div class="menuCard">    
+                <h3>Chocolate Chip Cookies</h3>
+                <p>Soft-centered cookies with melted chocolate in every bite.</p>
+                <img src="assets/menuItems/chocochip_cookie.png">   
+            </div>  
+        </div>
+
+        <!-- FRIDAY -->
+
+        <div class="menuLayout active" id="wednesday">
+            <div class="menuCard">
+                <h3>Caramel Latte</h3>
+                <p>Smooth espresso with milk and a light caramel finish.</p>
+                <img src="assets/menuItems/caramel_latte.png">
+            </div>
+
+            <div class="menuCard">
+                <h3>Iced Berry Tea</h3>
+                <p>Light, fruity tea served cold with mixed berries.</p>
+                <img src="assets/menuItems/berry_tea.png">
+            </div>
+
+            <div class="menuCard">    
+                <h3>Strawberry Shortcake</h3>
+                <p>Soft cake layered with cream and fresh strawberries.</p>
+                <img src="assets/menuItems/strawberry_shortcake.png">   
+            </div>  
+        </div>
+
+        <!-- SATURDAY -->
+
+        <div class="menuLayout active" id="wednesday">
+            <div class="menuCard">
+                <h3>Cinnamon Latte</h3>
+                <p>Warm espresso with a soft cinnamon spice and creamy milk.</p>
+                <img src="assets/menuItems/cinnamon_latte.png">
+            </div>
+
+            <div class="menuCard">
+                <h3>Matcha Lemonade</h3>
+                <p>A refreshing mix of earthy matcha and bright citrus.</p>
+                <img src="assets/menuItems/matcha_lemonade.png">
+            </div>
+
+            <div class="menuCard">    
+                <h3>Honey Toast</h3>
+                <p>Crispy outside, soft inside, topped with honey and butter.</p>
+                <img src="assets/menuItems/honey_toast.png">   
+            </div>  
+        </div>
+
+        <!-- SUNDAY -->
+
+        <div class="menuLayout active" id="wednesday">
+            <div class="menuCard">
+                <h3>Classic Cappuccino</h3>
+                <p>Equal parts espresso, steamed milk, and foam — simple and balanced.</p>
+                <img src="assets/menuItems/cappuccino.png">
+            </div>
+
+            <div class="menuCard">
+                <h3>Hot Chocolate</h3>
+                <p>Smooth, rich chocolate with a cozy finish.</p>
+                <img src="assets/menuItems/hot_chocolate.png">
+            </div>
+
+            <div class="menuCard">    
+                <h3>Croissant</h3>
+                <p>Buttery, flaky layers baked fresh — light and satisfying.</p>
+                <img src="assets/menuItems/croissant.png">   
+            </div>  
+        </div>
+
+    </section>
+    
+</body>
+</html>

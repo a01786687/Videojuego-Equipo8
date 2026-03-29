@@ -1,0 +1,97 @@
+<!--
+
+File: index.html
+
+Description: this file is the starting point of the videogame.
+It defines the base structure of the HTML document, it links
+the stylesheet, and connects the game engine.
+
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Anura</title>
+
+    <!-- Google pixel font -->
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Game engine-->
+    <script src="./js/index.js"></script>
+
+    <!-- Play Scene-->
+    <script src="./js/scenes/playScene.js"></script>
+
+</head>
+
+<body>
+
+    <!-- Header section-->
+    <header id="headerContainer">
+        <h1 class="header">Anura</h1>
+    </header>
+
+    <!-- Main game canvas -->
+    <main>
+        <div id="game-container">
+            <canvas id="canvas"></canvas>
+
+            <!-- Login form -->
+            <div id="login-form" class="auth-form hidden">
+                <h2>Log In</h2>
+                
+                <input 
+                    type="text" 
+                    id="login-username"
+                    placeholder="Enter username"
+
+                >
+
+                <input 
+                    type="password" 
+                    id="login-password"
+                    placeholder="Enter password"
+
+                >
+
+                <button id="login-button">Log In</button>
+
+                <p id="go-register" class="auth-link">Don’t have an account? Register</p>
+                <p id="login-message"></p>
+            </div>
+
+            <!-- register form -->
+            <div id="register-form" class="auth-form hidden">
+                <h2>Register</h2>
+
+                <input
+                    type="text"
+                    id="register-username"
+                    placeholder="Choose a username"
+                >
+
+                <input 
+                    type="password" 
+                    id="register-password"
+                    placeholder="Choose a password"
+                >
+
+                <button id="register-button">Create Account</button>
+
+                <p id="go-login" class="auth-link">Already have an account? Log In</p>
+                <p id="register-message"></p>
+            </div>
+        </div>
+    </main>
+
+</body>
+
+</html>

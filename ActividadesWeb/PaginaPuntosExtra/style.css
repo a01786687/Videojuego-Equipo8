@@ -1,0 +1,28 @@
+body {
+    background: #EEAECA;
+    background: radial-gradient(circle, rgba(238, 174, 202, 1) 0%, rgba(148, 187, 233, 1) 100%);
+}
+
+.custom-card {
+    /* Cajita donde esta el texto "Rate my day" Las estrellitas, el "How was your day?" y el boton reset */
+    width: 400px;
+    border-radius: 15px;
+    /* rounded corners de la caja*/
+}
+
+.star-button {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: lightgray;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.star-button.active i {
+    color: gold;
+}
+
+.star-button:hover i {
+    transform: scale(1.2);
+}

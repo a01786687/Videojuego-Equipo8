@@ -1,0 +1,108 @@
+.pixelify {
+    font-family: "Pixelify Sans", sans-serif;
+    font-weight: 400;
+    /* or 700 */
+    font-style: normal;
+}
+
+.header {
+    color: white;
+    text-align: center;
+}
+
+body {
+    margin: 0;
+    background: pink;
+    font-family: "Pixelify Sans", sans-serif;
+}
+
+main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 80px);
+}
+
+canvas {
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+}
+
+.pixelated-text {
+    font-smooth: never;
+    -webkit-font-smoothing: none;
+}
+
+/* 
+GAME CONTAINER: reference for elements that use position: absolute
+Everything inside it is positioned around it, it makes .auth-form positioned inside the game canvas, not the html canvas
+*/
+#game-container {
+    position: relative;
+    width: 960px;
+    height: 540px;
+}
+
+/*  AUTHENTICATION FORMS: LOGIN & REGISTER */
+.auth-form {
+    position: absolute; /* allows full independent movement of the form inside the game container*/
+    top: 120px; /*Lowers the form 120px from the top part of the container */
+    left: 50%; /*Places the form on the 50% size of the width of the container */
+    transform: translateX(-50%); /*adjusts it to the left, half of its own width, this places it exactly in the center*/
+
+    width: 300px;
+    padding: 20px;
+    height: 280px;
+
+    background-color: #895654;
+    border: 4px solid #61393b;
+    box-shadow: 6px 6px 0px black;
+
+    display: flex; /* flexbox for organizing its contents*/
+    flex-direction: column; /* elements in column, one right below the other*/
+    gap: 12px;
+
+    text-align: center;
+    color: white;
+}
+
+/* INPUTS */
+.auth-form input {
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    outline: none;
+    font-family: "Pixelify Sans", sans-serif;
+}
+
+/* BUTTON */
+.auth-form button {
+    padding: 10px;
+    font-size: 16px;
+    background-color: #61393b;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+/* LINKS */
+.auth-link {
+    cursor: pointer;
+    text-decoration: underline;
+    font-size: 14px;
+}
+
+.auth-link:hover {
+    color: #ffdede;
+}
+
+/* MESSAGE */
+#login-message, #register-message {
+    min-height: 20px;
+    font-size: 14px;
+}
+
+/* HIDDEN */
+.hidden {
+    display: none;
+}

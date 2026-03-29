@@ -6,7 +6,11 @@
 
 ##### **Copyright notice / author information / boring legal stuff nobody likes**
 
-##
+## _Authors_
+* Carlos Enrique Rosete Pascual
+* Emilio Torres Castillo
+* Renata Uruchurtu Ransom
+
 ## _Index_
 
 ---
@@ -50,54 +54,50 @@ A small frog fights its way up the food chain in a 2D roguelite fighting game se
 
 ### **Gameplay**
 
-What should the gameplay be like? What is the goal of the game, and what kind of obstacles are in the way? What tactics should the player use to overcome them?
-
 The player controls a small frog moving through swamp areas filled with mosquitoes, obstacles, and boss encounters. Mosquitoes act as a currency and are collected using the frog's tongue while navigating platforming sections and preparing for fights.
-
-Combat happens in 1v1 boss battles against animals higher in the food chain. Before each run, the player chooses a small set of power-up cards (3 cards to be exact), which the frog eats during combat to activate special abilities like speed boots, poison attacks, shields, or stronger jumps. Each boss has a unique attack pattern and weakness, encouraging players to experiment with different card combinations and strategies.
-
-If the player dies, the run ends and the collected mosquitoes can be spent in the shop to unlock new cards or upgrades, making future runs stronger and allowing the player to progress in the game.
+ 
+Combat happens in 1v1 boss battles against animals higher in the food chain. Each boss has a unique attack pattern and weakness, encouraging players to experiment with different card combinations and strategies.
+ 
+The player begins their first run with 0 cards and no mosquito currency. Upon dying, a Card Selection Screen appears showing 3 random cards. The player may purchase at most 1 card per death using their accumulated mosquitoes, or skip the selection entirely to keep their current deck unchanged. Cards accumulate across runs until the player reaches the 3-card deck limit. Once the deck is full, purchasing a new card requires discarding one of the existing 3 cards.
 
 
 Roguelite Structure:
 
-Anura follows a run-based progression system. Each run is self contained, and death resets the current attempt. However, collected mosquitoes function as persistent currency that can be spent in the shop to permanently unlock new cards.
+Anura follows a run-based progression system. Each run is self contained, and death resets the current attempt. Mosquitoes function as persistent currency, they are never lost upon death and carry over indefinitely across all runs. Upon dying, the player reaches the Card Selection Screen where they can spend their accumulated mosquitoes to purchase one new card, then start a fresh run.
 
 This creates a classic roguelite loop:
 
 - Attempt run
 - Defeat bosses or die
-- Earn currency
-- Unlock stronger or more complex cards
+- Earn persistent mosquito currency
+- Unlock stronger or more complex cards (max 1 per death)
 - Start a new run with improved strategic options
 
 ### **Mindset**
-
-What kind of mindset do you want to provoke in the player? Do you want them to feel powerful, or weak? Adventurous, or nervous? Hurried, or calm? How do you intend to provoke those emotions?
-
+ 
 Anura is built around a strong emotional contrast between calmness and tension.
-
+ 
 The main mindset can be summarized as:
 “Small creature, big world, smart survival.”
-
+ 
 At the beginning of each run, the player should feel vulnerable and cautious. The frog is small, visually cute and at a first glance quite fragile. When encountering the enemies they seem intimidating in size and presence to the player. This creates tension and a sense of danger.
-
+ 
 Between boss encounters, platforming sections are designed to feel calm and cozy. The swamp environment is soft and atmospheric even though it still has some obstacles for the player. This peaceful exploration and obstacle course phase reinforces the feeling of safety.
-
+ 
 However, this calm state is disrupted during boss fights and shifts the player's mentality from relaxed exploration and casual game to tension and alertness. 
-
+ 
 As the player progresses, learns boss patterns, experiments with card combinations and purchases permanent upgrades, the mindset changes from trying to survive to dominating the game. 
-
+ 
 The game aims to provoke:
-
+ 
 - Strategic thinking (not just randomly smashing buttons)
 - Tension during boss fights
 - Experimentation through card combinations
 - Satisfaction from defeating more dangerous bosses
 - Resilience through the roguelite loop which would be "failure is progress"
-
+ 
 Visually, the game supports this whole mindset through a blend of cute, cozy aesthetics and dangerous bosses. The intended emotional experience is for the player to think:
-
+ 
 "I'm just a cute little frog in a peaceful swamp" right before facing a 1v1 boss fight that forces them to adapt and survive.
 
 
@@ -136,11 +136,16 @@ Visually, the game supports this whole mindset through a blend of cute, cozy aes
 
         
 
-2. Level Select -> Run Prep Screen
-
-    The player selects 3 cards before starting a run
-    The player can review unlocked cards
-    The player can see base stats like health, damage, speed
+2. Card Selection & Run Prep Screen
+ 
+    This screen appears exclusively after dying. It handles two sequential steps in one flow:
+ 
+    **Step 1: Card Selection:** Three random cards are displayed with their mosquito cost. The player may purchase one card, skip the selection, or keep their current deck unchanged.
+ 
+    **Step 2: Deck Preview:** Once the card decision is made (whether a card was purchased or skipped), the screen transitions to show the player's current deck (up to 3 card slots). This gives the player a moment to review their build before committing to the next run. A single "Start Run" button launches the new attempt from here.
+ 
+    This replaces the original "Level Select" concept — there is no level selection in Anura, as the run structure is fixed (Platform → Boss → Platform → Boss → Final Boss).
+ 
 
 3. Game
     1. Inventory
@@ -182,162 +187,188 @@ Players can trigger in game events such as:
 
 - Pause menu -> esc
 
+It will stop the game completly as well as pausing the timer that will exist in each run to indicate the player of its performance in the stadistics section. And the menu will contain the following
+->
+_Pause menu:_ 
+* Resume: it will resume the run where it stopped and the timer will resume its original count and continue.
+* Brightness: it will be an option to modify the view of screen.
+* Exit: The player will be able to exit the game but the progress they made will not be safed, they to finish the run by either dying or defeating the boss.
+
 ### **Mechanics**
-
-Are there any interesting mechanics? If so, how are you going to accomplish them? Physics, algorithms, etc.
-
+ 
 Anura combines platforming, 1v1 boss combat, and a strategic card activation system within a roguelite progression loop. 
-
+ 
 The following are the core mechanics and how they function at a systems level.
-
+ 
 1. Tongue collection and attack system
     
     The frog uses its tongue as both a collection and combat mechanic. (tongue = weapon)
     
     - Mosquitoes are collected then the tongue collider overlaps with their hitbox.
-
+ 
     Defining how the currency (mosquitoes) will work:
     - Mosquitoes are collected then the tongue collider overlaps with their hitbox.
-
-    La lengua tiene una caja invisible, el mosquito tiene otra caja invisible, las dos cajas se tocan, el mosquito desaparece y se incrementa el contador de monedas disponibles
-
+ 
+    - Tongue itself will have a hitbox as well as all the mosquitoes. When these hitboxes interact the counter will increment counter++ and the mosquito will disappear.
+ 
     - The tongue acts as a short range directional attack, it will funcion as a fast meele hitbox in front of the frog.
-
+ 
     need: collision detection system for mosquito collection, hitbox activation during attack animation frames, cooldown timer to prevent spamming.
-
-    La lengua hace daño en corto alcance hacia donde se este mirando, el ataque sera meele, es decir golpe corto, rapido, no viaja lejos
-
+ 
+    The tongue attack will be a melee attack that will only depend on the direction the player is looking. This can be right,left, up, diagonally right and diagonally left, and it will have a limited distance so it'll be effective to use short range.
+ 
     - In terms of physics, we want to implement the movement of the tongue attack as a MRU movement that will stop at a short distance and will always move in “x” direction, we also want to assign these attack the hitpoints that will deal to the boss
-
+ 
     - Moving to the spit attack, we want to implement it the same way as the melee attack but the only thing is this movement will not have a limit in distance and it will only stop if it hits the enemy or if its surpasses the frame of what you see in the screen
-
+ 
     - Also we need to implement a cooldown on these attacks so it doesn’t become a spam and break the game.
-
+ 
     Movement: The character will have 3 types of movement: the regular running (since its 2D it can move sideways only), jumping and a dash.
-
+ 
     - Running will be the basic constant movement that the character will have, we will define a certain velocity that fits the pace of the game and it will specifically move in the x axis only. The keybinds “a” (left)  and “d” (right) will be the keys that trigger the move
-
+ 
     - Its also defined as a MRU movement only the x axis
-
-    - The jump mechanic will be attached to the space bar key and will function a bit more complex than the other mechanics, it will work as a parabolic movement so this means it works as a MRUA and will have an initial velocity in “y” that's a predetermined velocity attached to the space bar and also an initial velocity in “x” that will be attached to the running mechanic. (Esta parte del salto está un poco difícil de implementar pero hay q ir viendo)
-
-    - Finally the dash will be a movement that will have cooldowns so it can't be spammed and it will be a faster movement in “x” axis that will give invulnerability to the player (podemos cambiar eso) and this dash will have a limited distance reached.
-
-
-
-
-
+ 
+    - The jump mechanic will be attached to the space bar key and will function a bit more complex than the other mechanics, it will work as a parabolic movement so this means it works as a MRUA and will have an initial velocity in “y” that's a predetermined velocity attached to the space bar and also an initial velocity in “x” that will be attached to the running mechanic. 
+ 
+    - Finally the dash will be a movement that will have cooldowns so it can't be spammed and it will be a faster movement in “x” axis that will give better reaction time to enemies abilities to the player and this dash will have a limited distance reached.
+ 
+ 
 2. Card System
-
-    Cards are activated by selecting them during combat
-
+ 
+    Cards are activated by pressing their assigned key (1, 2, or 3) at any time. However, activation rules differ between game sections:
+ 
+    - **Platform sections:** The player can carry up to 3 cards in their deck, but may only activate 1 card during the entire platforming section. Once a card is activated, the other two are locked for the remainder of that section.
+    - **Boss fights:** All 3 cards in the deck are unlocked and usable simultaneously. Cards remain active and available for the full duration of the boss fight.
+ 
     Mechanically:
-
-    - The player has a deck of 3 equipped cards:
-        
-        - Pressing the assigned key to the card slot triggers a shiny border around the selected card, each card has a cooldown, effecto modifier.
-
+ 
+    - The player has a deck of 3 equipped cards
+    -  Each card will be able to impact players abilities like dash, attacks that will make the gameplay different and more effective against enemies, making progression possible
+      
+ 
     Card activation logic
-
+ 
     Each card functions as an ability object with:
-
-    - cooldown timer
+ 
+    - cooldown timer (depends on whether the card impacts the players abilities or it triggers a newly assigned effect that requires another key)
     - effect value (damage, shield, speed modifier, etc)
-    - activation condition
     - optional synergy interaction
-
+ 
     Cards are stored in a structured array representing the player's active build:
-
-
+ 
+ 
     playerDeck = [card1, card2, card3]
-
-    When a key (1, 2, 3) is pressed:
-
+ 
+    If the card triggers a new ability, when a key (1, 2, 3) is pressed:
+ 
     - the system checks if cooldown <= 0
     - if true -> applies the card effect
     - cooldown resets
     - visual feeback is triggered
-
-    Strategic component
+ 
+    else, the card isn't a new ability it will just impact the current gameplay to help the player progress significanlty in the run.
+ 
+    _Strategic component:_
     
     Although the player only equips 3 cards per run, the full collection of unlocked cards creates build diversity. Different combinations lead to different playstyles (aggressive, defensive, sustain based, mobility focused)
-
+ 
     This limited deck size reinforces strategic pre run decision making, aligning with TCG design principles.
+ 
+    This means players can adapt or keep certain cards that make their runs feel comfortable and easier to progress.
+ 
+    The player can equip up to 3 cards per run.
+    If the player already has 3 cards and decides to purchase a new one, they must choose which existing card to replace. Also mentioning that it exists the posibility of buying the discarded card in the future.
+    This reinforces strategic decision-making when building a deck.
+ 
+    _Cards defined_
+ 
+    It's essential as well to define how we want to define each cards and what will do each card:
 
-    NOTES:
-
-    CARDS ARE OBJECTS WITH PROPERTIES
-    
-    THERE'S COOLDOWN
-
-    POSSIBLE SINERGY
-
-    Sinergy: synergistic deck is one where every card benefits from every other card 
-
-
+    ![alt text](image.png)
+    ![alt text](image-1.png)
+    ![alt text](image-2.png)
 
 3. Boss pattern system
-
+ 
     Boss behavior is driven by structured pattern based logic, implemented through *state management* in JavaScript.
-
+ 
     Each boss operates using a *Finite State Machine (FSM) model. This means the boss can only be in one state at a time, and it transitions between states based on predefined conditions such as timers, player distance or remaining health.
-
+ 
     Example boss states:
-
+ 
     - Idle - the boss waits or prepares an attack.
     - Attack - the boss performs a specific attack animation and activates its hitbox.
     - Recovery - a short vulnerability window afer attacking
     - Phase 2 - activated when health drops below a certain threshold (ex. 50% can vary)
-
+ 
     State transitions are controlled using conditional logic an timers. For example:
-
+ 
     - Afer a certain time in idle -> transition to attack
     - After Attack completes -> transition to recovery
     - When health is below or 50% -> activate phase 2 behavior
-
+ 
     This system ensures predictable but challenging encounters, reinforcing pattern recognition and startegic gameplay instead of complete randomness.
-
+ 
     Since the game is built using HTML and JS mechanics are implemented using:
-
+ 
     - Game loop logic (e.g., requestAnimationFrame)
-
+ 
     - Collision detection systems (hitboxes and bounding boxes)
-
+ 
     - State variables
-
+ 
     - Timers and cooldown counters
-
+ 
     - Health threshold checks
-
+ 
     ----------------------------------------------
+ 
+    Thus we will need pure logical programming, so we will need state machine that signifies logic behavior through if, variables, temporizers.
+ 
+    
+    A boss pattern system is:
+ 
+    When it currently has a determined state, this could be idle, attacking, recovering and this can be rotated in variables like time, HP.
 
-    logica programada con estados
+4. Platform levels
+    
+    As we will describe further, our game will follow a cycle of having 2 sections levels and each one will have a boss. This means that each section will have platfrom and obstacle levels with enemies you will have to defeat before you reach the boss from the current level.
 
-    necesitamos un sistema de estados (state machine), es decir pura logica con if, variables y temporizadores.
+    Since the game follows a rogue lite mechanic, this means each level has to vary in a way obstacles and enemies are the same but only thing will change in the position in which they appear making every experience of the level different and not something the player can memorize.
 
-    un boss pattern system es:
+    **Elements in levels**
 
-    el boss tiene un estado actual ya sea idle, attacking, recovering, etc, y se cambia ese estado dependiendo del tiempo o la vida, se implementara de la siguiente forma:
+    It is esential to define the 3 types of elements each level will have:
+    * Enemies: this type of element will have moving mechanics like moving MRU in "x" position and each enemy will have different mechanics depending on the level. It will be able to damage the player when it detects collision with the player hitbox and the enemy hitbox and it can spawn in random location in the current level available spaces.
+    * Traps: this type of element will work as the enemy mechanics but the only thing that changes is that this type of enemy will be static but it will be set in positions where the player could fall and damage himself. 
+    * Platforms: this final type of element existing in levels will be the sections in the level that will allow the player to move and finally be able to reach the boss in the level. This means platform will not be able to damage the player and each time the player stays in contact with the platform, he will be able to move on the platform and perform actions to reach other platforms and reach the destination desired. In further levels, we might add moving platforms so it is harder for the player to move.
 
+    **Elements spawn system**
 
-## _Level Design_
+    In the programming of our game we will use the implementation of functions in javascript like randomRange() to ensure that each time the level spawns or generates it spawns in random location. This will apply for each of the type of elements, and we will show a code section as an example to demonstrate the implementation: 
 
-#### Game Flow
+        <!-- addBox() {
+        
+        const size = randomRange(50, 50);
+        
+        const posX = randomRange(canvasWidth);
+        const posY = randomRange(canvasHeight);
+        const box = new GameObject(new Vector(posX, posY), size, size, "grey");
+        
+        box.destroy = false;
+        this.actors.push(box);
+        } -->
 
-**Run Flow**
-1. Title Screen
-2. Card Selection (Run Prep) 
-3. Platform Section
-4. Boss Fight
-5. Reward / Death
-6. Shop (unlock cards) **Only if we have enough time**
-7. New Run
+    This code portion shows a general grasp how we will implement the random generations of elements inside the level. This means we will have a determined canvas size and inside this canvas limits we will generate random elements of random sizes.
 
+    It's also important to mention that depending on each element it will have movement mechanics attached or not.
 
+    **Enemies, platforms, traps**
 
----
+    Furthermore, its imperative to explain each type of the enemies, platforms, traps that will be described in a chart:
 
-_(Note : These sections can safely be skipped if they&#39;re not relevant, or you&#39;d rather go about it another way. For most games, at least one of them should be useful. But I&#39;ll understand if you don&#39;t want to use them. It&#39;ll only hurt my feelings a little bit.)_
+    ![alt text](image-3.png)
 
 ### **Themes**
 
@@ -418,24 +449,36 @@ _(example)_
 ### **Game Flow**
 
 **Run Flow**
-1. Title screen
-2. Hub (if player previously died)
-3. Card selection (run prep)
-4. Platform section 1
-5. Boss 1
-6. Platform section 2 (increased difficulty)
-7. Boss 2
-8. Platform Section 3 (increased difficulty)
-9. Final Boss
-10. Victory Screen
+1. Title screen: has 3 buttons (start game, log in, settings).
 
-If the player dies at any point during the run:
+    - log in: allows the user to log in with credentials so their data is saved in the database.
 
-- The run ends immediately
-- The player respawns in the Hub
-- The Shop becomes available
-- The player may unlock new cards
-- The player starts a new run
+    - settings: turn on/off sounds, brightness, reset progress. (MAY CHANGE)
+
+2. First normal run: player has no cards and no mosquito currency, in this first run the player starts to obtain their first mosquitoes. Player may get to the first boss or die in the platform section.
+ 
+    The run follows this fixed structure:
+    - First platform section
+    - First boss
+    - Second platform section
+    - Second boss
+    - Final boss (no platform section before it)
+
+2. If player dies at any point of the run a "you died" screen will appear. The player's mosquitoes are preserved.
+
+3. Card Selection Screen (post-death only):
+    - Three random cards appear on screen. The player may purchase at most 1 card using their accumulated mosquitoes, or skip the selection. Cards vary in cost depending on their power. The player then chooses to start a new run or return to the main menu.
+
+4. New run: the same run structure is repeated but now the player may or may not have cards depending on their previous runs.
+ 
+    - First platform section (max 1 card activation)
+    - First boss (all cards active)
+    - Second platform section (max 1 card activation)
+    - Second boss (all cards active)
+    - Final boss (all cards active)
+ 
+5. If player defeats the final boss, a victory screen will appear with a button to return to the menu.
+
 
 #### Level Structure
 
@@ -460,7 +503,7 @@ Boss 2
 - Shorter recovery window
 - Requires better positioning
 
-Boss 3
+Final Boss
 - Multiple phases
 - Combined attack patterns
 - Higher tension
@@ -473,14 +516,14 @@ Platform sections between bosses gradually increase in:
 
 The difficulty escalates without introducing entirely new mechanics late in the run. Instead it demands mastery of the existing systems.
 
-#### Hub Structure (post death area)
-The hub is a safe, calm area only accessible after death
-
-It contains:
-- Shop (permanent card unlocks)
-- Card inventory view
-- Option to start a new run
-This is only if we could do it, if not we're gonna skip this part and make the cards appear in drops
+#### Post-Death Screen
+After dying, the player is taken directly to the Card Selection Screen. This screen shows 3 randomly selected cards with their mosquito cost. The player may:
+- Purchase 1 card (if they have enough mosquitoes)
+- Skip the selection and keep their current deck unchanged
+- Start a new run
+- Return to the main menu
+ 
+There is no persistent hub area. Mosquito currency is preserved across all runs regardless of death.
 
 ## _Development_
 
@@ -538,38 +581,25 @@ Visual feedback is our primary tool for teaching mechanics without lengthy tutor
 ### **Graphics Needed**
 
 1. Characters
-    1. Anura Principal Character
+    1. Anura Principal Character: frog
     2. Bosses
         - Snake
         - Hawk
-        - Fox (Can change to 2)
-    3. Enemies
+    3. Final Boss
+        - Fox 
+    4. Enemies
         - Slimes
         - Spiders
         - Mosquitoes
+
 2. Environment & Blocks
 
 Tilesets for mud, moss-covered platforms, climbing roots, and hollow logs that serve as transitions between platforming sections and boss arenas.
 
 3. UI & HUD Elements
 
-A clean interface featuring a mosquito counter, a health bar for the frog, and three distinct card slots with a visual overlay to indicate cooldown progress.
+A clean interface featuring a mosquito counter, a health bar for the frog, and a deck for the three distinct card slots with a visual overlay to indicate cooldown progress.
 
-
-_(example)_
-
-
-## _Sounds/Music_
-
----
-
-### **Style Attributes**
-
-Again, consistency is key. Define that consistency here. What kind of instruments do you want to use in your music? Any particular tempo, key? Influences, genre? Mood?
-
-Stylistically, what kind of sound effects are you looking for? Do you want to exaggerate actions with lengthy, cartoony sounds (e.g. mario&#39;s jump), or use just enough to let the player know something happened (e.g. mega man&#39;s landing)? Going for realism? You can use the music style as a bit of a reference too.
-
- Remember, auditory feedback should stand out from the music and other sound effects so the player hears it well. Volume, panning, and frequency/pitch are all important aspects to consider in both music _and_ sounds - so plan accordingly!
 
 ### **Sounds Needed**
 
@@ -591,20 +621,11 @@ Stylistically, what kind of sound effects are you looking for? Do you want to ex
     3. Happy chime (extra life)
     4. Sad chime (died)
 
-_(example)_
-
-### **Music Needed**
-
- 
-
-_(example)_
-
 
 ## _Schedule_
 
----
 
-_(define the main activities and the expected dates when they should be finished. This is only a reference, and can change as the project is developed)_
+
 
 1. develop base classes
     1. base entity
@@ -634,15 +655,58 @@ _(define the main activities and the expected dates when they should be finished
 6. design sounds
 7. design music
 
-_(example)_
+
+### Card List
+
+**Movement Cards**
+- Iron Hindlegs: Grants a double jump while airborne
+- Rocket Frog: Charged Jump
+- Glide Membrane: Slow fall / glide
+- Bubble dash: Air dash
+- Dragonfly Hop: Triple short jump
+
+**Combat Cards**
+- Fire Kiss: Area damage + burn
+- Venom Lash: Damage over time (DoT)
+- Thunder Tongue: Chance to stun
+- Chamaeleon Veil: Temporary invisibility
+- Toad Shockwave: Shockwave when damaged
+
+**Utility Cards**
+- Thorn Skin: Reflects a portion of meele damage
+- Spiked Whip: Extra damage on hit
+- Metamorphosis: Heal on kill
+- Lucky Pond: Increased mosquito drops
+- Tadpole heart: Revive once per run
 
 
-_Options_
+### Screens
 
----
+- Title screen 
+    - play screen
+    - log in
+    - settings
+- First platform section screen
+- First boss fight section screen
+- Second platform section screen
+- Second boss fight screen
+- Third and final boss fight screen
+- Victory/You died screen
+- Pause screen
+- Card selection screen
 
-We are considering two distinct approaches for our card mechanics:
+### Sketches
 
-The Shop & Inventory System: Players earn "Mosquitoes" (in-game currency) and spend them in a dedicated shop to purchase specific cards. These cards provide strategic advantages during the adventure. This system includes an Inventory Management mechanic where players manually organize and equip their deck.
+![Screen Sketches](./InspoImages/ScreenSketches.png)
 
-The Drop & Round-Based System: A more streamlined approach where cards are acquired via enemy drops or at the end of specific rounds. Players are presented with random card choices and must decide on the spot whether to equip a card to a specific slot or skip it to optimize their current run.
+
+
+
+
+
+
+
+
+
+
+

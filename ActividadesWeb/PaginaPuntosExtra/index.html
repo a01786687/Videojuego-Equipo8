@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rate My Day</title>
+
+
+    <!-- bootstrap css-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+    <!-- Include Font Awesome CSS library in the head section of your HTML -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body class="d-flex justify-content-center align-items-center vh-100">
+
+
+    <div class="card text-center p-4 shadow custom-card">
+
+        <h1 id="title">Rate My Day</h1>
+
+
+        <div class="stars">
+            <button class="star-button" onclick="StarRatings(1)">
+                <i class="fa fa-star"></i>
+            </button>
+
+            <button class="star-button" onclick="StarRatings(2)">
+                <i class="fa fa-star"></i>
+            </button>
+
+            <button class="star-button" onclick="StarRatings(3)">
+                <i class="fa fa-star"></i>
+            </button>
+
+            <button class="star-button" onclick="StarRatings(4)">
+                <i class="fa fa-star"></i>
+            </button>
+
+            <button class="star-button" onclick="StarRatings(5)">
+                <i class="fa fa-star"></i>
+            </button>
+        </div>
+        <p id="par">
+            Click on buttons to rate your day
+        </p>
+
+
+        <button class="btn btn-dark mt-3" onclick="resetRating()">
+            <!-- bootstrap custom button style, mt-3 -> margin top 3 -->
+            Reset
+        </button>
+
+
+        <!-- jQuery CDN -->
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+        <script src="script.js"></script>
+
+</body>
+
+</html>
