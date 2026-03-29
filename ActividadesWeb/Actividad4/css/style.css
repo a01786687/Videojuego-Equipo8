@@ -1,0 +1,381 @@
+
+/*
+
+LINK TO THE COLOR PALETTE
+https://coolors.co/f6f2f0-f3e7e4-e7d1c9-f1e7dd-d0b49f
+
+*/
+
+/* color palette*/
+
+:root {
+    --parchment: #f6f2f0;
+    --seashell: #f3e7e4;
+    --almond-silk: #e7d1c9;
+    --linen: #f1e7dd;
+    --desert-sand: #d0b49f;
+    --brown-text: #8c6a58;
+}
+
+.chewy-regular {
+  font-family: "Chewy", system-ui;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.poppins-regular {
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: var(--parchment);
+}
+
+/* nav bar */
+#nav-bar {
+    background-color: var(--desert-sand);
+    padding: 12px 0;
+}
+
+.nav {
+    display: flex;
+    justify-content: space-between; /* separates */
+    align-items: center; /* centers vertically */
+    padding: 0 50px;
+    flex-direction: row-reverse;
+}
+
+.nav-one h1 {
+    margin: 0;
+    font-size: 30px;
+    color: white;
+    font-family: Chewy;
+    letter-spacing: 3px;
+}
+
+/* nav list */
+.list ul {
+    display: flex;
+    list-style: none; /* this removes the list dots*/
+    padding: 0;
+    margin: 0;
+    gap: 30px; 
+    font-family: Poppins;
+}
+
+.navBarItems a {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    transition: 0.3s;
+}
+
+.navBarItems a:hover {
+    color: var(--brown-text);
+    transform: scale(1.1);
+}
+
+/* hero section */
+.heroSection {
+    position: relative;
+    display: flex;
+    justify-content: space-between; /* equal spacing between items */
+    align-items: center;
+    
+    padding: 60px 120px;
+    height: 400px; /* hero area size */
+    background-color: var(--linen); 
+}
+
+.heroImage img {
+    width: 600px;
+    height: auto;
+    margin-top: -77px;
+}
+
+.heroText {
+    display: flex;
+    
+    flex-direction: column;
+    gap: 20px;
+    max-width: 600px;
+    font-family: Poppins;
+}
+
+.heroText h2 {
+    margin: 0;
+    font-size: 45px;
+    color: var(--brown-text);
+    font-family: Chewy;
+    letter-spacing: 3px;
+}
+
+.heroText p {
+    margin: 0;
+    font-size: 20px;
+    color: var(--brown-text);
+}
+
+.heroButtons {
+    display: flex;
+    gap: 15px;
+}
+
+.menuAndCats {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+
+    padding: 40px;
+
+    background-color: var(--platinum);
+}
+
+.btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 300px;
+    height: 100px;
+
+    background-color: var(--desert-sand);
+    color: white;
+    text-decoration: none; /* removes the underlining*/
+    font-weight: bold;
+    font-family: Poppins;
+    border-radius: 10px;
+}
+
+.btn:hover {
+    background-color: var(--brown-text);
+}
+
+.buttonsOrdered {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    font-size: 20px;
+}
+
+.imageRow {
+    display: flex;
+    gap: 20px;
+}
+
+.imageRow img {
+    width: 700px;
+    height: auto;
+    border-radius: 10px;
+}
+
+/* Gallery */
+
+.gallerySection {
+    padding: 40px 0;
+    background-color: var(--seashell);
+    text-align: left;
+}
+
+.galleryTitle {
+    padding-left: 40px;
+    font-family: "Chewy", cursive;
+    color: var(--brown-text);
+    letter-spacing: 3px;
+    margin-bottom: 20px;
+}
+
+/* Image scroll section */
+.scroll-container {
+    display: flex;
+    gap: 10px;
+    background-color: var(--seashell);
+    overflow: auto;
+    padding: 20px;
+
+}
+
+.scroll-container img {
+    width: 500px;
+    height: auto;
+    padding: 10px;
+}
+
+/* Contact section*/
+
+.contactSection {
+    text-align: center;
+    padding: 60px;
+    background-color: var(--brown-text);
+}
+
+.contactSection h1 {
+    font-family: Chewy;
+    letter-spacing: 3px;
+    color: white;
+}
+
+.contactSection p {
+    font-family: Poppins;
+    color: white;
+}
+
+
+.contactInfo {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+}
+
+
+
+/* menu.html */
+.menuHeader {
+    text-align: center;
+    font-family: Chewy;
+    color: var(--brown-text);
+    letter-spacing: 3px;
+    padding: 40px 0;
+    background-color: var(--linen);
+}
+
+.daySelector {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    padding: 40px;
+}
+
+.dayButton {
+    padding: 10px 30px;
+    border: none;
+    border-radius: 10px;
+    background-color: #d0b49f;
+    color: white;
+    font-family: Poppins;
+    font-weight: bold;
+    cursor: pointer;
+    margin: 5px;
+
+}
+
+.dayButton:hover {
+    color: var(--brown-text);
+    transform: scale(1.1);
+}
+
+.menuContainer {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.menuLayout {
+    display: flex;
+    justify-content: center; 
+    align-items: stretch; /* this makes the 3 items stretch to match the tallest card in the row, it helps it look even*/
+    gap: 20px;
+    padding: 40px;
+    width: 100%;
+    background-color: var(--parchment);
+}
+
+.menuCard {
+    display: flex;
+    flex-direction: column;
+    
+    background-color: var(--linen);
+    border-radius: 15px;
+    width: 220px;
+
+    min-height: 100px;
+
+    /* Top/Bottom: 10px; Left/Right: 20px */
+    padding: 20px; /* padding instead of height because it automatically grows if there's more text or elements*/
+
+    text-align: center;
+    font-family: "Poppins", sans-serif;
+    font-size: 15px;
+
+    color: var(--brown-text);
+}
+
+.menuCard img {
+    width: 100%; /* fills the card with the image width*/
+    height: auto; 
+    max-height: 0;
+    opacity: 0;
+    align-self: center; /* centers the image horizontalli within its flex container */
+    transition: ease 0.5s; /* changed ease from the hover to img because the transition should be in the normal state of the element */
+}
+
+.menuCard:hover img {
+    max-height: 400px;
+    opacity: 1;
+    border-radius: 15px;
+    margin-top: 15px;
+}
+
+
+/* cats.html */
+
+.catsHeader {
+    text-align: center;
+    font-family: Chewy;
+    color: var(--brown-text);
+    letter-spacing: 3px;
+    padding: 40px 0;
+    background-color: var(--linen);
+}
+
+.catsLayout {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    padding: 40px;
+    flex-wrap: wrap;
+
+}
+
+
+
+.catCard {
+    background-color: var(--almond-silk);
+    border-radius: 15px;
+    width: 400px;
+
+    min-height: 320px;
+
+    
+    padding: 20px; /* padding instead of height because it automatically grows if there's more text or elements*/
+
+    text-align: center;
+    font-family: "Poppins", sans-serif;
+    font-size: 15px;
+    color: white;
+}
+
+.catCard img {
+    width: 400px;
+    height: auto;
+    border-radius: 10px;
+}
+
+.catCard:hover {
+    transform: translateY(-10px);
+    background-color: var(--brown-text);
+    transition: 0.3s ease;
+}
+
+
+
+
