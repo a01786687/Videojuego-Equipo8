@@ -7,7 +7,7 @@ drawing of a playable scene
 
 "use strict";
 
-// Frog
+// Frog object
 
 let frog = {
     x: canvasWidth / 2, // vienen de index.js, ya que como estan cargados del mismo HTML comparten mismo scope
@@ -19,10 +19,9 @@ let frog = {
 };
 
 // variable for the pressing keys 
-
+// tracks which keys are currently held down
 let keys = {};
 
-// player input
 
 function handleKeyDown(event) {
     keys[event.key] = true;
@@ -32,7 +31,7 @@ function handleKeyUp(event) {
     keys[event.key] = false;
 }
 
-// FROG LOGIC
+// frog movement logic
 
 function updateFrog() {
     if (keys ["w"]) {

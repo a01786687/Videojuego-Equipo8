@@ -24,71 +24,53 @@ the stylesheet, and connects the game engine.
     <!-- Stylesheet -->
     <link rel="stylesheet" href="style.css">
 
-    <!-- Game engine-->
     <script src="./js/index.js"></script>
-
-    <!-- Play Scene-->
+    <script src="./js/uiComponents.js"></script>
+ 
+    <!-- Scenes -->
+    <script src="./js/scenes/titleScene.js"></script>
     <script src="./js/scenes/playScene.js"></script>
-
+    <script src="./js/scenes/settingsScene.js"></script>
+ 
+    <!-- Authentication -->
+    <script src="./js/scenes/authentication/auth.js"></script>
+    <script src="./js/scenes/authentication/loginScene.js"></script>
+    <script src="./js/scenes/authentication/registerScene.js"></script>
+ 
 </head>
-
+ 
 <body>
-
-    <!-- Header section-->
+ 
+    <!-- Header -->
     <header id="headerContainer">
         <h1 class="header">Anura</h1>
     </header>
-
-    <!-- Main game canvas -->
+ 
+    <!-- Main game area -->
     <main>
         <div id="game-container">
             <canvas id="canvas"></canvas>
-
+ 
             <!-- Login form -->
             <div id="login-form" class="auth-form hidden">
                 <h2>Log In</h2>
-                
-                <input 
-                    type="text" 
-                    id="login-username"
-                    placeholder="Enter username"
-
-                >
-
-                <input 
-                    type="password" 
-                    id="login-password"
-                    placeholder="Enter password"
-
-                >
-
+                <input type="text" id="login-username" placeholder="Enter username">
+                <input type="password" id="login-password" placeholder="Enter password">
                 <button id="login-button">Log In</button>
-
-                <p id="go-register" class="auth-link">Don’t have an account? Register</p>
+                <p id="go-register" class="auth-link">Don't have an account? Register</p>
                 <p id="login-message"></p>
             </div>
-
-            <!-- register form -->
+ 
+            <!-- Register form -->
             <div id="register-form" class="auth-form hidden">
                 <h2>Register</h2>
-
-                <input
-                    type="text"
-                    id="register-username"
-                    placeholder="Choose a username"
-                >
-
-                <input 
-                    type="password" 
-                    id="register-password"
-                    placeholder="Choose a password"
-                >
-
+                <input type="text" id="register-username" placeholder="Choose a username">
+                <input type="password" id="register-password" placeholder="Choose a password">
                 <button id="register-button">Create Account</button>
-
                 <p id="go-login" class="auth-link">Already have an account? Log In</p>
                 <p id="register-message"></p>
             </div>
+
         </div>
     </main>
 
