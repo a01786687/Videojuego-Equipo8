@@ -34,12 +34,11 @@ CREATE TABLE boss(
     mosquito_reward TINYINT UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- 2. Tablas de Usuario y Sesión
 CREATE TABLE users(
-    user_id SMALLINT UNSIGNED AUTO_INCREMENT PRIMARY KEY, -- Aumentado a SMALLINT
+    user_id SMALLINT UNSIGNED AUTO_INCREMENT PRIMARY KEY, 
     username VARCHAR(50) NOT NULL UNIQUE,
     email VARCHAR(50) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL, -- Indispensable para HU18
+    password VARCHAR(255) NOT NULL, 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     user_character_id TINYINT UNSIGNED,
     FOREIGN KEY (user_character_id) REFERENCES playable_character(character_id)
@@ -69,7 +68,7 @@ CREATE TABLE character_cards(
     cc_card_id TINYINT UNSIGNED,
     cc_character_id TINYINT UNSIGNED,
     slot_number TINYINT UNSIGNED NOT NULL,
-    PRIMARY KEY (cc_card_id, cc_character_id, slot_number), -- PK Compuesta
+    PRIMARY KEY (cc_card_id, cc_character_id, slot_number), 
     FOREIGN KEY (cc_card_id) REFERENCES cards(card_id),
     FOREIGN KEY (cc_character_id) REFERENCES playable_character(character_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
