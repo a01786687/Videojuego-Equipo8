@@ -1,0 +1,95 @@
+CREATE SCHEMA anura;
+USE anura;
+
+CREATE TABLE users(
+	user_id TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL,
+    email VARCHAR(50) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_character_id) REFERENCES playable_character(character_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE playable_character(
+	character_id TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    character_name VARCHAR(50) NOT NULL,
+    base_hp SMALLINT UNSIGNED NOT NULL,
+    base_speed SMALLINT UNSIGNED NOT NULL,
+    base_damage SMALLINT UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE character_cards(   #Tabla intermedia
+	FOREIGN KEY (cc_card_id) REFERENCES cards(card_id),
+    FOREIGN KEY (cc_character_id) REFERENCES playable_character(character_id),
+    slot_number TINYINT UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE cards(
+	card_id TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    card_name VARCHAR(50) NOT NULL,
+    card_type VARCHAR(25) NOT NULL,
+    effect_value SMALLINT UNSIGNED NOT NULL,
+    card_rank TINYINT UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE sesions(
+	sesion_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    FOREIGN KEY(sesion_user_id) REFERENCES users(user_id),
+    login_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    logout_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE runs(
+	run_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    FOREIGN KEY(run_sesion_id) REFERENCES sesions(sesion_id),
+    mosquitoes_collected SMALLINT UNSIGNED NOT NULL,
+    run_time INT UNSIGNED NOT NULL,
+    bosses_defeated TINYINT UNSIGNED NOT NULL,
+    victory BOOLEAN NOT NULL,
+    start_time DATETIME NOT NULL,
+    end_time DATETIME NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE run_stages(
+	stage_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    FOREIGN KEY(rs_run_id) REFERENCES runs(run_id),
+    stage_number TINYINT NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE run_mob( #Tabla intermedia
+	#Creo funciona como tabla intermedia y podemos quitar PK
+	#run_mob_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMAR	Y KEY,
+    FOREIGN KEY(rm_mob_id) REFERENCES mobs(mob_id),
+    mobs_killed TINYINT UNSIGNED NOT NULL,
+    FOREIGN KEY(rm_run_id) REFERENCES runs(run_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE mobs(
+	mob_id TINYINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    mob_name VARCHAR(50) NOT NULL,
+    base_damage SMALLINT UNSIGNED NOT NULL,
+    base_hp SMALLINT UNSIGNED NOT NULL,
+    mosquito_reward TINYINT UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE run_boss(
+	FOREIGN KEY(rb_boss_id) REFERENCES boss(boss_id),
+    time_to_defeat INT UNSIGNED NOT NULL,
+    defeated BOOLEAN NOT NULL,
+    FOREIGN KEY(rb_run_id) REFERENCES runs(run_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE boss(
+	boss_id TINYINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    boss_name VARCHAR(50) NOT NULL,
+    base_hp SMALLINT UNSIGNED NOT NULL,
+    base_damage SMALLINT UNSIGNED NOT NULL,
+    mosquito_reward TINYINT UNSIGNED NOT NULL
+)
+
+
+
+
+
+
+
+
