@@ -60,7 +60,7 @@ function drawPlayButton() {
     ctx.font = "24px 'Pixelify Sans'";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.fillText("Play", buttonX + buttonWidth / 2, buttonY + buttonHeight / 2);
+    ctx.fillText("New Game", buttonX + buttonWidth / 2, buttonY + buttonHeight / 2);
 
 }
 

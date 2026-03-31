@@ -146,7 +146,7 @@ function handleClick(event) {
     if (currentScene == "title") {
     
         if (mouseX >= 140 && mouseX <= 340 && mouseY >= 400 && mouseY <= 460) {
-            currentScene = "play";
+            beginRun(); // if the player clicks on the button, beginRun() is called from playScene.js
         }
 
         // LOG IN BUTTON 
@@ -189,10 +189,6 @@ function updateSettingsForm() {
 }
 
 window.addEventListener("load", main);
-
-
-
-
 
 
 
