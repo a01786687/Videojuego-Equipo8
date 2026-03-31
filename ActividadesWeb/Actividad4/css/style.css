@@ -279,7 +279,11 @@ body {
     justify-content: center;
 }
 
-.menuLayout {
+.menuLayout{
+    display: none;
+}
+
+.menuLayout.active{
     display: flex;
     justify-content: center; 
     align-items: stretch; /* this makes the 3 items stretch to match the tallest card in the row, it helps it look even*/
@@ -375,7 +379,6 @@ body {
     background-color: var(--brown-text);
     transition: 0.3s ease;
 }
-
 
 
 
