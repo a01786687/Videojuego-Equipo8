@@ -41,7 +41,7 @@ CREATE TABLE users(
     password VARCHAR(255) NOT NULL, 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     user_character_id TINYINT UNSIGNED,
-    FOREIGN KEY (user_character_id) REFERENCES playable_character(character_id)
+    FOREIGN KEY (user_character_id) REFERENCES playable_character(character_id) ON UPDATE CASCADE ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE sesions(
@@ -49,7 +49,7 @@ CREATE TABLE sesions(
     sesion_user_id SMALLINT UNSIGNED,
     login_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     logout_time TIMESTAMP NULL, -- Cambiado a NULL inicial
-    FOREIGN KEY(sesion_user_id) REFERENCES users(user_id)
+    FOREIGN KEY(sesion_user_id) REFERENCES users(user_id) ON UPDATE RESTRICT ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE runs(
@@ -61,7 +61,7 @@ CREATE TABLE runs(
     victory BOOLEAN NOT NULL DEFAULT FALSE,
     start_time DATETIME NOT NULL,
     end_time DATETIME DEFAULT NULL,
-    FOREIGN KEY(run_sesion_id) REFERENCES sesions(sesion_id)
+    FOREIGN KEY(run_sesion_id) REFERENCES sesions(sesion_id) ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE character_cards(
@@ -70,14 +70,14 @@ CREATE TABLE character_cards(
     slot_number TINYINT UNSIGNED NOT NULL,
     PRIMARY KEY (cc_card_id, cc_character_id, slot_number), 
     FOREIGN KEY (cc_card_id) REFERENCES cards(card_id),
-    FOREIGN KEY (cc_character_id) REFERENCES playable_character(character_id)
+    FOREIGN KEY (cc_character_id) REFERENCES playable_character(character_id) ON UPDATE RESTRICT ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE run_stages(
     stage_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     rs_run_id INT UNSIGNED,
     stage_number TINYINT UNSIGNED NOT NULL,
-    FOREIGN KEY(rs_run_id) REFERENCES runs(run_id)
+    FOREIGN KEY(rs_run_id) REFERENCES runs(run_id) ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE run_mob(
@@ -85,8 +85,8 @@ CREATE TABLE run_mob(
     rm_run_id INT UNSIGNED,
     mobs_killed TINYINT UNSIGNED NOT NULL DEFAULT 0,
     PRIMARY KEY (rm_mob_id, rm_run_id),
-    FOREIGN KEY(rm_mob_id) REFERENCES mobs(mob_id),
-    FOREIGN KEY(rm_run_id) REFERENCES runs(run_id)
+    FOREIGN KEY(rm_mob_id) REFERENCES mobs(mob_id) ON UPDATE CASCADE ON DELETE RESTRICT, 
+    FOREIGN KEY(rm_run_id) REFERENCES runs(run_id) ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE run_boss(
@@ -95,6 +95,6 @@ CREATE TABLE run_boss(
     rb_run_id INT UNSIGNED,
     time_to_defeat INT UNSIGNED NOT NULL,
     defeated BOOLEAN NOT NULL,
-    FOREIGN KEY(rb_boss_id) REFERENCES boss(boss_id),
-    FOREIGN KEY(rb_run_id) REFERENCES runs(run_id)
+    FOREIGN KEY(rb_boss_id) REFERENCES boss(boss_id) ON UPDATE CASCADE ON DELETE RESTRICT,
+    FOREIGN KEY(rb_run_id) REFERENCES runs(run_id) ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
