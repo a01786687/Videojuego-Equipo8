@@ -50,6 +50,14 @@ the stylesheet, and connects the game engine.
     <main>
         <div id="game-container">
             <canvas id="canvas"></canvas>
+
+            <!-- Settings form -->
+            <div id="settings-form" class="auth-form hidden">
+                <h2>SETTINGS</h2>
+                <label for="brightness-slider">BRIGHTNESS</label>
+                <input type="range" id="brightness-slider" min="0.5" max="1.5" step="0.1" value="1" oninput="changeBrightness(this.value)">
+                <p id="brightness-value">100%</p>
+            </div>
  
             <!-- Login form -->
             <div id="login-form" class="auth-form hidden">

@@ -103,6 +103,7 @@ function draw() { // draw dibuja la escena actual
 
     updateLoginForm();
     updateRegisterForm();
+    updateSettingsForm();
 
     requestAnimationFrame(draw);
 }
@@ -173,6 +174,17 @@ function handleClick(event) {
                 currentScene = "title";
             }
         }
+    }
+}
+
+
+// Showing the settigs scene
+function updateSettingsForm() {
+    const settingsForm = document.getElementById('settings-form');
+    if (currentScene === "settings") {
+        settingsForm.classList.remove('hidden');
+    } else {
+        settingsForm.classList.add('hidden');
     }
 }
 
