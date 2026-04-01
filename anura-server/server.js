@@ -1,30 +1,38 @@
+/*
+ server.js
+ main Express server for Anura
+ It's the bridge for connecting our backend to our frontend, routes, and starts the server.
+ It's the main file that starts everything, sets up express, connects to database, and tells the server which routes exist
+ */
+
+
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const mysql = require('mysql2');
+// no longer importing mysql2 directly because that's now something that db.js will do, -> removed: const mysql = require('mysql2');
 
 const app = express();
-const port = 3000;
+const port = 8080;
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
 
 // Database connection
-const connection = mysql.createConnection({
-    host: '127.0.0.1',
-    user: 'root',
-    password: '',
-    database: 'anura'
-});
+require('./db.js'); // runs the connection code 
 
-connection.connect((err) => {
-    if (err) throw err;
-    console.log('Connected to MySQL Database!');
-});
+// Routes
+const authRoutes = require('./routes/auth.js');
+const runRoutes = require('./routes/runs.js');
 
-// Routes will go here
+app.use('/auth', authRoutes);
+app.use('/runs', runRoutes);
 
 app.listen(port, () => {
     console.log(`Anura server running on port ${port}`);
 });
+
+
+/* NOTES:
+
+*/
