@@ -52,3 +52,24 @@ VALUES (1, 12,2,FALSE,NOW());
 SELECT X.boss_name, AVG(Y.time_to_defeat) AS avgTime2Defeat
 FROM anura.boss AS X INNER JOIN anura.run_boss AS Y
 GROUP BY (boss_id);
+
+#Mostrar UPDATES
+
+#Cambiable
+
+UPDATE anura.users AS X
+SET X.username LIKE "Em1Pro"
+WHERE X.username LIKE "emilio";
+
+UPDATE anura.boss AS Y
+SET Y.boss_name LIKE "Anaconda"
+WHERE Y.boss_name LIKE "Snake";
+
+#No cambiable
+
+UPDATE anura.users AS X
+SET X.user_id = 4450
+WHERE X.username LIKE "emilio";
+
+
+
