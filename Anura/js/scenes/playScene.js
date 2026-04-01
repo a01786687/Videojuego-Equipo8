@@ -131,3 +131,16 @@ function beginRun() {
     // scene needs to be set BEFORE the loop starts drawing
     gameLoopID = requestAnimationFrame(draw);
 };
+
+// CONTINUE RUN
+
+function continueRun() {
+    currentHealth = 100; // temp value, currentHealth will be restored to the health the player had at the start of the last saved level
+    // runMosquitos and deck persist across all runs and are NOT reset
+    // currentLevel is restored to the last saved level (not reset to 1)
+    // all three will be loaded from the API when RF/49 is ready
+    currentScene = "play";
+
+    gameLoopID = requestAnimationFrame(draw);
+
+};

@@ -123,39 +123,48 @@ function handleClick(event) {
 
     console.log(mouseX, mouseY);
 
-    // TITLE SCREEN BOTONES
+    // TITLE SCREEN BUTTONS
 
     /*
-    PLAY
-    X: 140 a 340
-    Y: 400 a 460
+    NEW GAME
+    X: 270 to 470
+    Y: 350 to 410
 
-    LOGIN
-    X: 380 a 580 ( buttonX + buttonWidth)
-    Y: 400 a 460
+    CONTINUE RUN
+    X: 490 to 690
+    Y: 350 to 410
+
+    LOG IN
+    X: 270 to 470
+    Y: 420 to 480
 
     SETTINGS
-    X: 620 a 820 ( buttonX + buttonWidth)
-    Y: 400 a 460
-
-    */
+    X: 490 to 690
+    Y: 420 to 480
+*/
 
     // PLAY BUTTON
     // si las coordenadas de mouseX son mayor o igual a 140 Y las coordenadas de mouseY son menor o igual a 340 Y 
     
     if (currentScene == "title") {
     
-        if (mouseX >= 140 && mouseX <= 340 && mouseY >= 400 && mouseY <= 460) {
+        // NEW GAME
+        if (mouseX >= 270 && mouseX <= 470 && mouseY >= 350 && mouseY <= 410) {
             beginRun(); // if the player clicks on the button, beginRun() is called from playScene.js
         }
 
+        // CONTINUE RUN
+        if (mouseX >= 490 && mouseX <= 690 && mouseY >= 350 && mouseY <= 410) {
+            continueRun(); // if the player clicks on the button, continueRun() is called from playScene.js
+        }
+
         // LOG IN BUTTON 
-        if (mouseX >= 380 && mouseX <= 580 && mouseY >= 400 && mouseY <= 460) {
+        if (mouseX >= 270 && mouseX <= 470 && mouseY >= 420 && mouseY <= 480) {
             currentScene = "login";
         }
 
         // SETTINGS BUTTON
-        if (mouseX >= 620 && mouseX <= 820 && mouseY >= 400 && mouseY <= 460) {
+        if (mouseX >= 490 && mouseX <= 690 && mouseY >= 420 && mouseY <= 480) {
             currentScene = "settings";
         }
     // ESTO LO UTILIZAREMOS PARA DETECTAR BOTONES
