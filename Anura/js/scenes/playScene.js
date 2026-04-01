@@ -22,6 +22,9 @@ let frog = {
 // tracks which keys are currently held down
 let keys = {};
 
+// variable for storing the pause flag
+let pause = false;
+
 
 function handleKeyDown(event) {
     keys[event.key] = true;
@@ -79,6 +82,7 @@ function drawFrog() {
 // PLAY SCENE
 
 function drawPlayScene() {
+    if (pause) return; // when pause is true, it exits the drawPlayScene(), nothing gets drawn, when pause is false, it continues drawing normally
     ctx.fillStyle = "#6fbf73"; // ctx viene de index.js
     ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
@@ -86,4 +90,19 @@ function drawPlayScene() {
     drawFrog();
 
     backButton();
-}
+};
+
+// PAUSE BUTTON
+
+function pressPause() {
+    pause = !pause; // toggle pause flag, flips true to false and false to true
+    if (!pause) { // if pause is false, the game is resuming/ restarting the game loop
+        requestAnimationFrame(draw);
+    }
+};
+
+window.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+        pressPause();
+    }
+});
