@@ -13,6 +13,8 @@ let users = []
 // initialized with null because it is empty until someone logs in
 let activeUser = null;
 
+let activeSessionId = null; // stores sessionId after login, used for creating runs
+
 // username and password parameters
 function registerUser(username, password) {
     // for each user in the array, check if that user's username property matched the username we passed in

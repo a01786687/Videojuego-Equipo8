@@ -16,7 +16,9 @@ const port = 8080;
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(cors());
+app.use(cors({
+    origin: 'http://127.0.0.1:3000'
+}));
 
 // Database connection
 require('./db.js'); // runs the connection code 
