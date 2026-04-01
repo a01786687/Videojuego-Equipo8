@@ -1,13 +1,13 @@
-const express = require('express')
-const cors = require('cors')
-const bodyParser = require('body-parser')
+const express = require('express');
+const cors = require('cors');
+const bodyParser = require('body-parser');
 const mysql = require('mysql2');
-const app = express()
-const port = 3000
+const app = express();
+const port = 3000;
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(cors())
+app.use(cors());
 
 // app.js
 
@@ -16,7 +16,7 @@ app.use(cors())
 const connection = mysql.createConnection({
     host: '127.0.0.1',
     user: 'root',
-    password: 'Cerplirp&130506',
+    password: '#Clifjumper4406',
     database: 'anura'
 });
 
@@ -25,8 +25,12 @@ connection.connect((err) => {
     if (err) throw err;
     console.log('Connected to MySQL Database!');
 
-});
+    // Example query
+    connection.query('SELECT * FROM runs LIMIT 5', (err, results, fields) => {
+        if (err) throw err;
+        console.log(results);
+    });
 
-app.listen(port, () => { 
-    console.log(`Anura server running on port ${port}`); 
+    // Close the connection
+    connection.end();
 });
