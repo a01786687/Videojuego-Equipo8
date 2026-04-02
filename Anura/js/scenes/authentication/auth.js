@@ -12,6 +12,7 @@ let users = []
 // stores who is currently playing or active
 // initialized with null because it is empty until someone logs in
 let activeUser = null;
+let activeUserId = null; // stores userId after login
 
 let activeSessionId = null; // stores sessionId after login, used for creating runs
 
@@ -63,6 +64,3 @@ NOTES:
 using === is a good practice to avoid errors
 
 */
-
-console.log(users);
-console.log(activeUser);

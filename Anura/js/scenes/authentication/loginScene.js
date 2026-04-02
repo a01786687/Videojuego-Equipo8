@@ -46,6 +46,7 @@ function initLoginScene() {
             loginMessage.textContent = result.message;
             if (result.success === true) {
                 activeUser = result.username;
+                activeUserId = result.userId
                 activeSessionId = result.sessionId;
                 loginMessage.textContent = "";
                 currentScene = "title";
