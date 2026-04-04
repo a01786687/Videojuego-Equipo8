@@ -16,21 +16,18 @@ app.use(cors());
 const connection = mysql.createConnection({
     host: '127.0.0.1',
     user: 'root',
-    password: '',
-    database: 'anura'
+    password: 'Cerplirp&130506',
+    // database: 'anura'
+
 });
 
 // Connect to the database
 connection.connect((err) => {
     if (err) throw err;
-    console.log('Connected to MySQL Database!');
+    console.log('¡Conectado! Investigando bases de datos...');
 
-    // Example query
-    connection.query('SELECT * FROM runs LIMIT 5', (err, results, fields) => {
+    connection.query('SHOW DATABASES', (err, results) => {
         if (err) throw err;
-        console.log(results);
+        console.log('Bases de datos que ve Node.js:', results);
     });
-
-    // Close the connection
-    connection.end();
 });
