@@ -35,6 +35,8 @@ let deck = []; // deck is empty on the first run, it will be loaded from the API
 // game loop id for stopping the game when there's a game over, it has null value, same as activeUser since there's no active game
 let gameLoopID = null;
 
+let activeRunId = null; // stores the current run's ID from the database
+
 
 function handleKeyDown(event) {
     keys[event.key] = true;
@@ -119,28 +121,41 @@ window.addEventListener('keydown', (event) => {
 
 // BEGIN RUN
 
-function beginRun() {
+// create a new run in the database
+// we modify the original beginRun() function to an async function so it calls the apiStartRun() and stores the runId
+
+async function beginRun() {
     currentHealth = 100;
     maxHealth = 100;
     runMosquitos = 0;
     currentLevel = 1;
     deck = [];
 
-    currentScene = "play";
+    // creating a new run in the database
+    const result = await apiStartRun(activeSessionId);
+    if (result.success) {
+        activeRunId = result.runId;
+    }
 
+    currentScene = "play";
     // scene needs to be set BEFORE the loop starts drawing
     gameLoopID = requestAnimationFrame(draw);
+        
 };
 
 // CONTINUE RUN
 
-function continueRun() {
-    currentHealth = 100; // temp value, currentHealth will be restored to the health the player had at the start of the last saved level
-    // runMosquitos and deck persist across all runs and are NOT reset
-    // currentLevel is restored to the last saved level (not reset to 1)
-    // all three will be loaded from the API when RF/49 is ready
-    currentScene = "play";
+async function continueRun() {
+    const result = await apiGetRun(activeUserId);
+    
+    if (result.success) {
+        activeRunId = result.run.run_id;
+        runMosquitos = result.run.mosquitoes_collected;
+        currentLevel = result.run.stage_number || 1; // will be loaded from run_stages when ready
+        currentHealth = 100; // temp, will be restored from API when RF-49 expands
+    }
 
+    currentScene = "play";
     gameLoopID = requestAnimationFrame(draw);
 
 };

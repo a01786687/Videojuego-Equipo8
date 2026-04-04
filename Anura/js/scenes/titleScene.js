@@ -29,9 +29,10 @@ function drawTitleScreen() {
     drawLogInButton();
     drawSettingsButton();
 
-    // continue run only shows if the player has saved progress
-    // condition to check if there's any progress to be saved, IF THERE IS, then the title screen will drawContinueRunButton();
-    if (runMosquitos > 0 || deck.length > 0) {
+    // continue run only shows if the player is logged in
+    // real saved progress check will connect to API when RF-49 expands
+
+    if (activeUserId) {
         drawContinueRunButton();
     }
 }
@@ -159,4 +160,3 @@ function drawSettingsButton() {
     ctx.textBaseline = "middle";
     ctx.fillText("Settings", buttonX + buttonWidth / 2, buttonY + buttonHeight / 2);
 }
-
