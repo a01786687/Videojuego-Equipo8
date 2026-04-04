@@ -63,4 +63,8 @@ NOTES:
 "===" (strict equality) checks if values are equal and the same type ex. "1" === 1 would be false
 using === is a good practice to avoid errors
 
+<<<<<<< HEAD
 */
+=======
+*/
+>>>>>>> main

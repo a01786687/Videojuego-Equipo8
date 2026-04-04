@@ -160,4 +160,3 @@ function drawSettingsButton() {
     ctx.textBaseline = "middle";
     ctx.fillText("Settings", buttonX + buttonWidth / 2, buttonY + buttonHeight / 2);
 }
-
