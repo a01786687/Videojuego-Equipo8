@@ -449,11 +449,12 @@ _(example)_
 ### **Game Flow**
 
 **Run Flow**
-1. Title screen: has 3 buttons (start game, log in, settings).
+1. Title screen: has up to 4 buttons (New Game, Continue Run, Log In, Settings).
 
-    - log in: allows the user to log in with credentials so their data is saved in the database.
-
-    - settings: turn on/off sounds, brightness, reset progress. (MAY CHANGE)
+    - **New Game:** resets all progress (`currentHealth`, `currentLevel`, `runMosquitos`, `deck`). This is the only option for first time players.
+    - **Continue Run:** resumes from the last saved level with the health the player had at the start of that level. `runMosquitos` and `deck` are preserved. Only available if the player has saved progress.
+    - **Log In:** allows the user to log in with credentials so their data is saved in the database.
+    - **Settings:** turn on/off sounds, brightness, reset progress. (MAY CHANGE)
 
 2. First normal run: player has no cards and no mosquito currency, in this first run the player starts to obtain their first mosquitoes. Player may get to the first boss or die in the platform section.
  

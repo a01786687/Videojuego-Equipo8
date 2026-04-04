@@ -18,6 +18,7 @@ function initRegisterScene() {
     goLoginLink  = document.getElementById("go-login");
 
     const usernameInput = document.getElementById("register-username");
+    const emailInput = document.getElementById("register-email");
     const passwordInput = document.getElementById("register-password");
     const registerButton = document.getElementById("register-button");
     const registerMessage = document.getElementById("register-message");
@@ -26,7 +27,7 @@ function initRegisterScene() {
         currentScene = "login";
     });
 
-    registerButton.addEventListener("click", () => {
+    registerButton.addEventListener("click", async () => {
 
         // input validation, we want to check the values when the 
         // user actually clicks the buttons, else the values would 
@@ -35,10 +36,10 @@ function initRegisterScene() {
         // .value -> is for input fields where users types
         // .textContent -> is for a paragraph element or when you want to display text
 
-        if (!usernameInput.value || !passwordInput.value){
+        if (!usernameInput.value || !emailInput.value || !passwordInput.value) {
             registerMessage.textContent = "Please fill in all fields."
         } else {
-            const result = registerUser(usernameInput.value, passwordInput.value);
+            const result = await apiRegister(usernameInput.value, emailInput.value, passwordInput.value); // changed from registerUser to apiRegister
             registerMessage.textContent = result.message;
             if (result.success === true){
                 registerMessage.textContent = "";
@@ -47,6 +48,7 @@ function initRegisterScene() {
         }
 
         usernameInput.value = "";
+        emailInput.value = "";
         passwordInput.value = "";
         
     });

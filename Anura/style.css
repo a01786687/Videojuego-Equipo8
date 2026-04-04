@@ -106,3 +106,8 @@ Everything inside it is positioned around it, it makes .auth-form positioned ins
 .hidden {
     display: none;
 }
+
+/* Register form needs more height for the extra email field */
+#register-form {
+    height: 320px;
+}

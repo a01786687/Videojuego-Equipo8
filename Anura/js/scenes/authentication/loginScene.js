@@ -30,7 +30,7 @@ function initLoginScene() {
         currentScene = "register";
     });
 
-    loginButton.addEventListener("click", () => {
+    loginButton.addEventListener("click", async () => {
 
         // input validation, we want to check the values when the 
         // user actually clicks the buttons, else the values would 
@@ -42,9 +42,11 @@ function initLoginScene() {
         if (!usernameInput.value || !passwordInput.value) {
             loginMessage.textContent = "Please fill in all fields."
         } else {
-            const result = loginUser(usernameInput.value, passwordInput.value);
+            const result = await apiLogin(usernameInput.value, passwordInput.value); // changed from loginUser to apiLogin
             loginMessage.textContent = result.message;
             if (result.success === true) {
+                activeUser = result.username;
+                activeSessionId = result.sessionId;
                 loginMessage.textContent = "";
                 currentScene = "title";
             }

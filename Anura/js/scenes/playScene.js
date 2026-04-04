@@ -25,6 +25,16 @@ let keys = {};
 // variable for storing the pause flag
 let pause = false;
 
+// variables for beginRun();
+let currentHealth = 100;
+let maxHealth = 100;
+let runMosquitos = 0;
+let currentLevel = 1;
+let deck = []; // deck is empty on the first run, it will be loaded from the API when RF-47 is ready
+
+// game loop id for stopping the game when there's a game over, it has null value, same as activeUser since there's no active game
+let gameLoopID = null;
+
 
 function handleKeyDown(event) {
     keys[event.key] = true;
@@ -106,3 +116,31 @@ window.addEventListener('keydown', (event) => {
         pressPause();
     }
 });
+
+// BEGIN RUN
+
+function beginRun() {
+    currentHealth = 100;
+    maxHealth = 100;
+    runMosquitos = 0;
+    currentLevel = 1;
+    deck = [];
+
+    currentScene = "play";
+
+    // scene needs to be set BEFORE the loop starts drawing
+    gameLoopID = requestAnimationFrame(draw);
+};
+
+// CONTINUE RUN
+
+function continueRun() {
+    currentHealth = 100; // temp value, currentHealth will be restored to the health the player had at the start of the last saved level
+    // runMosquitos and deck persist across all runs and are NOT reset
+    // currentLevel is restored to the last saved level (not reset to 1)
+    // all three will be loaded from the API when RF/49 is ready
+    currentScene = "play";
+
+    gameLoopID = requestAnimationFrame(draw);
+
+};
