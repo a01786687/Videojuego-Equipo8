@@ -15,8 +15,6 @@ function drawTitleScreen() {
         ctx.fillRect(0, 0, canvasWidth, canvasHeight);
     }
 
-    // ctx.drawImage(backgroundImage, 0, 0, canvasWidth, canvasHeight);
-
     // medidas logo
     const logoWidth = 400;
     const logoHeight = 400;
@@ -32,8 +30,8 @@ function drawTitleScreen() {
     // continue run only shows if the player is logged in
     // real saved progress check will connect to API when RF-49 expands
 
-    if (activeUserId) {
-        drawContinueRunButton();
+    if (activeUserId !== null && activeUserId !== undefined) {
+    drawContinueRunButton();
     }
 }
 

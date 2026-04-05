@@ -3,7 +3,9 @@ api.js
 connects the game to the anura server RF-49
 replaces the mock versions in auth.js and playScene.js
 server runs on http://127.0.0.1:8080
+
  */
+
 
 // WSL IP -> each teammate needs to run 'hostname -I' on their terminal, and update this
 const API_URL = 'http://172.25.65.213:8080';

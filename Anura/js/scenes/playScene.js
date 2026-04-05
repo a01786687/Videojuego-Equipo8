@@ -204,7 +204,21 @@ window.addEventListener('keydown', (event) => {
 
 // BEGIN RUN
 
-async function beginRun() {
+function beginRun() {
+    currentHealth = 100;
+    maxHealth = 100;
+    runMosquitos = 0;
+    currentLevel = 1;
+    deck = [];
+
+    currentScene = "play";
+    gameLoopID = requestAnimationFrame(draw);
+};
+
+// create a new run in the database
+// we modify the original beginRun() function to an async function so it calls the apiStartRun() and stores the runId
+
+/* async function beginRun() {
     currentHealth = 100;
     maxHealth = 100;
     runMosquitos = 0;
@@ -227,8 +241,17 @@ async function beginRun() {
     gameLoopID = requestAnimationFrame(draw);
 }
 
-// CONTINUE RUN
+*/
 
+// CONTINUE RUN
+function continueRun() {
+    currentHealth = 100;
+    // runMosquitos, deck and currentLevel persist — will load from API when RF-49 expands
+    currentScene = "play";
+    gameLoopID = requestAnimationFrame(draw);
+};
+
+/*
 async function continueRun() {
     const result = await apiGetRun(activeUserId);
     
@@ -241,4 +264,6 @@ async function continueRun() {
 
     currentScene = "play";
     gameLoopID = requestAnimationFrame(draw);
-}
+
+};
+*/
