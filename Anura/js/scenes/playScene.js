@@ -1,11 +1,47 @@
 /*
-This file includes the frog, its movement, keyboard handling,
-the drawing of the playable scene, and enemy implementation.
-*/
+This file will include the frog, 
+its movement, keyboard and the
+drawing of a playable scene
+
+ */
 
 "use strict";
 
-// --- ENEMY IMPLEMENTATION ---
+// --- GLOBAL VARIABLES ---
+
+// Frog object
+let frog = {
+    x: canvasWidth / 2, // vienen de index.js, ya que como estan cargados del mismo HTML comparten mismo scope
+    y: canvasHeight / 2,
+    width: 50,
+    height: 50,
+    color: "#7ed967",
+    speed: 4
+};
+
+// variable for the pressing keys 
+// tracks which keys are currently held down
+let keys = {};
+
+// variable for storing the pause flag
+let pause = false;
+
+// variables for beginRun();
+let currentHealth = 100;
+let maxHealth = 100;
+let runMosquitos = 0;
+let currentLevel = 1;
+let deck = []; // deck is empty on the first run, it will be loaded from the API when RF-47 is ready
+
+// game loop id for stopping the game when there's a game over, it has null value, same as activeUser since there's no active game
+let gameLoopID = null;
+
+let activeRunId = null; // stores the current run's ID from the database
+
+// Array for enemies
+let enemies = [];
+
+// --- ENEMY CLASS ---
 
 const ENEMY_STATE = {
     PATROL: "patrol",
@@ -15,106 +51,65 @@ const ENEMY_STATE = {
 
 class Enemy extends AnimatedObject {
     constructor(x, y, width, height, color, type, sheetCols, range) {
-        // Position passed as an object {x, y} to match GameObject/AnimatedObject
-        super({ x: x, y: y }, width, height, color, type, sheetCols);
-
+        // Initialize GameObject with a Vector for position as required by your library
+        super(new Vector(x, y), width, height, color, type, sheetCols);
+        
         this.state = ENEMY_STATE.PATROL;
         this.speed = 1.5;
-        this.range = range;      // Patrolling distance
-        this.startX = x;         // Origin point for patrol
-        this.direction = 1;      // 1 for Right, -1 for Left
+        this.range = range;      // Total distance the enemy can patrol from startX
+        this.startX = x;         // Pivot point for patrolling logic
+        this.direction = 1;      // Horizontal direction: 1 (right) or -1 (left)
+        this.detectionRadius = 150; // Distance to switch from patrol to chase
         
-        this.detectionRadius = 150; // Distance to start chasing the frog
         this.stunTimer = 0;
-        this.stunDuration = 1000;   // 1 second of stun
+        this.stunDuration = 1000; // Stun time in milliseconds
     }
 
     update(target, deltaTime) {
+        // If stunned, decrease timer and skip movement logic
         if (this.state === ENEMY_STATE.STUNNED) {
             this.stunTimer -= deltaTime;
-            if (this.stunTimer <= 0) {
-                this.state = ENEMY_STATE.PATROL;
-            }
+            if (this.stunTimer <= 0) this.state = ENEMY_STATE.PATROL;
             return;
         }
 
-        // Calculate distance to the frog (target)
+        // Calculate distance between enemy center and frog
         let dx = target.x - this.position.x;
         let dy = target.y - this.position.y;
         let distance = Math.sqrt(dx * dx + dy * dy);
 
-        // State machine logic
+        // State Machine transitions
         if (distance < this.detectionRadius) {
             this.state = ENEMY_STATE.CHASE;
         } else {
             this.state = ENEMY_STATE.PATROL;
         }
 
+        // Behavior based on current state
         if (this.state === ENEMY_STATE.CHASE) {
+            // Move towards the player using trigonometry
             let angle = Math.atan2(dy, dx);
             this.position.x += Math.cos(angle) * this.speed;
             this.position.y += Math.sin(angle) * this.speed;
-        } else if (this.state === ENEMY_STATE.PATROL) {
+        } else {
+            // Horizontal patrol movement (MRU)
             this.position.x += this.speed * this.direction;
+            // Reverse direction if out of range
             if (Math.abs(this.position.x - this.startX) > this.range) {
                 this.direction *= -1;
             }
         }
-
+        
+        // Update animation frames and collider sync
         this.updateFrame(deltaTime);
+        this.updateCollider();
     }
 
-    draw(ctx) {
-        ctx.fillStyle = this.color;
-        if (this.state === ENEMY_STATE.STUNNED) ctx.globalAlpha = 0.5;
-        ctx.fillRect(this.position.x, this.position.y, this.width, this.height);
-        ctx.globalAlpha = 1.0;
-    }
+    
+    
 }
 
-// --- GAME OBJECTS & VARIABLES ---
-
-// Frog object
-let frog = {
-    x: canvasWidth / 2, 
-    y: canvasHeight / 2,
-    width: 50,
-    height: 50,
-    color: "#7ed967",
-    speed: 4
-};
-
-// Array for enemies
-let enemies = [];
-
-// Variable for the pressing keys 
-let keys = {};
-
-// Variable for storing the pause flag
-let pause = false;
-
-// Variables for beginRun();
-let currentHealth = 100;
-let maxHealth = 100;
-let runMosquitos = 0;
-let currentLevel = 1;
-let deck = []; 
-
-// Game loop id
-let gameLoopID = null;
-
-let activeRunId = null; 
-
-// --- UTILS ---
-
-function checkCollision(rect1, rect2) {
-    return rect1.x < rect2.position.x + rect2.width &&
-           rect1.x + rect1.width > rect2.position.x &&
-           rect1.y < rect2.position.y + rect2.height &&
-           rect1.y + rect1.height > rect2.position.y;
-}
-
-// --- INPUT HANDLING ---
+// --- FUNCTIONS ---
 
 function handleKeyDown(event) {
     keys[event.key] = true;
@@ -124,77 +119,80 @@ function handleKeyUp(event) {
     keys[event.key] = false;
 }
 
-// --- LOGIC & DRAWING ---
+// frog movement logic
 
 function updateFrog() {
-    if (keys["w"]) {
+    if (keys ["w"]) {
         frog.y -= frog.speed;
     }
-    if (keys["s"]) {
+
+    if (keys ["s"]) {
         frog.y += frog.speed;
     }
-    if (keys["a"]) {
+
+    if (keys ["a"]) {
         frog.x -= frog.speed;
     }
-    if (keys["d"]) {
+
+    if (keys ["d"]) {
         frog.x += frog.speed;
     }
 
-    // Canvas limits
-    if (frog.x < 0) {
+    // canvas limits
+    if (frog.x < 0){
         frog.x = 0;
     }
-    if (frog.y < 0) {
+
+    if (frog.y < 0){
         frog.y = 0;
     }
+
     if (frog.x + frog.width > canvasWidth) {
         frog.x = canvasWidth - frog.width;
     }
+
     if (frog.y + frog.height > canvasHeight) {
         frog.y = canvasHeight - frog.height;
     }
 }
+
+// drawing the frog
 
 function drawFrog() {
     ctx.fillStyle = frog.color;
     ctx.fillRect(frog.x, frog.y, frog.width, frog.height);
 }
 
+
 // PLAY SCENE
 
 function drawPlayScene() {
-    if (pause) return; 
-    
-    ctx.fillStyle = "#6fbf73"; 
+    if (pause) return; // when pause is true, it exits the drawPlayScene(), nothing gets drawn, when pause is false, it continues drawing normally
+    ctx.fillStyle = "#6fbf73"; // ctx viene de index.js
     ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
     updateFrog();
     
-    // Update and Draw Enemies
-    let deltaTime = 16; // Approx. 60fps frame time
+    // Update and Draw enemies loop
+    let deltaTime = 16; // Constant frame time for 60FPS simulation
     enemies.forEach(enemy => {
         enemy.update(frog, deltaTime);
         enemy.draw(ctx);
-
-        // Check for collision with player
-        if (checkCollision(frog, enemy) && enemy.state !== ENEMY_STATE.STUNNED) {
-            currentHealth -= 0.2; // Damage player
-            console.log("Health: " + Math.floor(currentHealth));
-        }
     });
 
     drawFrog();
+
     backButton();
-}
+};
 
 // PAUSE BUTTON
 
 function pressPause() {
-    pause = !pause; 
-    if (!pause) { 
+    pause = !pause; // toggle pause flag, flips true to false and false to true
+    if (!pause) { // if pause is false, the game is resuming/ restarting the game loop
         requestAnimationFrame(draw);
     }
-}
+};
 
 window.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') {
@@ -211,12 +209,16 @@ function beginRun() {
     currentLevel = 1;
     deck = [];
 
+    // Initialize enemies for the level with specific ranges and types
+    // Using new Enemy(x, y, width, height, color, type, sheetCols, patrolRange)
+    enemies = [
+        new Enemy(150, 150, 40, 40, "red", "mosquito", 4, 100),
+        new Enemy(600, 300, 50, 50, "brown", "spider", 6, 80)
+    ];
+
     currentScene = "play";
     gameLoopID = requestAnimationFrame(draw);
 };
-
-// create a new run in the database
-// we modify the original beginRun() function to an async function so it calls the apiStartRun() and stores the runId
 
 /* async function beginRun() {
     currentHealth = 100;
@@ -225,21 +227,17 @@ function beginRun() {
     currentLevel = 1;
     deck = [];
 
-    // Initialize enemies
-    enemies = [
-        new Enemy(100, 100, 40, 40, "red", "mosquito", 4, 100),
-        new Enemy(600, 400, 50, 50, "brown", "spider", 6, 150)
-    ];
-
-    // Creating a new run in the database
+    // creating a new run in the database
     const result = await apiStartRun(activeSessionId);
     if (result.success) {
         activeRunId = result.runId;
     }
 
     currentScene = "play";
+    // scene needs to be set BEFORE the loop starts drawing
     gameLoopID = requestAnimationFrame(draw);
-}
+        
+};
 
 */
 
@@ -258,8 +256,8 @@ async function continueRun() {
     if (result.success) {
         activeRunId = result.run.run_id;
         runMosquitos = result.run.mosquitoes_collected;
-        currentLevel = result.run.stage_number || 1; 
-        currentHealth = 100; 
+        currentLevel = result.run.stage_number || 1; // will be loaded from run_stages when ready
+        currentHealth = 100; // temp, will be restored from API when RF-49 expands
     }
 
     currentScene = "play";

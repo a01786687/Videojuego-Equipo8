@@ -7,30 +7,39 @@
 
 "use strict";
 
-//import { GameObject } from "./GameObject";
-
-
-// Class to control the animation of characters and objects
+/**
+ * Class to control the animation of characters and objects.
+ * Inherits from GameObject.
+ */
 class AnimatedObject extends GameObject {
     constructor(position, width, height, color, type, sheetCols) {
         super(position, width, height, color, type);
-        // Animation properties
+
+        // --- ANIMATION PROPERTIES ---
+        
         this.frame = 0;
-        // Define el rango de frames que voy a mostrar.
+        // Range of frames to display
         this.minFrame = 0;
         this.maxFrame = 0;
-        // Define cuantas columnas hay en mi sprite sheet.
+        // Number of columns in the sprite sheet
         this.sheetCols = sheetCols;
-
-        // Para que se repita la animación.
+        // Toggle for looping animation
         this.repeat = true;
-
         // Delay between frames (in milliseconds)
         this.frameDuration = 100;
-        // Mide si ya debo ir cambiando de cuadro.
+        // Timer to track frame changes
         this.totalTime = 0;
+
+        /** * FIX: Initialize the spriteRect object.
+         * This defines the source rectangle area to crop from the spritesheet.
+         * Uses the Rect class you recently created.
+         */
+        this.spriteRect = new Rect(0, 0, width, height);
     }
 
+    /**
+     * Set the specific animation range and duration.
+     */
     setAnimation(minFrame, maxFrame, repeat, duration) {
         this.minFrame = minFrame;
         this.maxFrame = maxFrame;
@@ -38,37 +47,28 @@ class AnimatedObject extends GameObject {
         this.repeat = repeat;
         this.totalTime = 0;
         this.frameDuration = duration;
-
-        //console.log(Setting animation frames: ${this.minFrame} - ${this.maxFrame});
     }
 
-    /*
-     * Change the frame number to the next one.
-     * Loop back to the first frame if the animation is set to repeat.
-     * Also set the rectangle to be drawn from the spritesheet according to the current frame.
-     *
-     * Arguments:
-     *   deltaTime: Time elapsed since the last frame (in milliseconds)
-     */
+    
     updateFrame(deltaTime) {
         this.totalTime += deltaTime;
+
         if (this.totalTime > this.frameDuration) {
-            // Loop around the animation frames if the animation is set to repeat
-            // Otherwise stay on the last frame
-            // TODO: Set the frame to be used when the frame range ends
-            //       Depends on the value of this.repeat
+            // Determine the frame to use when the range ends based on this.repeat
             let restartFrame = this.repeat ? this.minFrame : this.maxFrame;
-            // TODO: Change the frame to the next one
-            //       Either the next one or the restart
-            this.frame = this.frame === this.maxFrame ? restartFrame : this.frame + 1;
-            // TODO: Determine the top left corner of the frame to draw from the spritesheet
-            //       This requires the number of columns in the sheet, multiplied by the dimensions
-            this.spriteRect.x = this.frame % this.sheetCols * this.spriteRect.width;
+
+            // Change the current frame to the next one or restart
+            this.frame = (this.frame === this.maxFrame) ? restartFrame : this.frame + 1;
+
+            // Update the top left corner of the rectangle to crop from the spritesheet
+            // Calculation: (Current Frame % Columns) * Frame Width
+            this.spriteRect.x = (this.frame % this.sheetCols) * this.spriteRect.width;
+            
+            // Calculation: Floor(Current Frame / Columns) * Frame Height
             this.spriteRect.y = Math.floor(this.frame / this.sheetCols) * this.spriteRect.height;
-            // Restart the time count
+
+            // Reset the timer for the next frame transition
             this.totalTime = 0;
-            //console.log(New Rect:)
-            //console.log(this.spriteRect)
         }
     }
 }
