@@ -1,3 +1,4 @@
+USE anura;
 
 INSERT INTO playable_character (character_name, base_hp, base_speed, base_damage)
 VALUES ('Froggy', 100, 10, 15);
@@ -22,6 +23,7 @@ VALUES ('Snake', 200, 25, 30);
 
 INSERT INTO run_boss (rb_boss_id, rb_run_id, time_to_defeat, defeated)
 VALUES (1, 1, 120, TRUE),(1,2,150,FALSE),(1,3,140,FALSE);
+
 
 
 
@@ -53,23 +55,44 @@ SELECT X.boss_name, AVG(Y.time_to_defeat) AS avgTime2Defeat
 FROM anura.boss AS X INNER JOIN anura.run_boss AS Y
 GROUP BY (boss_id);
 
-#Mostrar UPDATES
+#Mostrar UPDATES ISSUE 48
 
 #Cambiable
 
 UPDATE anura.users AS X
-SET X.username LIKE "Em1Pro"
-WHERE X.username LIKE "emilio";
+SET X.username = "Em1Pro"
+WHERE X.username = "emilio";
 
-UPDATE anura.boss AS Y
-SET Y.boss_name LIKE "Anaconda"
-WHERE Y.boss_name LIKE "Snake";
+UPDATE anura.boss AS X
+SET X.boss_name = "Anaconda"
+WHERE X.boss_id = 1;
+
+SELECT * FROM anura.boss;
+SELECT * FROM anura.sesions;
 
 #No cambiable
 
 UPDATE anura.users AS X
-SET X.user_id = 4450
-WHERE X.username LIKE "emilio";
+SET X.user_id = 445
+WHERE X.username = "Em1Pro";  #En este caso si hay datos en sesions con ese ID no se puede cambiar el id del user
+
+UPDATE anura.boss AS Y
+SET Y.boss_id = 10
+WHERE Y.boss_id = 1;
+
+SELECT * FROM anura.users;
+
+#DELETES ISSUE 50
+
+DELETE FROM anura.users AS X
+WHERE X.user_id = 1; 
+
+DELETE FROM anura.boss AS Y
+WHERE Y.boss_id = 1;
+
+DELETE FROM anura.runs AS Z
+WHERE Z.run_id = 1;
+
 
 
 

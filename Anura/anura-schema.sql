@@ -14,8 +14,7 @@ CREATE TABLE cards(
     card_id TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     card_name VARCHAR(50) NOT NULL,
     card_type VARCHAR(25) NOT NULL,
-    effect_value SMALLINT UNSIGNED NOT NULL,
-    card_rank TINYINT UNSIGNED NOT NULL
+    effect_value SMALLINT UNSIGNED DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE mobs(
@@ -39,9 +38,7 @@ CREATE TABLE users(
     username VARCHAR(50) NOT NULL UNIQUE,
     email VARCHAR(50) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL, 
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    user_character_id TINYINT UNSIGNED,
-    FOREIGN KEY (user_character_id) REFERENCES playable_character(character_id) ON UPDATE CASCADE ON DELETE RESTRICT
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE sesions(
@@ -64,13 +61,22 @@ CREATE TABLE runs(
     FOREIGN KEY(run_sesion_id) REFERENCES sesions(sesion_id) ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+CREATE TABLE user_character(
+    user_character_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    uc_user_id SMALLINT UNSIGNED NOT NULL,
+    uc_character_id TINYINT UNSIGNED DEFAULT 1,
+    FOREIGN KEY(uc_user_id) REFERENCES users(user_id) ON UPDATE RESTRICT ON DELETE CASCADE,
+    FOREIGN KEY(uc_character_id) REFERENCES playable_character(character_id) ON UPDATE CASCADE ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 CREATE TABLE character_cards(
-    cc_card_id TINYINT UNSIGNED,
-    cc_character_id TINYINT UNSIGNED,
+    cc_card_id TINYINT UNSIGNED NOT NULL,
+    cc_user_character_id SMALLINT UNSIGNED NOT NULL,
     slot_number TINYINT UNSIGNED NOT NULL,
-    PRIMARY KEY (cc_card_id, cc_character_id, slot_number), 
-    FOREIGN KEY (cc_card_id) REFERENCES cards(card_id),
-    FOREIGN KEY (cc_character_id) REFERENCES playable_character(character_id) ON UPDATE RESTRICT ON DELETE RESTRICT
+    card_rank TINYINT UNSIGNED NOT NULL,
+    PRIMARY KEY (cc_user_character_id, slot_number), 
+    FOREIGN KEY (cc_card_id) REFERENCES cards(card_id) ON UPDATE CASCADE ON DELETE RESTRICT,
+    FOREIGN KEY (cc_user_character_id) REFERENCES user_character(user_character_id) ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE run_stages(
