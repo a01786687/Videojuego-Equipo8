@@ -7,8 +7,9 @@ drawing of a playable scene
 
 "use strict";
 
-// Frog object
+// --- GLOBAL VARIABLES ---
 
+// Frog object
 let frog = {
     x: canvasWidth / 2, // vienen de index.js, ya que como estan cargados del mismo HTML comparten mismo scope
     y: canvasHeight / 2,
@@ -37,6 +38,78 @@ let gameLoopID = null;
 
 let activeRunId = null; // stores the current run's ID from the database
 
+// Array for enemies
+let enemies = [];
+
+// --- ENEMY CLASS ---
+
+const ENEMY_STATE = {
+    PATROL: "patrol",
+    CHASE: "chase",
+    STUNNED: "stunned"
+};
+
+class Enemy extends AnimatedObject {
+    constructor(x, y, width, height, color, type, sheetCols, range) {
+        // Initialize GameObject with a Vector for position as required by your library
+        super(new Vector(x, y), width, height, color, type, sheetCols);
+        
+        this.state = ENEMY_STATE.PATROL;
+        this.speed = 1.5;
+        this.range = range;      // Total distance the enemy can patrol from startX
+        this.startX = x;         // Pivot point for patrolling logic
+        this.direction = 1;      // Horizontal direction: 1 (right) or -1 (left)
+        this.detectionRadius = 150; // Distance to switch from patrol to chase
+        
+        this.stunTimer = 0;
+        this.stunDuration = 1000; // Stun time in milliseconds
+    }
+
+    update(target, deltaTime) {
+        // If stunned, decrease timer and skip movement logic
+        if (this.state === ENEMY_STATE.STUNNED) {
+            this.stunTimer -= deltaTime;
+            if (this.stunTimer <= 0) this.state = ENEMY_STATE.PATROL;
+            return;
+        }
+
+        // Calculate distance between enemy center and frog
+        let dx = target.x - this.position.x;
+        let dy = target.y - this.position.y;
+        let distance = Math.sqrt(dx * dx + dy * dy);
+
+        // State Machine transitions
+        if (distance < this.detectionRadius) {
+            this.state = ENEMY_STATE.CHASE;
+        } else {
+            this.state = ENEMY_STATE.PATROL;
+        }
+
+        // Behavior based on current state
+        if (this.state === ENEMY_STATE.CHASE) {
+            // Move towards the player using trigonometry
+            let angle = Math.atan2(dy, dx);
+            this.position.x += Math.cos(angle) * this.speed;
+            this.position.y += Math.sin(angle) * this.speed;
+        } else {
+            // Horizontal patrol movement (MRU)
+            this.position.x += this.speed * this.direction;
+            // Reverse direction if out of range
+            if (Math.abs(this.position.x - this.startX) > this.range) {
+                this.direction *= -1;
+            }
+        }
+        
+        // Update animation frames and collider sync
+        this.updateFrame(deltaTime);
+        this.updateCollider();
+    }
+
+    
+    
+}
+
+// --- FUNCTIONS ---
 
 function handleKeyDown(event) {
     keys[event.key] = true;
@@ -99,6 +172,14 @@ function drawPlayScene() {
     ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
     updateFrog();
+    
+    // Update and Draw enemies loop
+    let deltaTime = 16; // Constant frame time for 60FPS simulation
+    enemies.forEach(enemy => {
+        enemy.update(frog, deltaTime);
+        enemy.draw(ctx);
+    });
+
     drawFrog();
 
     backButton();
@@ -128,12 +209,16 @@ function beginRun() {
     currentLevel = 1;
     deck = [];
 
+    // Initialize enemies for the level with specific ranges and types
+    // Using new Enemy(x, y, width, height, color, type, sheetCols, patrolRange)
+    enemies = [
+        new Enemy(150, 150, 40, 40, "red", "mosquito", 4, 100),
+        new Enemy(600, 300, 50, 50, "brown", "spider", 6, 80)
+    ];
+
     currentScene = "play";
     gameLoopID = requestAnimationFrame(draw);
 };
-
-// create a new run in the database
-// we modify the original beginRun() function to an async function so it calls the apiStartRun() and stores the runId
 
 /* async function beginRun() {
     currentHealth = 100;
