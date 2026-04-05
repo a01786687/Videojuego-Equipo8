@@ -1,0 +1,74 @@
+/*
+ * Class for a game object that has animation using a spritesheet
+ *
+ * Gilberto Echeverria
+ * 2026-02-10
+ */
+
+"use strict";
+
+//import { GameObject } from "./GameObject";
+
+
+// Class to control the animation of characters and objects
+class AnimatedObject extends GameObject {
+    constructor(position, width, height, color, type, sheetCols) {
+        super(position, width, height, color, type);
+        // Animation properties
+        this.frame = 0;
+        // Define el rango de frames que voy a mostrar.
+        this.minFrame = 0;
+        this.maxFrame = 0;
+        // Define cuantas columnas hay en mi sprite sheet.
+        this.sheetCols = sheetCols;
+
+        // Para que se repita la animación.
+        this.repeat = true;
+
+        // Delay between frames (in milliseconds)
+        this.frameDuration = 100;
+        // Mide si ya debo ir cambiando de cuadro.
+        this.totalTime = 0;
+    }
+
+    setAnimation(minFrame, maxFrame, repeat, duration) {
+        this.minFrame = minFrame;
+        this.maxFrame = maxFrame;
+        this.frame = minFrame;
+        this.repeat = repeat;
+        this.totalTime = 0;
+        this.frameDuration = duration;
+
+        //console.log(Setting animation frames: ${this.minFrame} - ${this.maxFrame});
+    }
+
+    /*
+     * Change the frame number to the next one.
+     * Loop back to the first frame if the animation is set to repeat.
+     * Also set the rectangle to be drawn from the spritesheet according to the current frame.
+     *
+     * Arguments:
+     *   deltaTime: Time elapsed since the last frame (in milliseconds)
+     */
+    updateFrame(deltaTime) {
+        this.totalTime += deltaTime;
+        if (this.totalTime > this.frameDuration) {
+            // Loop around the animation frames if the animation is set to repeat
+            // Otherwise stay on the last frame
+            // TODO: Set the frame to be used when the frame range ends
+            //       Depends on the value of this.repeat
+            let restartFrame = this.repeat ? this.minFrame : this.maxFrame;
+            // TODO: Change the frame to the next one
+            //       Either the next one or the restart
+            this.frame = this.frame === this.maxFrame ? restartFrame : this.frame + 1;
+            // TODO: Determine the top left corner of the frame to draw from the spritesheet
+            //       This requires the number of columns in the sheet, multiplied by the dimensions
+            this.spriteRect.x = this.frame % this.sheetCols * this.spriteRect.width;
+            this.spriteRect.y = Math.floor(this.frame / this.sheetCols) * this.spriteRect.height;
+            // Restart the time count
+            this.totalTime = 0;
+            //console.log(New Rect:)
+            //console.log(this.spriteRect)
+        }
+    }
+}
