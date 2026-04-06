@@ -8,8 +8,8 @@ drawing of a playable scene
 "use strict";
 
 // --- GLOBAL VARIABLES ---
-
-
+let swampSurfaceBg = new Image();
+swampSurfaceBg.src = "/Anura/assets/swamp_surface/swamp_surface_background.png";
 // Frog object
 let frog = {
     x: canvasWidth / 2, // vienen de index.js, ya que como estan cargados del mismo HTML comparten mismo scope
@@ -105,11 +105,13 @@ class Enemy extends AnimatedObject {
         console.log(`${this.type} hit! Remaining health: ${this.health}`);
     }
 
+    // enemy death method
     die() {
         this.health = 0;
         console.log(this.type, " has died");
-        if (this.type === "mosquito") {
+        if (this.type === "mosquito") { // mosquito counter incremented
             runMosquitos++;
+            updateMosquitoHUD();
             console.log("Mosquitoes collected:", runMosquitos);
         }
     }
@@ -293,6 +295,7 @@ function checkFrogEnemyCollisions(deltaTime) {
             console.log('Frog hit, Health: ', currentHealth)
 
             // UPDATE HEALTH HUD GOES HERE
+            updateHealthHUD();
 
             if (currentHealth <= 0) {
                 currentHealth = 0; // avoids health errors like -5, -1, etc
@@ -303,6 +306,15 @@ function checkFrogEnemyCollisions(deltaTime) {
     });
 }
 
+// placeholder for the health HUD RF-14
+function updateHealthHUD() {
+    console.log('Health: ', currentHealth);
+}
+
+// placeholder for the mosquito HUD RF-24
+function updateMosquitoHUD() {
+    console.log('Mosquitoes: ', runMosquitos);
+}
 
 // temporary game over function MUST BE MODIFIED ON ITS ASSIGNED SPRINT
 
@@ -316,14 +328,17 @@ function gameOver() {
 
 function drawPlayScene() {
     if (pause) return; // when pause is true, it exits the drawPlayScene(), nothing gets drawn, when pause is false, it continues drawing normally
-    ctx.fillStyle = "#6fbf73"; // ctx viene de index.js
-    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+    //ctx.fillStyle = "#6fbf73"; // ctx viene de index.js
+    //ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+    ctx.drawImage(swampSurfaceBg, 0, 0, canvasWidth, canvasHeight);
 
     let deltaTime = 16;
     updateFrog(deltaTime);
     checkFrogEnemyCollisions(deltaTime);
     
-    // Filter out enemies that have no health left
+    // actors array correctly removes marked enemies
+    // Filter out enemies that have no health left, enemy disappears on next frame
     enemies = enemies.filter(enemy => enemy.health > 0);
     
     // Update and Draw current enemies
