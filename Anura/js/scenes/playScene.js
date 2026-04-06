@@ -9,6 +9,7 @@ drawing of a playable scene
 
 // --- GLOBAL VARIABLES ---
 
+
 // Frog object
 let frog = {
     x: canvasWidth / 2, // vienen de index.js, ya que como estan cargados del mismo HTML comparten mismo scope
@@ -27,7 +28,13 @@ let frog = {
     cooldownDuration: 500, // Time between attacks (ms)
     tongueRange: 60,
     tongueWidth: 15,
-    lastDirection: { x: 1, y: 0 } // Stores the last move to aim the tongue
+    lastDirection: { x: 1, y: 0 }, // Stores the last move to aim the tongue
+
+    //  RF-09 damage and invincibility
+    invincibilityTimer: 0,
+    invincibilityDuration: 1500, // (ms, so 1.5 s)
+    damageAmount: 10, // how much health each hit takes
+
 };
 
 // variable for the pressing keys 
@@ -61,7 +68,7 @@ const ENEMY_STATE = {
 };
 
 class Enemy extends AnimatedObject {
-    constructor(x, y, width, height, color, type, sheetCols, range, health) {
+    constructor(x, y, width, height, color, type, sheetCols, range, health, damage = 0) {
         // Initialize GameObject with Vector position
         super(new Vector(x, y), width, height, color, type, sheetCols);
         
@@ -77,6 +84,9 @@ class Enemy extends AnimatedObject {
         this.stunTimer = 0;
         this.stunDuration = 800; // Time the enemy is disabled after being hit
         
+        this.damage = damage;
+
+
         // Initialize spriteRect for AnimatedObject.js
         this.spriteRect = new Rect(0, 0, width, height);
     }
@@ -85,9 +95,23 @@ class Enemy extends AnimatedObject {
     takeDamage(amount) {
         if (this.state === ENEMY_STATE.STUNNED) return; // Invulnerability frames during stun
         this.health -= amount;
-        this.state = ENEMY_STATE.STUNNED;
-        this.stunTimer = this.stunDuration;
+
+        if (this.health <= 0) {
+            this.die();
+        } else {
+            this.state = ENEMY_STATE.STUNNED;
+            this.stunTimer = this.stunDuration;
+        }
         console.log(`${this.type} hit! Remaining health: ${this.health}`);
+    }
+
+    die() {
+        this.health = 0;
+        console.log(this.type, " has died");
+        if (this.type === "mosquito") {
+            runMosquitos++;
+            console.log("Mosquitoes collected:", runMosquitos);
+        }
     }
 
     update(target, deltaTime) {
@@ -197,8 +221,22 @@ function updateFrog(deltaTime) {
 }
 
 function drawFrog() {
+
+    // blink effect during invincibility
+    if (frog.invincibilityTimer > 0) {
+        // every 150ms swap between visible 1.0 and invisible 0.3
+        const blink = Math.floor(frog.invincibilityTimer / 150) % 2 === 0;
+        if (blink) {
+            ctx.globalAlpha = 0.3;
+        } else {
+            ctx.globalAlpha = 1.0; // this means fully visible
+        }
+    }
+
     ctx.fillStyle = frog.color;
     ctx.fillRect(frog.x, frog.y, frog.width, frog.height);
+    ctx.globalAlpha;
+    ctx.globalAlpha = 1.0;
 
     // Drawing the tongue attack if active
     if (frog.isAttacking) {
@@ -233,6 +271,46 @@ function drawFrog() {
     }
 }
 
+// checkFrogEnemyCollisions() checks for collisions between enemies and frog
+function checkFrogEnemyCollisions(deltaTime) {
+    if (frog.invincibilityTimer > 0) {
+        frog.invincibilityTimer -= deltaTime;
+        return; // if the timer is still runing, we exit the function, collisions aren't checked
+    }
+
+    // loop through enemies, when the frog is NOT invincible, normal state, each enemy must be checked
+    enemies.forEach(enemy => { 
+        // check enemy against the frog
+        if(enemy.state === ENEMY_STATE.STUNNED) return; // if the enemy state is stunned it doesnt deal damage so we skip it
+
+        // check overlap using boxOverlap() to see if the frog and enemy are touching
+        if (boxOverlap(frog, enemy)){
+            if (enemy.damage > 0){ // only if the current enemy deals damage
+                currentHealth -= enemy.damage; // use the enemy damage value,
+            }
+    
+            frog.invincibilityTimer = frog.invincibilityDuration; // the 1.5s timer starts
+            console.log('Frog hit, Health: ', currentHealth)
+
+            // UPDATE HEALTH HUD GOES HERE
+
+            if (currentHealth <= 0) {
+                currentHealth = 0; // avoids health errors like -5, -1, etc
+                gameOver();
+            }
+
+        }
+    });
+}
+
+
+// temporary game over function MUST BE MODIFIED ON ITS ASSIGNED SPRINT
+
+function gameOver() {
+    console.log("Game Over, Health: ", currentHealth);
+    cancelAnimationFrame(gameLoopID);
+    currentScene = "menu";
+}
 
 // PLAY SCENE
 
@@ -243,6 +321,7 @@ function drawPlayScene() {
 
     let deltaTime = 16;
     updateFrog(deltaTime);
+    checkFrogEnemyCollisions(deltaTime);
     
     // Filter out enemies that have no health left
     enemies = enemies.filter(enemy => enemy.health > 0);
@@ -282,11 +361,13 @@ function beginRun() {
     currentLevel = 1;
     deck = [];
 
+    frog.invincibilityTimer = 0; // resetting the timer for every new run
+
     // Initialize enemies for the level
     // Params: x, y, width, height, color, type, sheetCols, patrolRange, health
     enemies = [
-        new Enemy(150, 150, 40, 40, "red", "mosquito", 4, 100, 2), // Mosquito dies in 2 hits
-        new Enemy(600, 300, 50, 50, "brown", "spider", 6, 80, 5)   // Spider dies in 5 hits
+        new Enemy(150, 150, 40, 40, "red", "mosquito", 4, 100, 2, 0), // Mosquito dies in 2 hits, deals 0 damage
+        new Enemy(600, 300, 50, 50, "brown", "spider", 6, 80, 5, 10)   // Spider dies in 5 hits, deals 10 damage
     ];
 
     currentScene = "play";
