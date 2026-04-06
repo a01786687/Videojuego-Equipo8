@@ -15,8 +15,19 @@ let frog = {
     y: canvasHeight / 2,
     width: 50,
     height: 50,
+    halfSize: { x: 25, y: 25 }, // Required for boxOverlap compatibility
+    position: { x: canvasWidth / 2, y: canvasHeight / 2 }, // Sync with GameObject logic
     color: "#7ed967",
-    speed: 4
+    speed: 4,
+    // Attack properties
+    isAttacking: false,
+    attackTimer: 0,
+    attackDuration: 200, // How long the tongue stays out (ms)
+    attackCooldown: 0,
+    cooldownDuration: 500, // Time between attacks (ms)
+    tongueRange: 60,
+    tongueWidth: 15,
+    lastDirection: { x: 1, y: 0 } // Stores the last move to aim the tongue
 };
 
 // variable for the pressing keys 
@@ -50,63 +61,83 @@ const ENEMY_STATE = {
 };
 
 class Enemy extends AnimatedObject {
-    constructor(x, y, width, height, color, type, sheetCols, range) {
-        // Initialize GameObject with a Vector for position as required by your library
+    constructor(x, y, width, height, color, type, sheetCols, range, health) {
+        // Initialize GameObject with Vector position
         super(new Vector(x, y), width, height, color, type, sheetCols);
         
         this.state = ENEMY_STATE.PATROL;
         this.speed = 1.5;
-        this.range = range;      // Total distance the enemy can patrol from startX
-        this.startX = x;         // Pivot point for patrolling logic
-        this.direction = 1;      // Horizontal direction: 1 (right) or -1 (left)
-        this.detectionRadius = 150; // Distance to switch from patrol to chase
+        this.range = range;      // Patrol range
+        this.startX = x;         // Pivot point
+        this.direction = 1;      // Horizontal direction
+        this.detectionRadius = 150;
         
+        // Combat and Stun properties
+        this.health = health;    // Each enemy can now have different health values
         this.stunTimer = 0;
-        this.stunDuration = 1000; // Stun time in milliseconds
+        this.stunDuration = 800; // Time the enemy is disabled after being hit
+        
+        // Initialize spriteRect for AnimatedObject.js
+        this.spriteRect = new Rect(0, 0, width, height);
+    }
+
+    // Method to handle receiving damage
+    takeDamage(amount) {
+        if (this.state === ENEMY_STATE.STUNNED) return; // Invulnerability frames during stun
+        this.health -= amount;
+        this.state = ENEMY_STATE.STUNNED;
+        this.stunTimer = this.stunDuration;
+        console.log(`${this.type} hit! Remaining health: ${this.health}`);
     }
 
     update(target, deltaTime) {
-        // If stunned, decrease timer and skip movement logic
+        // Stop movement logic if the enemy is stunned
         if (this.state === ENEMY_STATE.STUNNED) {
             this.stunTimer -= deltaTime;
             if (this.stunTimer <= 0) this.state = ENEMY_STATE.PATROL;
             return;
         }
 
-        // Calculate distance between enemy center and frog
+        // Logic to track the player (frog)
         let dx = target.x - this.position.x;
         let dy = target.y - this.position.y;
         let distance = Math.sqrt(dx * dx + dy * dy);
 
-        // State Machine transitions
+        // State switching
         if (distance < this.detectionRadius) {
             this.state = ENEMY_STATE.CHASE;
         } else {
             this.state = ENEMY_STATE.PATROL;
         }
 
-        // Behavior based on current state
+        // Movement execution
         if (this.state === ENEMY_STATE.CHASE) {
-            // Move towards the player using trigonometry
             let angle = Math.atan2(dy, dx);
             this.position.x += Math.cos(angle) * this.speed;
             this.position.y += Math.sin(angle) * this.speed;
         } else {
-            // Horizontal patrol movement (MRU)
             this.position.x += this.speed * this.direction;
-            // Reverse direction if out of range
             if (Math.abs(this.position.x - this.startX) > this.range) {
                 this.direction *= -1;
             }
         }
         
-        // Update animation frames and collider sync
         this.updateFrame(deltaTime);
         this.updateCollider();
     }
 
-    
-    
+    draw(ctx) {
+        // Visual feedback when stunned
+        if (this.state === ENEMY_STATE.STUNNED) {
+            ctx.globalAlpha = 0.5;
+            ctx.strokeStyle = "white";
+            ctx.lineWidth = 2;
+            ctx.strokeRect(this.position.x - this.halfSize.x, this.position.y - this.halfSize.y, this.size.x, this.size.y);
+        }
+        
+        super.draw(ctx);
+        ctx.globalAlpha = 1.0;
+    }
 }
 
 // --- FUNCTIONS ---
@@ -119,48 +150,87 @@ function handleKeyUp(event) {
     keys[event.key] = false;
 }
 
-// frog movement logic
+// Global Mouse listener for the Tongue Attack
+window.addEventListener('mousedown', (event) => {
+    if (event.button === 0 && frog.attackCooldown <= 0 && !pause) { // Left click
+        frog.isAttacking = true;
+        frog.attackTimer = frog.attackDuration;
+        frog.attackCooldown = frog.cooldownDuration;
+    }
+});
 
-function updateFrog() {
-    if (keys ["w"]) {
-        frog.y -= frog.speed;
+function updateFrog(deltaTime) {
+    let moving = false;
+    let moveX = 0;
+    let moveY = 0;
+
+    if (keys["w"]) { moveY = -1; moving = true; }
+    if (keys["s"]) { moveY = 1; moving = true; }
+    if (keys["a"]) { moveX = -1; moving = true; }
+    if (keys["d"]) { moveX = 1; moving = true; }
+
+    if (moving) {
+        frog.x += moveX * frog.speed;
+        frog.y += moveY * frog.speed;
+        // Keep track of the last direction to aim the tongue
+        frog.lastDirection = { x: moveX, y: moveY };
     }
 
-    if (keys ["s"]) {
-        frog.y += frog.speed;
-    }
-
-    if (keys ["a"]) {
-        frog.x -= frog.speed;
-    }
-
-    if (keys ["d"]) {
-        frog.x += frog.speed;
-    }
+    // Sync frog position for collision logic (boxOverlap)
+    frog.position.x = frog.x + frog.width / 2;
+    frog.position.y = frog.y + frog.height / 2;
 
     // canvas limits
-    if (frog.x < 0){
-        frog.x = 0;
-    }
+    if (frog.x < 0) frog.x = 0;
+    if (frog.y < 0) frog.y = 0;
+    if (frog.x + frog.width > canvasWidth) frog.x = canvasWidth - frog.width;
+    if (frog.y + frog.height > canvasHeight) frog.y = canvasHeight - frog.height;
 
-    if (frog.y < 0){
-        frog.y = 0;
+    // Handle Attack timers
+    if (frog.attackTimer > 0) {
+        frog.attackTimer -= deltaTime;
+        if (frog.attackTimer <= 0) frog.isAttacking = false;
     }
-
-    if (frog.x + frog.width > canvasWidth) {
-        frog.x = canvasWidth - frog.width;
-    }
-
-    if (frog.y + frog.height > canvasHeight) {
-        frog.y = canvasHeight - frog.height;
+    if (frog.attackCooldown > 0) {
+        frog.attackCooldown -= deltaTime;
     }
 }
-
-// drawing the frog
 
 function drawFrog() {
     ctx.fillStyle = frog.color;
     ctx.fillRect(frog.x, frog.y, frog.width, frog.height);
+
+    // Drawing the tongue attack if active
+    if (frog.isAttacking) {
+        ctx.fillStyle = "#ff7eb6"; // Tongue pink
+        
+        let tonguePosX = frog.position.x + (frog.lastDirection.x * frog.tongueRange / 2);
+        let tonguePosY = frog.position.y + (frog.lastDirection.y * frog.tongueRange / 2);
+        
+        // Temporary tongue object for boxOverlap compatibility
+        let tongueRect = {
+            position: { x: tonguePosX, y: tonguePosY },
+            halfSize: { 
+                x: frog.lastDirection.x !== 0 ? frog.tongueRange / 2 : frog.tongueWidth / 2,
+                y: frog.lastDirection.y !== 0 ? frog.tongueRange / 2 : frog.tongueWidth / 2
+            }
+        };
+
+        // Render the tongue
+        ctx.fillRect(
+            tongueRect.position.x - tongueRect.halfSize.x,
+            tongueRect.position.y - tongueRect.halfSize.y,
+            tongueRect.halfSize.x * 2,
+            tongueRect.halfSize.y * 2
+        );
+
+        // Check for hits against enemies
+        enemies.forEach(enemy => {
+            if (boxOverlap(tongueRect, enemy)) {
+                enemy.takeDamage(1);
+            }
+        });
+    }
 }
 
 
@@ -171,10 +241,13 @@ function drawPlayScene() {
     ctx.fillStyle = "#6fbf73"; // ctx viene de index.js
     ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
-    updateFrog();
+    let deltaTime = 16;
+    updateFrog(deltaTime);
     
-    // Update and Draw enemies loop
-    let deltaTime = 16; // Constant frame time for 60FPS simulation
+    // Filter out enemies that have no health left
+    enemies = enemies.filter(enemy => enemy.health > 0);
+    
+    // Update and Draw current enemies
     enemies.forEach(enemy => {
         enemy.update(frog, deltaTime);
         enemy.draw(ctx);
@@ -209,11 +282,11 @@ function beginRun() {
     currentLevel = 1;
     deck = [];
 
-    // Initialize enemies for the level with specific ranges and types
-    // Using new Enemy(x, y, width, height, color, type, sheetCols, patrolRange)
+    // Initialize enemies for the level
+    // Params: x, y, width, height, color, type, sheetCols, patrolRange, health
     enemies = [
-        new Enemy(150, 150, 40, 40, "red", "mosquito", 4, 100),
-        new Enemy(600, 300, 50, 50, "brown", "spider", 6, 80)
+        new Enemy(150, 150, 40, 40, "red", "mosquito", 4, 100, 2), // Mosquito dies in 2 hits
+        new Enemy(600, 300, 50, 50, "brown", "spider", 6, 80, 5)   // Spider dies in 5 hits
     ];
 
     currentScene = "play";
