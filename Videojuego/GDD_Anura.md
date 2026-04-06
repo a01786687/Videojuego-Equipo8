@@ -50,7 +50,9 @@
 
 ### **Summary**
 
-A small frog fights its way up the food chain in a 2D roguelite fighting game set in a swamp. Players collect mosquitoes, build strategic card combinations, and defeat increasingly larger predator bosses to survive each run.
+Anura is a 2D roguelite fighting game set in a dangerous swamp. The player controls a small frog fighting its way up the food chain, collecting mosquitoes as persistent currency, building a strategic 3 card deck across runs, and defeating increasingly threatening predator bosses to complete a run.
+
+The game is built in **HTML/JavaScript** using a canvas-based game loop.
 
 ### **Gameplay**
 
