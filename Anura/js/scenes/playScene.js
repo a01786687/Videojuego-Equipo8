@@ -7,6 +7,29 @@ drawing of a playable scene
 
 "use strict";
 
+// variable for the pressing keys 
+// tracks which keys are currently held down
+let keys = {};
+
+// variable for storing the pause flag
+let pause = false;
+
+// variables for beginRun();
+let currentHealth = 100;
+let HP_display;
+let maxHealth = 100;
+let runMosquitos = 0;
+let currentLevel = 1;
+let deck = []; // deck is empty on the first run, it will be loaded from the API when RF-47 is ready
+
+// game loop id for stopping the game when there's a game over, it has null value, same as activeUser since there's no active game
+let gameLoopID = null;
+
+let activeRunId = null; // stores the current run's ID from the database
+
+// Array for enemies
+let enemies = [];
+
 // --- GLOBAL VARIABLES ---
 let swampSurfaceBg = new Image();
 swampSurfaceBg.src = "/Anura/assets/swamp_surface/swamp_surface_background.png";
@@ -34,30 +57,12 @@ let frog = {
     invincibilityTimer: 0,
     invincibilityDuration: 1500, // (ms, so 1.5 s)
     damageAmount: 10, // how much health each hit takes
+   
+
 
 };
 
-// variable for the pressing keys 
-// tracks which keys are currently held down
-let keys = {};
 
-// variable for storing the pause flag
-let pause = false;
-
-// variables for beginRun();
-let currentHealth = 100;
-let maxHealth = 100;
-let runMosquitos = 0;
-let currentLevel = 1;
-let deck = []; // deck is empty on the first run, it will be loaded from the API when RF-47 is ready
-
-// game loop id for stopping the game when there's a game over, it has null value, same as activeUser since there's no active game
-let gameLoopID = null;
-
-let activeRunId = null; // stores the current run's ID from the database
-
-// Array for enemies
-let enemies = [];
 
 // --- ENEMY CLASS ---
 
@@ -224,7 +229,9 @@ function updateFrog(deltaTime) {
 
 function drawFrog() {
 
+
     // blink effect during invincibility
+    
     if (frog.invincibilityTimer > 0) {
         // every 150ms swap between visible 1.0 and invisible 0.3
         const blink = Math.floor(frog.invincibilityTimer / 150) % 2 === 0;
@@ -239,6 +246,7 @@ function drawFrog() {
     ctx.fillRect(frog.x, frog.y, frog.width, frog.height);
     ctx.globalAlpha;
     ctx.globalAlpha = 1.0;
+
 
     // Drawing the tongue attack if active
     if (frog.isAttacking) {
@@ -306,6 +314,11 @@ function checkFrogEnemyCollisions(deltaTime) {
     });
 }
 
+function HealthBarDisplay(){
+    HP_display = new TextLabel(canvasWidth/16,canvasHeight-90,"50px Ubuntu Mono","cyan");
+    HP_display.draw(ctx,currentHealth);
+}
+
 // placeholder for the health HUD RF-14
 function updateHealthHUD() {
     console.log('Health: ', currentHealth);
@@ -332,6 +345,8 @@ function drawPlayScene() {
     //ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
     ctx.drawImage(swampSurfaceBg, 0, 0, canvasWidth, canvasHeight);
+    //Draw the health game bar
+
 
     let deltaTime = 16;
     updateFrog(deltaTime);
@@ -348,7 +363,7 @@ function drawPlayScene() {
     });
 
     drawFrog();
-
+    HealthBarDisplay();
     backButton();
 };
 
