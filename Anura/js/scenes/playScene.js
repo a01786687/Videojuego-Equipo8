@@ -8,8 +8,8 @@ drawing of a playable scene
 "use strict";
 
 // --- GLOBAL VARIABLES ---
-
-
+let swampSurfaceBg = new Image();
+swampSurfaceBg.src = "/Anura/assets/swamp_surface/swamp_surface_background.png";
 // Frog object
 let frog = {
     x: canvasWidth / 2, // vienen de index.js, ya que como estan cargados del mismo HTML comparten mismo scope
@@ -316,8 +316,10 @@ function gameOver() {
 
 function drawPlayScene() {
     if (pause) return; // when pause is true, it exits the drawPlayScene(), nothing gets drawn, when pause is false, it continues drawing normally
-    ctx.fillStyle = "#6fbf73"; // ctx viene de index.js
-    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+    //ctx.fillStyle = "#6fbf73"; // ctx viene de index.js
+    //ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+    ctx.drawImage(swampSurfaceBg, 0, 0, canvasWidth, canvasHeight);
 
     let deltaTime = 16;
     updateFrog(deltaTime);
