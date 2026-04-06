@@ -6,3 +6,4 @@ packages-lock.json
 .dwlt
 .env
 .DS_Store
+PAT.txt
