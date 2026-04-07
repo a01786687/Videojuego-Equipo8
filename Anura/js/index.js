@@ -49,8 +49,7 @@ function main() {
     canvas.addEventListener("click", handleClick);
     
     // handleKeyDown and handleKeyUp are defined in playScene.js
-    
-    window.addEventListener("keyup", handleKeyUp);
+
 
     backgroundImage.onload = () => {
         bgReady = true;
