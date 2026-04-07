@@ -217,7 +217,7 @@ The following are the core mechanics and how they function at a systems level.
  
     need: collision detection system for mosquito collection, hitbox activation during attack animation frames, cooldown timer to prevent spamming.
  
-    The tongue attack will be a melee attack that will only depend on the direction the player is looking. This can be right,left, up, diagonally right and diagonally left, and it will have a limited distance so it'll be effective to use short range.
+    The tongue attack will be a melee attack that will only depend on the direction the player is looking. This can be right, left and up, and it will have a limited distance so it'll be effective to use short range.
  
     - In terms of physics, we want to implement the movement of the tongue attack as a MRU movement that will stop at a short distance and will always move in “x” direction, we also want to assign these attack the hitpoints that will deal to the boss
  
