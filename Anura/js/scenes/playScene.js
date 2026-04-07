@@ -33,6 +33,7 @@ let enemies = [];
 // --- GLOBAL VARIABLES ---
 let swampSurfaceBg = new Image();
 swampSurfaceBg.src = "/Anura/assets/swamp_surface/swamp_surface_background.png";
+
 // Frog object
 let frog = {
     x: canvasWidth / 2, // vienen de index.js, ya que como estan cargados del mismo HTML comparten mismo scope
@@ -42,7 +43,27 @@ let frog = {
     halfSize: { x: 25, y: 25 }, // Required for boxOverlap compatibility
     position: { x: canvasWidth / 2, y: canvasHeight / 2 }, // Sync with GameObject logic
     color: "#7ed967",
-    speed: 4,
+
+    // movement
+    speed: 3,
+    velocityY: 0, // used for jumping, current vertical speed, intitialized at 0
+    isOnGround: true, // used for jumping
+    gravity: 0.4, // pulls the frog down each frame
+    jumpForce: -12, // makes the frog jump up, its negative because on the canvas Y increases down, so negative = up
+
+    // dash properties
+    dashSpeed: 12,
+    dashDuration: 150, // ms
+    dashTimer: 0,
+    dashCooldown: 3000,
+    dashCooldownTimer: 0,
+    isDashing: false,
+    dashDirection: 1, // 1 -> right, -1 -> left
+
+    // crouch properties
+    isCrouching: false,
+    crouchSpeed: 0.4, // multiplier so it scales correctly to the speed its set to
+
     // Attack properties
     isAttacking: false,
     attackTimer: 0,
@@ -173,9 +194,6 @@ class Enemy extends AnimatedObject {
 
 // --- FUNCTIONS ---
 
-function handleKeyDown(event) {
-    keys[event.key] = true;
-}
 
 function handleKeyUp(event) {
     keys[event.key] = false;
@@ -191,31 +209,70 @@ window.addEventListener('mousedown', (event) => {
 });
 
 function updateFrog(deltaTime) {
-    let moving = false;
     let moveX = 0;
-    let moveY = 0;
 
-    if (keys["w"]) { moveY = -1; moving = true; }
-    if (keys["s"]) { moveY = 1; moving = true; }
-    if (keys["a"]) { moveX = -1; moving = true; }
-    if (keys["d"]) { moveX = 1; moving = true; }
-
-    if (moving) {
-        frog.x += moveX * frog.speed;
-        frog.y += moveY * frog.speed;
-        // Keep track of the last direction to aim the tongue
-        frog.lastDirection = { x: moveX, y: moveY };
+    // dash timer countdown
+    if (frog.isDashing) {
+        frog.dashTimer -= deltaTime;
+        if (frog.dashTimer <=0) {
+            frog.isDashing = false;
+        }
     }
 
-    // Sync frog position for collision logic (boxOverlap)
-    frog.position.x = frog.x + frog.width / 2;
-    frog.position.y = frog.y + frog.height / 2;
+    // dash cooldown
+    if (frog.dashCooldownTimer > 0) {
+        frog.dashCooldownTimer -= deltaTime;
+    }
+
+    //crouch, only possible if the floor is on the grounf
+    frog.isCrouching = (keys["s"] || keys["S"]) && frog.isOnGround;
+
+    // Horizontal movement
+    if (keys["a"]) { moveX = -1; frog.lastDirection = { x: -1, y: 0 }; frog.dashDirection = -1; } // left
+    if (keys["d"]) { moveX = 1;  frog.lastDirection = { x: 1,  y: 0 }; frog.dashDirection = 1; } // right
+
+    // while the frog is dashing, it uses dash movement instead of normal movement
+    if (frog.isDashing){
+        frog.x += frog.dashSpeed * frog.dashDirection;
+    } else {
+        let currentSpeed; // empty cause it gets asigned depending if the frog is crouching or not
+        
+        if (frog.isCrouching) {
+            currentSpeed = frog.speed * frog.crouchSpeed; // speed is slowed
+        } else {
+            currentSpeed = frog.speed; // normal speed
+        }
+
+        frog.x += moveX * currentSpeed;
+    }
+
+    // frog.dashDirection updates when A or D is pressed so the dash always goes the way the frog was last moving, ex if i was pressing a, frog moves to the left
+
+
+    // gravity, pulls frog down every frame
+    frog.velocityY += frog.gravity; // add gravity to speed, makes it fall faster
+    frog.y += frog.velocityY; // move frog by that speed, updates the position
+
+    // cheks if the floor is on the ground
+    const groundY = canvasHeight - frog.height;
+    if (frog.y >= groundY) {
+        frog.y = groundY; // stay on ground
+        frog.velocityY = 0; // stops moving down
+        frog.isOnGround = true; // this allows jumping again
+    }
+
 
     // canvas limits
     if (frog.x < 0) frog.x = 0;
     if (frog.y < 0) frog.y = 0;
     if (frog.x + frog.width > canvasWidth) frog.x = canvasWidth - frog.width;
     if (frog.y + frog.height > canvasHeight) frog.y = canvasHeight - frog.height;
+    
+
+    // Sync frog position for collision logic (boxOverlap)
+    frog.position.x = frog.x + frog.width / 2;
+    frog.position.y = frog.y + frog.height / 2;
+
 
     // Handle Attack timers
     if (frog.attackTimer > 0) {
@@ -243,7 +300,18 @@ function drawFrog() {
     }
 
     ctx.fillStyle = frog.color;
-    ctx.fillRect(frog.x, frog.y, frog.width, frog.height);
+
+    // visual feedback for crounching, will be replaced with sprites in the future
+
+    if (frog.isCrouching) {
+        const crouchHeight = frog.height / 2; 
+        const crouchWidth = frog.width * 1.2;
+        const crouchX = frog.x - (crouchWidth - frog.width) / 2; // centers it
+        const crouchY = frog.y + (frog.height - crouchHeight);
+        ctx.fillRect(crouchX, crouchY, crouchWidth, crouchHeight);
+    } else {
+        ctx.fillRect(frog.x, frog.y, frog.width, frog.height);
+    }
     ctx.globalAlpha;
     ctx.globalAlpha = 1.0;
 
@@ -376,10 +444,32 @@ function pressPause() {
     }
 };
 
+// only one keydown listener for everything
+
 window.addEventListener('keydown', (event) => {
+    keys[event.key] = true // if a key is pressed -> sets to true
     if (event.key === 'Escape') {
         pressPause();
     }
+
+    // spacebar
+    if (event.key === ' ' && frog.isOnGround) { // isOnGround prevents double jump, it goes dalse when you jump and returns to true when the ground check gets triggered
+        frog.velocityY = frog.jumpForce; // jumps up
+        frog.isOnGround = false; // avoids double jump
+    }
+
+    // dash
+    // !event.repeat → only triggers on the first key press (not when holding the key)
+    // dash only works if the frog is NOT already dashing and if the cooldown has finished
+    if (event.key === 'Shift' && !event.repeat && !frog.isDashing && frog.dashCooldownTimer <= 0) {
+        frog.isDashing = true;
+        frog.dashTimer = frog.dashDuration; 
+        frog.dashCooldownTimer = frog.dashCooldown;
+    }
+});
+
+window.addEventListener('keyup', (event) => {
+    keys[event.key] = false; // if a key is released -> sets to false
 });
 
 // BEGIN RUN
