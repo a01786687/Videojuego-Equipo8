@@ -45,7 +45,7 @@ let frog = {
     color: "#7ed967",
 
     // movement
-    speed: 3,
+    speed: 0.3,
     velocityY: 0, // used for jumping, current vertical speed, intitialized at 0
     isOnGround: true, // used for jumping
     gravity: 0.4, // pulls the frog down each frame
@@ -199,22 +199,21 @@ function handleKeyUp(event) {
     keys[event.key] = false;
 }
 
-// Global Mouse listener for the Tongue Attack
-window.addEventListener('mousedown', (event) => {
-    if (event.button === 0 && frog.attackCooldown <= 0 && !pause) { // Left click
-        frog.isAttacking = true;
-        frog.attackTimer = frog.attackDuration;
-        frog.attackCooldown = frog.cooldownDuration;
-    }
-});
+function handleKeyDown(event) {
+
+}
+
+
 
 function updateFrog(deltaTime) {
     let moveX = 0;
+    console.log(keys);
 
     // dash timer countdown
     if (frog.isDashing) {
         frog.dashTimer -= deltaTime;
         if (frog.dashTimer <=0) {
+            frog.color = "green";
             frog.isDashing = false;
         }
     }
@@ -222,6 +221,10 @@ function updateFrog(deltaTime) {
     // dash cooldown
     if (frog.dashCooldownTimer > 0) {
         frog.dashCooldownTimer -= deltaTime;
+    } 
+    
+    if (frog.dashCooldownTimer < 0) {
+        frog.dashCooldownTimer = 0; // avoids negative value errors for cooldown timer
     }
 
     //crouch, only possible if the floor is on the grounf
@@ -471,12 +474,12 @@ function drawPlayScene() {
 
 function pressPause() {
     pause = !pause; // toggle pause flag, flips true to false and false to true
-    if (!pause) { // if pause is false, the game is resuming/ restarting the game loop
-        requestAnimationFrame(draw);
-    }
+    // removed call requestAnimationFrame here - the main draw loop in index.js already handles it
+    // Multiple ESC presses were creating parallel animation frames, causing speed multipliers
 };
 
 // only one keydown listener for everything
+window.addEventListener("keyup", handleKeyUp);
 
 window.addEventListener('keydown', (event) => {
     keys[event.key] = true // if a key is pressed -> sets to true
@@ -493,10 +496,19 @@ window.addEventListener('keydown', (event) => {
     // dash
     // !event.repeat → only triggers on the first key press (not when holding the key)
     // dash only works if the frog is NOT already dashing and if the cooldown has finished
-    if (event.key === 'Shift' && !event.repeat && !frog.isDashing && frog.dashCooldownTimer <= 0) {
+    if (event.key === 'j' && !event.repeat && !frog.isDashing && frog.dashCooldownTimer <= 0) {
+                    frog.color = "blue";
+
         frog.isDashing = true;
         frog.dashTimer = frog.dashDuration; 
         frog.dashCooldownTimer = frog.dashCooldown;
+    }
+
+    // attack with 'i' key
+    if (event.key === 'i' && !event.repeat && frog.attackCooldown <= 0 && !pause) {
+        frog.isAttacking = true;
+        frog.attackTimer = frog.attackDuration;
+        frog.attackCooldown = frog.cooldownDuration;
     }
 });
 
