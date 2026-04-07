@@ -14,6 +14,9 @@ let keys = {};
 // variable for storing the pause flag
 let pause = false;
 
+// variable for storing the game over flag
+let isGameOver = false;
+
 // variables for beginRun();
 let currentHealth = 100;
 let HP_display;
@@ -36,8 +39,8 @@ swampSurfaceBg.src = "../Anura/assets/swamp_surface/swamp_surface_background.png
 
 // Frog object
 let frog = {
-    x: canvasWidth / 2, // vienen de index.js, ya que como estan cargados del mismo HTML comparten mismo scope
-    y: canvasHeight / 2,
+    x: 0, // vienen de index.js, ya que como estan cargados del mismo HTML comparten mismo scope
+    y: canvasHeight - 50,
     width: 50,
     height: 50,
     halfSize: { x: 25, y: 25 }, // Required for boxOverlap compatibility
@@ -251,6 +254,8 @@ function updateFrog(deltaTime) {
     if (keys["a"]) { moveX = -1; frog.lastDirection = { x: -1, y: 0 }; frog.dashDirection = -1; } // left
     if (keys["d"]) { moveX = 1;  frog.lastDirection = { x: 1,  y: 0 }; frog.dashDirection = 1; } // right
 
+    // aim tongue up with W
+    if (keys["w"]) { frog.lastDirection = {x: 0, y: -1 }; }
     // while the frog is dashing, it uses dash movement instead of normal movement
     if (frog.isDashing){
         frog.x += frog.dashSpeed * frog.dashDirection;
@@ -369,6 +374,23 @@ function drawFrog() {
     }
 }
 
+// function for resetting frog position and movement
+
+function frogReset() {
+
+    // position
+    frog.x = 0;
+    frog.y = canvasHeight - 50;
+
+    // movement
+    frog.velocityY = 0;
+    frog.isOnGround = true;
+
+    // collision position
+    frog.position.x = frog.x + frog.width / 2;
+    frog.position.y = frog.y + frog.height / 2;
+}
+
 // checkFrogEnemyCollisions() checks for collisions between enemies and frog
 function checkFrogEnemyCollisions(deltaTime) {
     if (frog.invincibilityTimer > 0) {
@@ -449,13 +471,25 @@ function updateMosquitoHUD() {
     console.log('Mosquitoes: ', runMosquitos);
 }
 
+function drawGameOver() {
+    ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
+    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+    // text
+    ctx.fillStyle = "white";
+    ctx.font = "48px Pixelify Sans";
+    ctx.textAlign = "center";
+    ctx.fillText("GAME OVER", canvasWidth / 2, canvasHeight / 2 - 40);
+}
+
 // temporary game over function MUST BE MODIFIED ON ITS ASSIGNED SPRINT
 
 function gameOver() {
     console.log("Game Over, Health: ", currentHealth);
-    cancelAnimationFrame(gameLoopID);
-    currentScene = "menu";
+    isGameOver = true;
 }
+
+
 
 // PLAY SCENE
 
@@ -469,21 +503,29 @@ function drawPlayScene() {
 
 
     let deltaTime = 16;
-    updateFrog(deltaTime);
-    checkFrogEnemyCollisions(deltaTime);
-    
-    // actors array correctly removes marked enemies
-    // Filter out enemies that have no health left, enemy disappears on next frame
-    enemies = enemies.filter(enemy => enemy.health > 0);
-    
-    // Update and Draw current enemies
-    enemies.forEach(enemy => {
-        enemy.update(frog, deltaTime);
-        enemy.draw(ctx);
-    });
 
-    drawFrog();
-    HealthBarDisplay();
+    if (!isGameOver) {
+        updateFrog(deltaTime);
+        checkFrogEnemyCollisions(deltaTime);
+
+        // actors array correctly removes marked enemies
+        // Filter out enemies that have no health left, enemy disappears on next frame
+        enemies = enemies.filter(enemy => enemy.health > 0);
+        
+        // Update and Draw current enemies
+        enemies.forEach(enemy => {
+            enemy.update(frog, deltaTime);
+            enemy.draw(ctx);
+        });
+
+        drawFrog();
+        HealthBarDisplay();
+    }
+
+    if (isGameOver) {
+        drawGameOver();
+    }
+
     backButton();
 };
 
@@ -536,18 +578,23 @@ window.addEventListener('keyup', (event) => {
 // BEGIN RUN
 
 function beginRun() {
+
+    isGameOver = false; 
+
     currentHealth = 100;
     maxHealth = 100;
     runMosquitos = 0;
     currentLevel = 1;
     deck = [];
 
+    frogReset();
+
     frog.invincibilityTimer = 0; // resetting the timer for every new run
 
     // Initialize enemies for the level
     // Params: x, y, width, height, color, type, sheetCols, patrolRange, health
     enemies = [
-        new Enemy(150, 150, 40, 40, "red", "mosquito", 4, 100, 2, 0), // Mosquito dies in 2 hits, deals 0 damage
+        new Enemy(150, 350, 40, 40, "red", "mosquito", 4, 100, 2, 0), // Mosquito dies in 2 hits, deals 0 damage
         new Enemy(600, 300, 50, 50, "brown", "spider", 6, 80, 5, 3)   // Spider dies in 5 hits, deals 10 damage
     ];
 
@@ -555,48 +602,13 @@ function beginRun() {
     gameLoopID = requestAnimationFrame(draw);
 };
 
-/* async function beginRun() {
-    currentHealth = 100;
-    maxHealth = 100;
-    runMosquitos = 0;
-    currentLevel = 1;
-    deck = [];
-
-    // creating a new run in the database
-    const result = await apiStartRun(activeSessionId);
-    if (result.success) {
-        activeRunId = result.runId;
-    }
-
-    currentScene = "play";
-    // scene needs to be set BEFORE the loop starts drawing
-    gameLoopID = requestAnimationFrame(draw);
-        
-};
-
-*/
 
 // CONTINUE RUN
 function continueRun() {
+    isGameOver = false;
+
     currentHealth = 100;
     // runMosquitos, deck and currentLevel persist — will load from API when RF-49 expands
     currentScene = "play";
     gameLoopID = requestAnimationFrame(draw);
 };
-
-/*
-async function continueRun() {
-    const result = await apiGetRun(activeUserId);
-    
-    if (result.success) {
-        activeRunId = result.run.run_id;
-        runMosquitos = result.run.mosquitoes_collected;
-        currentLevel = result.run.stage_number || 1; // will be loaded from run_stages when ready
-        currentHealth = 100; // temp, will be restored from API when RF-49 expands
-    }
-
-    currentScene = "play";
-    gameLoopID = requestAnimationFrame(draw);
-
-};
-*/
