@@ -45,7 +45,7 @@ let frog = {
     color: "#7ed967",
 
     // movement
-    speed: 0.3,
+    speed: 1,
     velocityY: 0, // used for jumping, current vertical speed, intitialized at 0
     isOnGround: true, // used for jumping
     gravity: 0.4, // pulls the frog down each frame
@@ -97,39 +97,56 @@ class Enemy extends AnimatedObject {
     constructor(x, y, width, height, color, type, sheetCols, range, health, damage = 0) {
         // Initialize GameObject with Vector position
         super(new Vector(x, y), width, height, color, type, sheetCols);
-        
+       
         this.state = ENEMY_STATE.PATROL;
         this.speed = 1.5;
         this.range = range;      // Patrol range
         this.startX = x;         // Pivot point
         this.direction = 1;      // Horizontal direction
         this.detectionRadius = 150;
-        
+       
         // Combat and Stun properties
         this.health = health;    // Each enemy can now have different health values
         this.stunTimer = 0;
         this.stunDuration = 800; // Time the enemy is disabled after being hit
-        
+       
         this.damage = damage;
+        //hit counter to set a longer stun duration in enemies
+        this.hitCounter = 0;
+
+
 
 
         // Initialize spriteRect for AnimatedObject.js
         this.spriteRect = new Rect(0, 0, width, height);
     }
 
+
     // Method to handle receiving damage
     takeDamage(amount) {
         if (this.state === ENEMY_STATE.STUNNED) return; // Invulnerability frames during stun
         this.health -= amount;
+        this.hitCounter = this.hitCounter + 1;
+        console.log('Enemy took a hit: '+ this.hitCounter);
+
 
         if (this.health <= 0) {
             this.die();
-        } else {
-            this.state = ENEMY_STATE.STUNNED;
-            this.stunTimer = this.stunDuration;
+        }
+        else {
+            if(this.hitCounter > 3){
+                this.state = ENEMY_STATE.STUNNED;
+                this.stunTimer = this.stunDuration * 4;
+                this.hitCounter = 0;
+            }
+            else{
+                this.state = ENEMY_STATE.STUNNED;
+                this.stunTimer = this.stunDuration;
+            }
         }
         console.log(`${this.type} hit! Remaining health: ${this.health}`);
     }
+
 
     // enemy death method
     die() {
@@ -531,7 +548,7 @@ function beginRun() {
     // Params: x, y, width, height, color, type, sheetCols, patrolRange, health
     enemies = [
         new Enemy(150, 150, 40, 40, "red", "mosquito", 4, 100, 2, 0), // Mosquito dies in 2 hits, deals 0 damage
-        new Enemy(600, 300, 50, 50, "brown", "spider", 6, 80, 5, 10)   // Spider dies in 5 hits, deals 10 damage
+        new Enemy(600, 300, 50, 50, "brown", "spider", 6, 80, 5, 3)   // Spider dies in 5 hits, deals 10 damage
     ];
 
     currentScene = "play";
