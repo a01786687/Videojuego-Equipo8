@@ -1,34 +1,60 @@
 /*
- server.js
- main Express server for Anura
- It's the bridge for connecting our backend to our frontend, routes, and starts the server.
- It's the main file that starts everything, sets up express, connects to database, and tells the server which routes exist
+ app_anura.js
+
+ Main Express server for Anura.
+
+ Responsibilities:
+
+ - Initialize the Express app
+ - Set up tools so the server can handle requests (like JSON and external access)
+ - Define API endpoints (routes)
+ - Connect endpoints with database logic (db.js)
+ - Start the server
+
+ This file acts as the bridge between:
+
+- Frontend (client)
+- Backend logic (database + endpoints)
+
  */
 
 
-const express = require('express');
-const cors = require('cors');
-const bodyParser = require('body-parser');
-// no longer importing mysql2 directly because that's now something that db.js will do, -> removed: const mysql = require('mysql2');
+import express from 'express'
+import cors from 'cors'
+
+// importing database functions (queries)
+import { getUsers } from './db.js'
 
 const app = express();
 const port = 8080;
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-app.use(cors({
-    origin: 'http://127.0.0.1:3000'
-}));
+// --- MIDDLEWARES (TOOLS) ---
 
-// Database connection
-require('./db.js'); // runs the connection code 
+app.use(express.json()); // Allows the server to read and understand JSON data sent from the frontend (body parser alternative)
+app.use(cors()); // Allows requests from other apps (like the frontend) since it's empty it uses the default configuration
 
-// Routes
-const authRoutes = require('./routes/auth.js');
-const runRoutes = require('./routes/runs.js');
 
-app.use('/auth', authRoutes);
-app.use('/runs', runRoutes);
+// --- ROUTES (API ENDPOINTS) ---
+
+/* 
+
+    GET /users
+
+    Description:
+    - Fetches all users from the database
+
+    Flow:
+    Client → /users → server → db.js → MySQL → response → client
+
+*/
+
+
+app.get("/users", async (req, res) => {
+    const users = await getUsers()
+    res.send(users)
+})
+
+// --- SERVER START ---
 
 app.listen(port, () => {
     console.log(`Anura server running on port ${port}`);
@@ -36,5 +62,11 @@ app.listen(port, () => {
 
 
 /* NOTES:
+
+ - All database queries should be defined in db.js
+ - This file should only handle routes and server logic
+ - Avoid putting SQL queries directly here
+
+cors() -> by default it allows requests from any origin (any frontend, any domain)
 
 */
