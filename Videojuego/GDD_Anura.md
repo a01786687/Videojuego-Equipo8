@@ -237,55 +237,50 @@ The following are the core mechanics and how they function at a systems level.
  
  
 2. Card System
- 
-    Cards are activated by pressing their assigned key (1, 2, or 3) at any time. However, activation rules differ between game sections:
- 
-    - **Platform sections:** The player can carry up to 3 cards in their deck, but may only activate 1 card during the entire platforming section. Once a card is activated, the other two are locked for the remainder of that section.
-    - **Boss fights:** All 3 cards in the deck are unlocked and usable simultaneously. Cards remain active and available for the full duration of the boss fight.
- 
-    Mechanically:
- 
-    - The player has a deck of 3 equipped cards
-    -  Each card will be able to impact players abilities like dash, attacks that will make the gameplay different and more effective against enemies, making progression possible
-      
- 
-    Card activation logic
- 
-    Each card functions as an ability object with:
- 
-    - cooldown timer (depends on whether the card impacts the players abilities or it triggers a newly assigned effect that requires another key)
-    - effect value (damage, shield, speed modifier, etc)
-    - optional synergy interaction
- 
-    Cards are stored in a structured array representing the player's active build:
- 
- 
-    playerDeck = [card1, card2, card3]
- 
-    If the card triggers a new ability, when a key (1, 2, 3) is pressed:
- 
-    - the system checks if cooldown <= 0
-    - if true -> applies the card effect
-    - cooldown resets
-    - visual feeback is triggered
- 
-    else, the card isn't a new ability it will just impact the current gameplay to help the player progress significanlty in the run.
- 
-    _Strategic component:_
-    
-    Although the player only equips 3 cards per run, the full collection of unlocked cards creates build diversity. Different combinations lead to different playstyles (aggressive, defensive, sustain based, mobility focused)
- 
-    This limited deck size reinforces strategic pre run decision making, aligning with TCG design principles.
- 
-    This means players can adapt or keep certain cards that make their runs feel comfortable and easier to progress.
- 
-    The player can equip up to 3 cards per run.
-    If the player already has 3 cards and decides to purchase a new one, they must choose which existing card to replace. Also mentioning that it exists the posibility of buying the discarded card in the future.
-    This reinforces strategic decision-making when building a deck.
- 
-    _Cards defined_
- 
-    It's essential as well to define how we want to define each cards and what will do each card:
+
+The card system revolves around three active slots, each assigned to a specific category. While players manage three active cards at a time, they can now build a larger deck that cycles through these slots dynamically.
+
+ Core Mechanics
+
+* **Slot System:** Cards are activated by pressing their assigned key (**1, 2, or 3**). Each slot is dedicated to a specific category (e.g., Attack, Defense, Utility).
+* **The Deck:** Players can now accumulate an unlimited number of cards in their deck. These cards sit in a queue behind the three active slots.
+* **Burn & Replace:** Cards are single-use. When a card is activated, it is "burned" and removed from the deck. Immediately after, a new card of the same category is randomly pulled from the remaining deck and placed into the active slot.
+* **Sequential Activation:** In all game sections—including **Boss Fights**—cards are activated one by one. The ability to trigger three cards simultaneously has been removed to emphasize timing and resource management.
+
+Technical Logic
+
+Each card functions as an ability object with:
+* **Effect Value:** (Damage, shield, speed modifier, etc.)
+* **Category ID:** Determines which slot (1, 2, or 3) the card populates.
+* **Optional Synergy:** Interactions with other active effects.
+
+**Data Structure:**
+The deck is managed as a collection of categorized pools:
+
+    slot1_Attack:  [activeCard, reservedCard, reservedCard...],
+    slot2_Defense: [activeCard, reservedCard, reservedCard...],
+    slot3_Utility: [activeCard, reservedCard, reservedCard...]
+
+**Activation Flow:**
+
+When a key (1, 2, or 3) is pressed:
+
+1. The system checks if a card is available in the slot.
+2. The card effect is applied to the player.
+3. The active card is **burned** (permanently removed from the deck for that run).
+4. A random card from the corresponding category pool is automatically moved to the active slot.
+5. Visual feedback triggers to show the new card entering the UI.
+
+---
+
+### Strategic Component
+
+This new system shifts the focus toward **Deck Sustainability and Resource Management**. Since cards are burned upon use, players must strategically decide when to activate a powerful ability versus saving it for a more difficult encounter.
+
+* **Build Diversity:** Players can stack their deck with as many cards as they want, ensuring they have enough "ammo" for their preferred playstyle.
+* **RNG Management:** Because the next card in the slot is chosen randomly from the category pool, players must curate a balanced deck to ensure high-quality replacements.
+* **Tactical Pacing:** The transition to one-by-one activation (especially in Boss Fights) prevents overwhelming power spikes, requiring the player to find the right rhythm for card usage.
+
 
     ![alt text](image.png)
     ![alt text](image-1.png)

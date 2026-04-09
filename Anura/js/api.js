@@ -8,7 +8,7 @@ server runs on http://127.0.0.1:8080
 
 
 // WSL IP -> each teammate needs to run 'hostname -I' on their terminal, and update this
-const API_URL = 'http://172.25.65.213:8080';
+const API_URL = 'http://172.26.83.88:8080';
             // http:// YOUR hostname -I : 8080
 
 // REGISTER
