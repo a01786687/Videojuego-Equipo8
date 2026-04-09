@@ -60,7 +60,7 @@ The player controls a small frog moving through swamp areas filled with mosquito
  
 Combat happens in 1v1 boss battles against animals higher in the food chain. Each boss has a unique attack pattern and weakness, encouraging players to experiment with different card combinations and strategies.
  
-The player begins their first run with 0 cards and no mosquito currency. Upon dying, a Card Selection Screen appears showing 3 random cards. The player may purchase at most 1 card per death using their accumulated mosquitoes, or skip the selection entirely to keep their current deck unchanged. Cards accumulate across runs until the player reaches the 3-card deck limit. Once the deck is full, purchasing a new card requires discarding one of the existing 3 cards.
+The player begins their first run with 0 cards and no mosquito currency. Upon dying, a Card Selection Screen appears showing 3 random cards. The player may purchase at most 1 card per death using their accumulated mosquitoes, or skip the selection entirely to keep their current deck unchanged. Cards accumulate across runs in the deck until all the cards are burn. 
 
 
 Roguelite Structure:
@@ -139,12 +139,22 @@ Visually, the game supports this whole mindset through a blend of cute, cozy aes
         
 
 2. Card Selection & Run Prep Screen
- 
-    This screen appears exclusively after dying. It handles two sequential steps in one flow:
- 
-    **Step 1: Card Selection:** Three random cards are displayed with their mosquito cost. The player may purchase one card, skip the selection, or keep their current deck unchanged.
- 
-    **Step 2: Deck Preview:** Once the card decision is made (whether a card was purchased or skipped), the screen transitions to show the player's current deck (up to 3 card slots). This gives the player a moment to review their build before committing to the next run. A single "Start Run" button launches the new attempt from here.
+
+This screen appears exclusively after a run ends (death or completion). It manages the initial building of the deck and the transition to the next attempt:
+
+**Step 1: Card Selection & Deck Building**
+ **Starting State:** Every new run begins with an empty deck.
+ **Selection Process:** Three random cards are displayed along with their mosquito cost. 
+ **Acquisition:** The player may purchase a card to add it to their deck pool. Because the new mechanic allows for an unlimited deck size, players are encouraged to accumulate cards of different categories (Attack, Defense, Utility) to ensure their slots remain populated during the run.
+ **Skip Option:** The player can choose to skip the selection if they wish to save currency, though they will start the run without that specific advantage.
+
+**Step 2: Deck & Pool Preview**
+Once the card decision is made, the screen transitions to a preview of the player's current build:
+ **Active Slots:** Displays the cards currently occupying the 3 active slots.
+ **Deck Pool:** Shows a summary of the total cards accumulated in the deck that will cycle into the slots as active cards are "burned."
+ **Commitment:** A single "Start Run" button launches the new attempt with the curated deck.
+
+*Strategic Note: Since cards are now consumable and randomly replaced from the pool, the selection screen is the primary way to "load up" on resources before facing the platforming sections and Bosses.*
  
     This replaces the original "Level Select" concept — there is no level selection in Anura, as the run structure is fixed (Platform → Boss → Platform → Boss → Final Boss).
  
