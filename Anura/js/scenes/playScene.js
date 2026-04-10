@@ -37,9 +37,13 @@ let enemies = [];
 let swampSurfaceBg = new Image();
 swampSurfaceBg.src = "../Anura/assets/swamp_surface/swamp_surface_background.png";
 
+
+let platforms = []; // Array to hold platform objects, to be implemented in the future for jumping and level design
+let cameraX = 0;    // Camera position for side-scrolling
+const TILE_SIZE = 30; // size of the tiles for level design
 // Frog object
 let frog = {
-    x: 0, // vienen de index.js, ya que como estan cargados del mismo HTML comparten mismo scope
+    x: 0, 
     y: canvasHeight - 50,
     width: 50,
     height: 50,
@@ -85,6 +89,18 @@ let frog = {
 
 
 };
+// --- PLATFORM CLASS  ---
+
+class Platform extends GameObject {
+    constructor(x, y, width, height) {
+        super(new Vector(x, y), width, height, "#4b3621", "platform");
+        this.spriteRect = new Rect(0, 0, width, height);
+    }
+}
+
+
+
+
 
 
 
@@ -212,6 +228,74 @@ class Enemy extends AnimatedObject {
     }
 }
 
+//-- Level generation
+
+
+function generateLevelPlan() {
+    // we could choose the number of middle chunks based on the current level, for now its set to 4 for testing
+    let middleCount = 4;
+    let sequence = [START_CHUNK]; // always start with the START_CHUNK
+
+    // build the sequence of chunks: START + random middle chunks + END
+    for (let i = 0; i < middleCount; i++) {
+        let randomIndex = Math.floor(Math.random() * LEVEL_CHUNKS.length);
+        sequence.push(LEVEL_CHUNKS[randomIndex]);
+    }
+
+    // final chunk is always the END_CHUNK
+    sequence.push(END_CHUNK);
+
+    // clean the chunks and split them into arrays of lines, so we can stitch them together horizontally
+    let cleanChunks = sequence.map(chunk => chunk.trim().split('\n'));
+    let finalPlan = [];
+    let height = cleanChunks[0].length; // Debería ser 10 según tus nuevos niveles
+
+    // stitch the chunks together horizontally, iterating line by line
+    for (let i = 0; i < height; i++) {
+        // Stitch the i-th line of each chunk together to form the full i-th line of the level
+        let fullRow = cleanChunks.map(chunk => chunk[i]).join('');
+        finalPlan.push(fullRow);
+    }
+
+    return finalPlan.join('\n');
+}
+
+// function for the objects
+function createLevel() {
+    platforms = []; // clean platforms array to avoid duplicates when creating a new level
+    enemies = [];   // Clean enemies array to avoid duplicates when creating a new level
+    
+    let fullPlan = generateLevelPlan();
+    let rows = fullPlan.split('\n');
+
+    let yOffset = canvasHeight - (rows.length * TILE_SIZE);
+    
+    rows.forEach((row, y) => {
+        [...row].forEach((char, x) => {
+            let posX = x * TILE_SIZE;
+            let posY = y * TILE_SIZE + yOffset;
+
+            if (char === "#") {
+                // create a platform
+                platforms.push(new Platform(posX + TILE_SIZE/2, posY + TILE_SIZE/2, TILE_SIZE, TILE_SIZE));
+            } 
+            else if (char === "@") {
+                frog.x = posX;
+                // Ajust Y to place the frog on top of the tilteado, not inside it
+                frog.y = posY - frog.height; 
+    
+                
+                frog.position.x = frog.x + frog.width / 2;
+                frog.position.y = frog.y + frog.height / 2;
+            }
+            else if (char === "$") {
+                enemies.push(new Enemy(posX, posY, 40, 40, "red", "mosquito", 4, 100, 2, 10));
+            }
+        });
+    });
+}
+
+
 // --- FUNCTIONS ---
 
 
@@ -223,6 +307,15 @@ function handleKeyDown(event) {
 
 }
 
+function updateCamera() {
+    
+    cameraX = frog.x - (canvasWidth / 2);
+
+    if (cameraX < 0) {
+        cameraX = 0;
+    }
+
+}
 
 
 function updateFrog(deltaTime) {
@@ -278,6 +371,41 @@ function updateFrog(deltaTime) {
     frog.velocityY += frog.gravity; // add gravity to speed, makes it fall faster
     frog.y += frog.velocityY; // move frog by that speed, updates the position
 
+    frog.position.x = frog.x + frog.width / 2;
+
+    for (let plat of platforms) {
+        if (boxOverlap(frog, plat)) {
+            if (moveX > 0) { // Colission going right
+                frog.x = (plat.position.x - plat.halfSize.x) - frog.width;
+            } else if (moveX < 0) { // Colision going left
+                frog.x = (plat.position.x + plat.halfSize.x);
+            }
+            frog.position.x = frog.x + frog.width / 2;
+        }
+    }
+
+    frog.position.y = frog.y + frog.height / 2;
+
+    frog.isOnGround = false;
+
+    for (let plat of platforms) {
+        if (boxOverlap(frog, plat)) {
+            if (frog.velocityY > 0) { // 
+                
+                frog.y = (plat.position.y - plat.halfSize.y) - frog.height;
+                frog.velocityY = 0;
+                frog.isOnGround = true;
+            } else if (frog.velocityY < 0) { // colision going up, hitting head
+                
+                frog.y = (plat.position.y + plat.halfSize.y);
+                frog.velocityY = 0;
+            }
+           
+            frog.position.y = frog.y + frog.height / 2;
+        }
+    }
+
+
     // cheks if the floor is on the ground
     const groundY = canvasHeight - frog.height;
     if (frog.y >= groundY) {
@@ -290,8 +418,15 @@ function updateFrog(deltaTime) {
     // canvas limits
     if (frog.x < 0) frog.x = 0;
     if (frog.y < 0) frog.y = 0;
-    if (frog.x + frog.width > canvasWidth) frog.x = canvasWidth - frog.width;
     if (frog.y + frog.height > canvasHeight) frog.y = canvasHeight - frog.height;
+
+    
+
+    updateCamera(); 
+
+    if (frog.x < cameraX) {
+    frog.x = cameraX;
+    }
     
 
     // Sync frog position for collision logic (boxOverlap)
@@ -379,8 +514,8 @@ function drawFrog() {
 function frogReset() {
 
     // position
-    frog.x = 0;
-    frog.y = canvasHeight - 50;
+    //frog.x = 0;
+    //frog.y = canvasHeight - 50;
 
     // movement
     frog.velocityY = 0;
@@ -389,6 +524,9 @@ function frogReset() {
     // collision position
     frog.position.x = frog.x + frog.width / 2;
     frog.position.y = frog.y + frog.height / 2;
+
+    // Camera
+    cameraX = 0;
 }
 
 // checkFrogEnemyCollisions() checks for collisions between enemies and frog
@@ -498,6 +636,7 @@ function drawPlayScene() {
     //ctx.fillStyle = "#6fbf73"; // ctx viene de index.js
     //ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
+    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
     ctx.drawImage(swampSurfaceBg, 0, 0, canvasWidth, canvasHeight);
     //Draw the health game bar
 
@@ -507,6 +646,13 @@ function drawPlayScene() {
     if (!isGameOver) {
         updateFrog(deltaTime);
         checkFrogEnemyCollisions(deltaTime);
+
+        // Camera transformation for side-scrolling
+        ctx.save(); 
+        ctx.translate(-cameraX, 0);
+
+    
+
 
         // actors array correctly removes marked enemies
         // Filter out enemies that have no health left, enemy disappears on next frame
@@ -518,7 +664,21 @@ function drawPlayScene() {
             enemy.draw(ctx);
         });
 
+        // when sprites are implemented there will be here 
+        // for now just draw the platforms as brown rectangles
+        ctx.fillStyle = "#4b3621"; // Color café
+        
+        for (let plat of platforms) {
+            ctx.fillRect(
+                plat.position.x - plat.halfSize.x, 
+                plat.position.y - plat.halfSize.y, 
+                plat.size.x, 
+                plat.size.y
+            );
+        }
+
         drawFrog();
+        ctx.restore();
         HealthBarDisplay();
     }
 
@@ -580,23 +740,18 @@ window.addEventListener('keyup', (event) => {
 function beginRun() {
 
     isGameOver = false; 
-
+    createLevel(); // generates a new level layout with platforms and enemies
     currentHealth = 100;
     maxHealth = 100;
     runMosquitos = 0;
     currentLevel = 1;
     deck = [];
+    cameraX = 0;
 
     frogReset();
 
     frog.invincibilityTimer = 0; // resetting the timer for every new run
 
-    // Initialize enemies for the level
-    // Params: x, y, width, height, color, type, sheetCols, patrolRange, health
-    enemies = [
-        new Enemy(150, 350, 40, 40, "red", "mosquito", 4, 100, 2, 0), // Mosquito dies in 2 hits, deals 0 damage
-        new Enemy(600, 300, 50, 50, "brown", "spider", 6, 80, 5, 3)   // Spider dies in 5 hits, deals 10 damage
-    ];
 
     currentScene = "play";
     gameLoopID = requestAnimationFrame(draw);
