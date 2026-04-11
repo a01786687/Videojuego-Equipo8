@@ -1,13 +1,14 @@
 /*
- * titleScene.js
- * has everything about the title screen:
+ * Title screen scene with buttons for new game, login, settings, and continue run (when logged in).
+ * Authors: Renata Uruchurtu, Carlos Rosete, Emilio Torres
  */
 
 "use strict";
 
-// funcion a parte para separar lo visual de la title screen a una funcion nueva
+// draws the main title screen
 function drawTitleScreen() {
 
+    // Draw background image if loaded, else just draw white 
     if (bgReady) {
         ctx.drawImage(backgroundImage, 0, 0, canvasWidth, canvasHeight);
     } else {
@@ -15,14 +16,15 @@ function drawTitleScreen() {
         ctx.fillRect(0, 0, canvasWidth, canvasHeight);
     }
 
-    // medidas logo
+    // logo size
     const logoWidth = 400;
     const logoHeight = 400;
 
-    // drawImage(image, dx, dy, dWidth, dHeight)
+    // center the logo horizontally
     let centerX = canvasWidth / 2 - logoWidth / 2
     ctx.drawImage(logo, centerX, 0, 400, 400)
 
+    // draw buttons
     drawPlayButton();
     drawLogInButton();
     drawSettingsButton();
@@ -35,16 +37,7 @@ function drawTitleScreen() {
     }
 }
 
-// BUTTONS
-
-// New Game & Continue Run
-// X: 270 to 470
-// Y: 350 to 410
-
-// Log In & Settings  
-// X: 490 to 690
-// Y: 420 to 480
-
+// NEW GAME button
 function drawPlayButton() {
 
     const buttonWidth = 200;
@@ -73,8 +66,7 @@ function drawPlayButton() {
 
 }
 
-// CONTINUE RUN BUTTON
-
+// CONTINUE RUN button
 function drawContinueRunButton() {
 
     const buttonWidth = 200;
@@ -103,14 +95,13 @@ function drawContinueRunButton() {
 
 }
 
-
+// LOG IN button
 function drawLogInButton() {
     const buttonWidth = 200;
     const buttonHeight = 60;
 
     const buttonX = 270; 
     const buttonY = 420;
-
 
     ctx.fillStyle = "#000000";
     ctx.fillRect(buttonX + 4, buttonY + 4, buttonWidth, buttonHeight);
@@ -129,9 +120,9 @@ function drawLogInButton() {
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.fillText("Log In", buttonX + buttonWidth / 2, buttonY + buttonHeight / 2);
-
 }
 
+// SETTINGS button
 function drawSettingsButton() {
 
     const buttonWidth = 200;

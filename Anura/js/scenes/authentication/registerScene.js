@@ -1,9 +1,6 @@
 /*
- * File: registerScene.js
- *
- * wwns everything about the register scene:
-Canvas background drawing
- *   - HTML form wiring (show/hide, navigation links)
+ * Registration form scene with username, email, and password fields integrated with authentication API.
+ * Authors: Renata Uruchurtu, Carlos Rosete, Emilio Torres
  */
 
 "use strict";

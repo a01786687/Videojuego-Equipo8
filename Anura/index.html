@@ -6,6 +6,7 @@ Description: this file is the starting point of the videogame.
 It defines the base structure of the HTML document, it links
 the stylesheet, and connects the game engine.
 
+Authors: Renata Uruchurtu, Carlos Rosete, Emilio Torres
 -->
 
 <!DOCTYPE html>
@@ -32,11 +33,21 @@ the stylesheet, and connects the game engine.
     <script src="js/libs/game_functions.js"></script>
     <script src="js/libs/TextLabel.js"></script>
     <script src="js/libs/levels.js"></script>
-    
 
     <script src="./js/index.js"></script>
+
+    <!-- Entities -->
+    <script src="js/entities/platforms.js"></script>
+    <script src="js/entities/enemy.js"></script>
+    <script src="js/entities/frog.js"></script>
+
+    <!-- Systems -->
+    <script src="js/systems/camera.js"></script>
+    <script src="js/systems/collisions.js"></script>
+    <script src="js/systems/hud.js"></script>
+    <script src="js/systems/levelGenerator.js"></script>
+
     <script src="./js/uiComponents.js"></script>
-    <script src="./js/api.js"></script>
 
     <!-- Authentication backend -->
     <script src="./js/scenes/authentication/auth.js"></script>
@@ -44,16 +55,13 @@ the stylesheet, and connects the game engine.
     <!-- Scenes -->
     <script src="./js/scenes/titleScene.js"></script>
     <script src="./js/scenes/playScene.js"></script>
+    <script src="./js/scenes/bossScene1.js"></script>
     <script src="./js/scenes/settingsScene.js"></script>
  
     <!-- Authentication scenes-->
     <script src="./js/scenes/authentication/loginScene.js"></script>
     <script src="./js/scenes/authentication/registerScene.js"></script>
 
-    
-
-
- 
 </head>
  
 <body>

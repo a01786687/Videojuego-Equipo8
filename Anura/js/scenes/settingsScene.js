@@ -1,9 +1,8 @@
 /*
 
- settingsScene.js
-
- owns everything about the settings scene.
-
+settingsScene.js
+owns everything about the settings scene.
+Authors: Renata Uruchurtu, Carlos Rosete, Emilio Torres
  */
 
 "use strict";
