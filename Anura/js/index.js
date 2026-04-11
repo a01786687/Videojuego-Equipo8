@@ -1,9 +1,6 @@
 /*
- * First script to draw some figures on the Canvas
- * https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D
- *
- * Gilberto Echeverria
- * 2025-02-18
+ * Main game loop and canvas initialization; handles scene switching between title, login, register, play, and boss scenes.
+ * Authors: Renata Uruchurtu, Carlos Rosete, Emilio Torres
  */
 
 "use strict";
@@ -19,6 +16,8 @@ const boxSize = 50;
 // Global variables, shared across all scene files
 let canvas;
 let ctx;
+
+let oldTime = 0;
 
 
 let backgroundImage = new Image();
@@ -42,14 +41,13 @@ function main() {
     ctx = canvas.getContext('2d');
     ctx.imageSmoothingEnabled = false;
 
-    // event listener, dentro de main ya que el canvas es global
-    // click -> evento que queremos escuchar
-    // handleClick -> funcion que se ejecutara cuando ocurra
+    // event listener defined in main since the canvas is global
+    // click -> the event we want to listen for
+    // handleClick -> function executed when the event is triggered
 
     canvas.addEventListener("click", handleClick);
     
     // handleKeyDown and handleKeyUp are defined in playScene.js
-
 
     backgroundImage.onload = () => {
         bgReady = true;
@@ -71,11 +69,15 @@ function main() {
 
 // Main game loop: only sends to scene files, doesnt draw them
 
-function draw() { // draw dibuja la escena actual
+function draw(newTime) { // draws the actual scene
+
+    const deltaTime = (newTime - oldTime); // miliseconds
+    oldTime = newTime;
+
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
     // titleScene.js
-    switch (currentScene) { // usamos switch para cambiar de scene 
+    switch (currentScene) { 
         case "title": drawTitleScreen();
             break; 
 
@@ -91,13 +93,18 @@ function draw() { // draw dibuja la escena actual
 
     // playScene.js
         case "play":
-            drawPlayScene();
+            drawPlayScene(deltaTime);
             break;
 
     // settingScene.js
         case "settings":
             drawSettingScene();
             break;
+
+    // bossScene1.js
+        case "boss":
+            drawBossScene1();
+            break; 
     }
 
     updateLoginForm();
@@ -108,85 +115,58 @@ function draw() { // draw dibuja la escena actual
 }
 
 // click handler, controls global currentScene 
-// cada vez que haga click dentro del canvas, la consola mostrará el mensaje
 function handleClick(event) {
-    console.log("Canvas clicked");
 
-    // convertimos coordenadas de la pantalla a coordenadas del canvas
-    // getBoundingClientRect()
-    // This method handles CSS transforms and borders accurately by subtracting the canvas position from the click position
-    const rect = canvas.getBoundingClientRect(); // getBoundingClientRect() obtiene la posición del canvas en la página.
+    // Convert screen coordinates to canvas coordinates
+    // getBoundingClientRect() returns the canvas position and size in the page
+    // This allows us to correctly map the click position, even with CSS transforms or borders
+    const rect = canvas.getBoundingClientRect(); 
 
     const mouseX = event.clientX - rect.left;
     const mouseY = event.clientY - rect.top;
 
     console.log(mouseX, mouseY);
 
-    // TITLE SCREEN BUTTONS
-
-    /*
-    NEW GAME
-    X: 270 to 470
-    Y: 350 to 410
-
-    CONTINUE RUN
-    X: 490 to 690
-    Y: 350 to 410
-
-    LOG IN
-    X: 270 to 470
-    Y: 420 to 480
-
-    SETTINGS
-    X: 490 to 690
-    Y: 420 to 480
-*/
-
-    // PLAY BUTTON
-    // si las coordenadas de mouseX son mayor o igual a 140 Y las coordenadas de mouseY son menor o igual a 340 Y 
-    
+    // Handle clicks depending on the current scene
     if (currentScene == "title") {
     
-        // NEW GAME
+        // NEW GAME button
         if (mouseX >= 270 && mouseX <= 470 && mouseY >= 350 && mouseY <= 410) {
             beginRun(); // if the player clicks on the button, beginRun() is called from playScene.js
         }
 
-        // CONTINUE RUN
+        // CONTINUE RUN button
         if (mouseX >= 490 && mouseX <= 690 && mouseY >= 350 && mouseY <= 410) {
             continueRun(); // if the player clicks on the button, continueRun() is called from playScene.js
         }
 
-        // LOG IN BUTTON 
+        // LOG IN button 
         if (mouseX >= 270 && mouseX <= 470 && mouseY >= 420 && mouseY <= 480) {
             currentScene = "login";
         }
 
-        // SETTINGS BUTTON
+        // SETTINGS button
         if (mouseX >= 490 && mouseX <= 690 && mouseY >= 420 && mouseY <= 480) {
             currentScene = "settings";
         }
-    // ESTO LO UTILIZAREMOS PARA DETECTAR BOTONES
+    // this block handles navigation buttons (back buttons, etc) in other scenes
     } else {
+
+        // back button area
         if (mouseX >= 30 && mouseX <= 170 && mouseY >= 30 && mouseY <= 80) {
 
             if (currentScene === "login") {
                 currentScene = "title";
-            }
-
-            else if (currentScene === "register") {
+            } else if (currentScene === "register") {
                 currentScene = "login";
-            }
-
-            else {
+            } else {
                 currentScene = "title";
             }
         }
     }
 }
 
-
-// Showing the settigs scene
+// Show/hide settings form depending on the current scene
 function updateSettingsForm() {
     const settingsForm = document.getElementById('settings-form');
     if (currentScene === "settings") {
@@ -196,7 +176,7 @@ function updateSettingsForm() {
     }
 }
 
-window.addEventListener("load", main);
+window.addEventListener("load", main); // initialize the app when the page finishes loading
 
 
 

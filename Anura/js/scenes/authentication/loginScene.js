@@ -6,6 +6,7 @@ draws the canvas background and draws the form
 
 This file will include the user authentication login screen, 
 with a register button that takes you to the register scene
+Authors: Renata Uruchurtu, Carlos Rosete, Emilio Torres
 
  */
 

@@ -1,7 +1,6 @@
 /*
- * uiComponents.js
- * contains reusable UI buttons shared across multiple scenes
- * meant to grow more throughout the developlent of the game
+ * Reusable UI components, currently contains the back button for navigation across scenes.
+ * Authors: Renata Uruchurtu, Carlos Rosete, Emilio Torres
  */
 
 "use strict";
@@ -15,8 +14,8 @@ function backButton() {
     const buttonX = 30;
     const buttonY = 30;
 
-    // X: 30 a 170
-    // Y: 30 a 80
+    // X: 30 to 170
+    // Y: 30 to 80
 
     ctx.fillStyle = "#000000"
     ctx.fillRect(buttonX + 4, buttonY + 4, buttonWidth, buttonHeight);
