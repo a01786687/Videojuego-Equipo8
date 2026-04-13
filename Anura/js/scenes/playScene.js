@@ -24,7 +24,7 @@ let runMosquitos = 0;
 let currentLevel = 1;
 let deck = []; // deck is empty on the first run, it will be loaded from the API when RF-47 is ready
 let enemies = []; // Array for enemies
-
+let damageNumbers = []; // array for damage numbers
 
 // game loop id for stopping the game when there's a game over, 
 // initialized as null since there's not an active game yet
@@ -115,7 +115,17 @@ function drawPlayScene(deltaTime) {
         // draw player and restore camera transform
         drawFrog();
         ctx.restore();
+
+        damageNumbers.forEach(dn => {
+            dn.update();
+            dn.draw(ctx);
+        });
+
+        // filter goes through every item in the array and keeps only the ones with the true condition, it avoids expired numbers to stay in the array
+        damageNumbers = damageNumbers.filter(dn => dn.alpha > 0);
+
         HealthBarDisplay();
+        
     }
 
     if (isGameOver) {
@@ -193,6 +203,8 @@ function beginRun() {
     deck = [];
     cameraX = 0;
 
+    damageNumbers = [];
+
     frogReset();
 
     frog.invincibilityTimer = 0; // resetting the timer for every new run
@@ -213,3 +225,32 @@ function continueRun() {
 
     //gameLoopID = requestAnimationFrame(draw); INACTIVE, AWAITING API
 };
+
+
+// DamageNumber constructor
+
+class DamageNumber {
+    constructor(x, y, amount) {
+        this.x = x - cameraX;
+        this.y = y;
+        this.amount = amount;
+        this.alpha = 1.0;
+    }
+
+    // update method, should move up and fade out every frame
+    update() {
+        this.y -= 0.6; 
+        this.alpha -= 0.02;
+    }
+
+    draw(ctx) {
+        ctx.save();
+        ctx.fillStyle = "white";
+        ctx.font = "15px Pixelify Sans";
+        ctx.globalAlpha = this.alpha
+        ctx.textAlign = "center";
+        ctx.fillText("-" + this.amount, this.x, this.y);
+        ctx.restore();
+    }
+
+}

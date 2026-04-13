@@ -20,6 +20,7 @@ function checkFrogEnemyCollisions(deltaTime) {
         if (boxOverlap(frog, enemy)){
             if (enemy.damage > 0){ // only if the current enemy deals damage
                 currentHealth -= enemy.damage; // use the enemy damage value,
+                damageNumbers.push(new DamageNumber(frog.x + frog.width / 2, frog.y, enemy.damage));
             }
     
             frog.invincibilityTimer = frog.invincibilityDuration; // the 1.5s timer starts
