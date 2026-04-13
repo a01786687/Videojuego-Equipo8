@@ -21,6 +21,11 @@ let frog = {
     gravity: 0.8, // pulls the frog down each frame
     jumpForce: -15, // makes the frog jump up, its negative because on the canvas Y increases down, so negative = up
 
+    canDoubleJump: false,
+    hasDoubleJump: false,
+    doubleJumpCooldown: 3000,
+    doubleJumpCooldownTimer: 0,
+
     // dash properties
     dashSpeed: 15,
     dashDuration: 150, // ms
@@ -69,6 +74,16 @@ function frogReset() {
 function updateFrog(deltaTime) {
     let moveX = 0;
 
+    // double jumo cooldown
+    if (frog.doubleJumpCooldownTimer > 0){
+        frog.doubleJumpCooldownTimer -= deltaTime;
+    }
+
+    if (frog.doubleJumpCooldownTimer < 0) {
+        frog.doubleJumpCooldownTimer = 0;
+        frog.hasDoubleJump = true;
+    }
+    
     // dash timer countdown
     if (frog.isDashing) {
         frog.dashTimer -= deltaTime;
@@ -143,6 +158,9 @@ function updateFrog(deltaTime) {
                 frog.y = (plat.position.y - plat.halfSize.y) - frog.height;
                 frog.velocityY = 0;
                 frog.isOnGround = true;
+                if (frog.canDoubleJump) {
+                    frog.hasDoubleJump = true;
+                }
             } else if (frog.velocityY < 0) { // colision going up, hitting head
                 
                 frog.y = (plat.position.y + plat.halfSize.y);
@@ -160,6 +178,9 @@ function updateFrog(deltaTime) {
         frog.y = groundY; // stay on ground
         frog.velocityY = 0; // stops moving down
         frog.isOnGround = true; // this allows jumping again
+        if (frog.canDoubleJump === true) {
+            frog.hasDoubleJump = true;
+        }
     }
 
 

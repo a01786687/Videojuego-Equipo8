@@ -22,7 +22,6 @@ let currentHealth = 100;
 let maxHealth = 100;
 let runMosquitos = 0;
 let currentLevel = 1;
-let deck = []; // deck is empty on the first run, it will be loaded from the API when RF-47 is ready
 let enemies = []; // Array for enemies
 let damageNumbers = []; // array for damage numbers
 
@@ -51,6 +50,8 @@ function gameOver() {
     console.log("Game Over, Health: ", currentHealth);
     isGameOver = true;
 }
+
+// input handlers for card deck
 
 
 
@@ -158,10 +159,18 @@ window.addEventListener('keydown', (event) => {
         pressPause();
     }
 
+    // REGULAR JUMP
     // jump (spacebar) only if the frog is on the ground to prevent double jumps
     if (event.key === ' ' && frog.isOnGround) { 
-        frog.velocityY = frog.jumpForce; // jumps up
-        frog.isOnGround = false; 
+        frog.velocityY = frog.jumpForce; // set vertical speed 
+        frog.isOnGround = false;
+    // DOUBLE JUMP
+    } else if (event.key === ' ' && frog.canDoubleJump && frog.hasDoubleJump && frog.doubleJumpCooldownTimer <= 0 && !frog.isOnGround) { // space was pressed and the ability is unlocked and a double jump is still available and frog is in the air
+        frog.hasDoubleJump = false; // double jump consumed
+        frog.doubleJumpCooldownTimer = frog.doubleJumpCooldown; // start the cooldown
+        frog.velocityY = 0; // cancel downward velocity so the jump is clean
+        frog.velocityY = frog.jumpForce * 1; // stronger jump force
+        frog.isOnGround = false;
     }
 
     // dash (j key)
@@ -182,6 +191,32 @@ window.addEventListener('keydown', (event) => {
         frog.attackTimer = frog.attackDuration;
         frog.attackCooldown = frog.cooldownDuration;
     }
+
+    // card slot 1
+    if (event.key === '1') {
+        console.log(deck);
+        if (deck.slot1_Movement.length > 0) {
+            deck.slot1_Movement[0].effect();
+            deck.slot1_Movement.shift(); // shift() method removes the first element from an array and returns it, shifting all remaining elements one position forward
+        }
+    }
+
+    // card slot 2
+    if (event.key === '2') {
+        if (deck.slot2_Combat.length > 0) {
+            deck.slot2_Combat[0].effect();
+            deck.slot2_Combat.shift(); 
+        }
+    }
+
+    // card slot 3
+    if (event.key === '3') {
+        if (deck.slot3_Utility.length > 0) {
+            deck.slot3_Utility[0].effect();
+            deck.slot3_Utility.shift(); 
+        }
+    }
+
 });
 
 // when a key is released, marks it as not pressed
@@ -200,7 +235,7 @@ function beginRun() {
     maxHealth = 100;
     runMosquitos = 0;
     currentLevel = 1;
-    deck = [];
+    // deck = [];
     cameraX = 0;
 
     damageNumbers = [];

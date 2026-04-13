@@ -145,7 +145,7 @@ This screen appears exclusively after a run ends (death or completion). It manag
 **Step 1: Card Selection & Deck Building**
  **Starting State:** Every new run begins with an empty deck.
  **Selection Process:** Three random cards are displayed along with their mosquito cost. 
- **Acquisition:** The player may purchase a card to add it to their deck pool. Because the new mechanic allows for an unlimited deck size, players are encouraged to accumulate cards of different categories (Attack, Defense, Utility) to ensure their slots remain populated during the run.
+ **Acquisition:** The player may purchase a card to add it to their deck pool. Because the new mechanic allows for an unlimited deck size, players are encouraged to accumulate cards of different categories (Combat, Movement, Utility) to ensure their slots remain populated during the run.
  **Skip Option:** The player can choose to skip the selection if they wish to save currency, though they will start the run without that specific advantage.
 
 **Step 2: Deck & Pool Preview**
@@ -252,7 +252,7 @@ The card system revolves around three active slots, each assigned to a specific 
 
  Core Mechanics
 
-* **Slot System:** Cards are activated by pressing their assigned key (**1, 2, or 3**). Each slot is dedicated to a specific category (e.g., Attack, Defense, Utility).
+* **Slot System:** Cards are activated by pressing their assigned key (**1, 2, or 3**). Each slot is dedicated to a specific category (e.g., Combat, Movement, Utility).
 * **The Deck:** Players can now accumulate an unlimited number of cards in their deck. These cards sit in a queue behind the three active slots.
 * **Burn & Replace:** Cards are single-use. When a card is activated, it is "burned" and removed from the deck. Immediately after, a new card of the same category is randomly pulled from the remaining deck and placed into the active slot.
 * **Sequential Activation:** In all game sections—including **Boss Fights**—cards are activated one by one. The ability to trigger three cards simultaneously has been removed to emphasize timing and resource management.
@@ -267,8 +267,8 @@ Each card functions as an ability object with:
 **Data Structure:**
 The deck is managed as a collection of categorized pools:
 
-    slot1_Attack:  [activeCard, reservedCard, reservedCard...],
-    slot2_Defense: [activeCard, reservedCard, reservedCard...],
+    slot1_Movement:  [activeCard, reservedCard, reservedCard...],
+    slot2_Combat: [activeCard, reservedCard, reservedCard...],
     slot3_Utility: [activeCard, reservedCard, reservedCard...]
 
 **Activation Flow:**
