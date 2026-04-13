@@ -49,11 +49,16 @@ function HealthBarDisplay(){
 function updateHealthHUD() {
     console.log('Health: ', currentHealth);
 }
+// function drawMosquitoHUD(){
+//     let mosquito_image = new GameObject(new Vector(canvasWidth - 120, 20), 15, 15);
+//     mosquito_image.setSprite("../assets/enemies/mosqSprite.png");
+// }
 
 // placeholder for the mosquito HUD RF-24
 function updateMosquitoHUD() {
     let Mosquito_dipslay = new TextLabel(canvasWidth-90,20,"80spx Ubuntu Mono","white");
     Mosquito_dipslay.draw(ctx,'Mosq: '+ runMosquitos);
+    drawMosquitoHUD();
 
 }
 
