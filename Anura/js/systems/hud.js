@@ -32,6 +32,31 @@ function drawHeart(ctx, x, y, size) {
     ctx.fillRect(x + 2*s, y + 4*s, s, s);
 }
 
+function drawMosquito(ctx, x, y, size) {
+    ctx.fillStyle = "black";
+    let s = size;
+
+   
+    ctx.fillRect(x + 2*s, y, s, s);
+
+    
+    ctx.fillRect(x + 2*s, y + s, s, s);
+    ctx.fillRect(x + 2*s, y + 2*s, s, s);
+
+    
+    ctx.fillStyle = "lightgray";
+    ctx.fillRect(x + s, y + s, s, s);
+    ctx.fillRect(x + 3*s, y + s, s, s);
+
+    
+    ctx.fillStyle = "black";
+    ctx.fillRect(x + s, y + 3*s, s, s);
+    ctx.fillRect(x + 3*s, y + 3*s, s, s);
+
+    
+    ctx.fillRect(x + 2*s, y - s, s, s);
+}
+
 function drawHealthBar(ctx){
     ctx.fillStyle = "orange";
     
@@ -58,7 +83,7 @@ function updateHealthHUD() {
 function updateMosquitoHUD() {
     let Mosquito_dipslay = new TextLabel(canvasWidth-90,20,"80spx Ubuntu Mono","white");
     Mosquito_dipslay.draw(ctx,'Mosq: '+ runMosquitos);
-    drawMosquitoHUD();
+    drawMosquito(ctx,canvasWidth-145,17.5,5);
 
 }
 
