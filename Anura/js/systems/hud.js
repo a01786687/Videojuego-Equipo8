@@ -31,6 +31,7 @@ function drawHeart(ctx, x, y, size) {
 
     ctx.fillRect(x + 2*s, y + 4*s, s, s);
 }
+
 function drawHealthBar(ctx){
     ctx.fillStyle = "orange";
     
@@ -51,7 +52,9 @@ function updateHealthHUD() {
 
 // placeholder for the mosquito HUD RF-24
 function updateMosquitoHUD() {
-    console.log('Mosquitoes: ', runMosquitos);
+    let Mosquito_dipslay = new TextLabel(canvasWidth-90,20,"80spx Ubuntu Mono","white");
+    Mosquito_dipslay.draw(ctx,'Mosq: '+ runMosquitos);
+
 }
 
 function drawGameOver() {

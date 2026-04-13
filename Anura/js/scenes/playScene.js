@@ -125,6 +125,7 @@ function drawPlayScene(deltaTime) {
         damageNumbers = damageNumbers.filter(dn => dn.alpha > 0);
 
         HealthBarDisplay();
+        updateMosquitoHUD();
         
     }
 

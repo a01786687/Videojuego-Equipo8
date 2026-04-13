@@ -9,7 +9,7 @@ let caveEntrance = null; // stores the cave position, its null until createLevel
 
 function generateLevelPlan() {
     // we could choose the number of middle chunks based on the current level, for now its set to 4 for testing
-    let middleCount = 4;
+    let middleCount = 5;
     let sequence = [START_CHUNK]; // always start with the START_CHUNK
 
     // build the sequence of chunks: START + random middle chunks + END
@@ -66,7 +66,13 @@ function createLevel() {
                 frog.position.y = frog.y + frog.height / 2;
             }
             else if (char === "$") {
-                enemies.push(new Enemy(posX, posY, 40, 40, "red", "mosquito", 4, 100, 2, 10));
+                if(Math.random() < 0.75){
+                    enemies.push(new Enemy(posX, posY, 40, 40, "black", "mosquito", 4, 100, 2, 0));
+                }
+                else{
+                    enemies.push(new Enemy(posX, posY, 60, 60, "red", "spider", 4, 100, 5, 10));
+                }
+                    
             }
             else if (char === "!") {
                 caveEntrance = {
