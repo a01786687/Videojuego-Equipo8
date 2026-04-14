@@ -254,8 +254,8 @@ The card system revolves around three active slots, each assigned to a specific 
 
 * **Slot System:** Cards are activated by pressing their assigned key (**1, 2, or 3**). Each slot is dedicated to a specific category (e.g., Attack, Defense, Utility).
 * **The Deck:** Players can now accumulate an unlimited number of cards in their deck. These cards sit in a queue behind the three active slots.
-* **Burn & Replace:** Cards are single-use. When a card is activated, it is "burned" and removed from the deck. Immediately after, a new card of the same category is randomly pulled from the remaining deck and placed into the active slot.
-* **Sequential Activation:** In all game sections—including **Boss Fights**—cards are activated one by one. The ability to trigger three cards simultaneously has been removed to emphasize timing and resource management.
+* **Burn & Replace:** Cards are single-use. When a card is activated, it is "burned" and removed from the deck. Immediately after, a new card of the same category is randomly pulled from the remaining deck and placed into the active slot.The effects of the card are permantly until the player active another card or die.
+* **Sequential Activation:** In all game sections—including **Boss Fights**—cards are activated one by one.The player has the option to activate the 3 slots simultaneously if they want to.
 
 Technical Logic
 
@@ -479,11 +479,11 @@ _(example)_
 
 4. New run: the same run structure is repeated but now the player may or may not have cards depending on their previous runs.
  
-    - First platform section (max 1 card activation)
-    - First boss (all cards active)
-    - Second platform section (max 1 card activation)
-    - Second boss (all cards active)
-    - Final boss (all cards active)
+    - First platform section 
+    - First boss 
+    - Second platform section 
+    - Second boss 
+    - Final boss 
  
 5. If player defeats the final boss, a victory screen will appear with a button to return to the menu.
 
