@@ -45,14 +45,31 @@ function handleKeyDown(event) {
 
 }
 
-// temporary game over function MUST BE MODIFIED ON ITS ASSIGNED SPRINT
-function gameOver() {
-    console.log("Game Over, Health: ", currentHealth);
+// 
+async function gameOver() {
+    if (isGameOver) return; // prevents double triggers
+
+    
     isGameOver = true;
+
+    // stop game loop to be used later
+    if (gameLoopID !== null) {
+        cancelAnimationFrame(gameLoopID); // stops the next frame of the game from running
+        gameLoopID = null; // theres no active game loop anymore
+    }
+
+    enemies = [];
+    damageNumbers = [];
+
+    console.log("Game Over");
+
+    const response = await saveProgressOnDeath();
+
+    console.log("Backend response:", response);
+
+    // after backend confirms -> continue game flow
+    drawGameOver(); // or scene switch
 }
-
-// input handlers for card deck
-
 
 
 // --- PLAY SCENE RENDERING ---
@@ -353,4 +370,22 @@ class DamageNumber {
         ctx.restore();
     }
 
+}
+
+
+// GAME OVER async function for API call
+
+async function saveProgressOnDeath() {
+    const res = await fetch ("http://localhost:8080/run/death", {
+        method: "POST",
+        headers: {
+            "Content-Type" : "application/json" 
+        },
+        body: JSON.stringify({
+            mosquitoes: runMosquitos,
+            deck: deck
+        })
+    });
+
+    return await res.json();
 }

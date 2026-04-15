@@ -54,11 +54,24 @@ app.get("/users", async (req, res) => {
     res.send(users)
 })
 
+// POST /run/death endpoint -> game sends "player died" data to the backend 
+// When someone sends POST /run/death, run this function:
+app.post("/run/death", async (req, res) => {
+    console.log("Death endpoint hit!");
+    console.log("Body received:", req.body);
+
+    res.json({
+        message: "Death data recieved",
+        success: true
+    });
+});
+
 // --- SERVER START ---
 
 app.listen(port, () => {
     console.log(`Anura server running on port ${port}`);
 });
+
 
 
 /* NOTES:
