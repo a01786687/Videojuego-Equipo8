@@ -23,7 +23,7 @@ import express from 'express'
 import cors from 'cors'
 
 // importing database functions (queries)
-import { getUsers } from './db.js'
+import { createUser, getUsers, getUsersById, startSesion } from './db.js'
 
 const app = express();
 const port = 8080;
@@ -50,10 +50,24 @@ app.use(cors()); // Allows requests from other apps (like the frontend) since it
 
 
 app.get("/users", async (req, res) => {
-    const users = await getUsers()
-    res.send(users)
+    const users = await getUsers();
+    res.send(users);
 })
 
+app.get("/user", async (req, res) => {
+    const user = await getUsersById(100);
+    res.send(user);
+})
+
+app.get("/sesionStart", async (req, res) => {
+    const user = await startSesion(4);
+    res.send(user);
+})
+
+app.get("/createUser", async (req, res) => {
+    const new_user = await createUser("Chalva","chalva67@prodigy.net",67676767);
+    res.send(new_user);
+})
 // --- SERVER START ---
 
 app.listen(port, () => {
