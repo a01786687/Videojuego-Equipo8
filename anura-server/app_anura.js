@@ -23,7 +23,7 @@ import express from 'express'
 import cors from 'cors'
 
 // importing database functions (queries)
-import { createUser, getUsers, getUsersById, startSesion } from './db.js'
+import { createUser, getMobData, getUsers, getUsersById, startSesion } from './db.js'
 
 const app = express();
 const port = 8080;
@@ -48,7 +48,7 @@ app.use(cors()); // Allows requests from other apps (like the frontend) since it
 
 */
 
-
+//Pruebas
 app.get("/users", async (req, res) => {
     const users = await getUsers();
     res.send(users);
@@ -68,12 +68,46 @@ app.get("/createUser", async (req, res) => {
     const new_user = await createUser("Chalva","chalva67@prodigy.net",67676767);
     res.send(new_user);
 })
+//Primer get a usar en el juego
+app.get("/getMobData/:mob_name",async (req, res) =>{
+    const mob_name = req.params.mob_name;
+
+    const data = await getMobData(mob_name);
+    res.send(data);
+})
+
 // --- SERVER START ---
 
 app.listen(port, () => {
     console.log(`Anura server running on port ${port}`);
 });
 
+//Ejemplo:
+
+// app.get('/cartas/:dificultad', (req, res) => {
+
+//     const dificultad = req.params.dificultad;
+
+//     const connection = mysql.createConnection({
+//         host: host,
+//         user: user,
+//         password: pass,
+//         database: db
+//     });
+
+//     connection.connect((err) => {
+//         if (err) throw err;
+
+//         connection.query('SELECT * FROM Carta WHERE dificultad_requerida = ?', [dificultad], (err, results) => {
+//                 if (err) throw err;
+
+//                 connection.end();
+                
+//                 res.json(results);
+//             }
+//         );
+//     });
+// });
 
 /* NOTES:
 

@@ -96,15 +96,24 @@ export async function startSesion(id){
     return verify;
 }
 
+// Probar esta primero
 export async function saveRun(sesion_id,mosqCollect,bosses_defeated,victory,start_time){
     const [run] = await pool.query(`
         INSERT INTO anura.runs (run_sesion_id, mosquitoes_collected, bosses_defeated, victory, start_time)
-        VALUES (?,?,?,?,?)
+        VALUES (?,?,?,?,?);
         `,[sesion_id,mosqCollect,bosses_defeated,victory,start_time]);
 
     const result = run.insertId;
     console.log(result);
     return result;
+}
+
+//Enemigos **Será de los primeros a probar en el javascript
+export async function getMobData(name){
+    const [mob_data] = await pool.query("SELECT * FROM anura.mobs WHERE mob_name = ?",[name]);
+
+    console.log(mob_data);
+    return mob_data;
 }
 
 // export async function addMosquitoes(id)
