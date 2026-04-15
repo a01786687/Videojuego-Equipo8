@@ -213,12 +213,17 @@ window.addEventListener('keydown', (event) => {
         console.log(deck);
         if (deck.slot1_Movement.length > 0) {
 
+            // reset the previously burned card
+            if (lastBurnedSlot1 && lastBurnedSlot1.reset) {
+                lastBurnedSlot1.reset();
+            }
+
             deck.slot1_Movement[0].effect();
             slot1FlashTimer = 300;
 
-            // burn the active card
-            deck.slot1_Movement.shift(); // shift() method removes the first element from an array and returns it, shifting all remaining elements one position forward
-        
+            // burn the active card and save for reference
+            lastBurnedSlot1 = deck.slot1_Movement.shift();// shift() method removes the first element from an array and returns it, shifting all remaining elements one position forward
+
             // replace    
             if (deck.slot1_Movement.length > 0) { // if the array has at least one element
                 // randomRange(size,start) from game_functions.js
@@ -233,11 +238,16 @@ window.addEventListener('keydown', (event) => {
     if (event.key === '2') {
         if (deck.slot2_Combat.length > 0) {
 
+            // reset the previously burned card
+            if (lastBurnedSlot2 && lastBurnedSlot2.reset) {
+                lastBurnedSlot2.reset();
+            }
+
             deck.slot2_Combat[0].effect();
             slot2FlashTimer = 300;
 
-            // burn the active card
-            deck.slot2_Combat.shift(); 
+            // burn the active card and save for reference
+            lastBurnedSlot2 = deck.slot2_Combat.shift(); 
 
             // replace
             if (deck.slot2_Combat.length > 0) {
@@ -252,11 +262,16 @@ window.addEventListener('keydown', (event) => {
     if (event.key === '3') {
         if (deck.slot3_Utility.length > 0) {
 
+            // reset the previously burned card
+            if (lastBurnedSlot3 && lastBurnedSlot3.reset) {
+                lastBurnedSlot3.reset();
+            }
+
             deck.slot3_Utility[0].effect();
             slot3FlashTimer = 300;
 
-            // burn the active card
-            deck.slot3_Utility.shift(); 
+            // burn the active card and save for reference
+            lastBurnedSlot3 = deck.slot3_Utility.shift(); 
 
             // replace
             if (deck.slot3_Utility.length > 0) {

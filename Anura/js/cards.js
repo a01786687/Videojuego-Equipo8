@@ -9,6 +9,10 @@ let slot1FlashTimer = 0;
 let slot2FlashTimer = 0;
 let slot3FlashTimer = 0;
 
+let lastBurnedSlot1 = null;
+let lastBurnedSlot2 = null;
+let lastBurnedSlot3 = null;
+
 // --- CARD IMAGE OBJECT ---
 
 const cardImages = {
@@ -59,6 +63,12 @@ let ironHindlegs = {
         frog.canDoubleJump = true;
         frog.hasDoubleJump = true;
     },
+
+    reset: function() {
+        frog.canDoubleJump = false
+        frog.hasDoubleJump = false;
+    },
+
     image: getImageByName("Iron Hindlegs")
 };
 
