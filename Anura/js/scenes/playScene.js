@@ -127,6 +127,21 @@ function drawPlayScene(deltaTime) {
 
         HealthBarDisplay();
         updateMosquitoHUD();
+        drawCardHUD(deck);
+
+        // flash effect timer for cards
+
+        if (slot1FlashTimer > 0) {
+            slot1FlashTimer -= deltaTime;
+        }
+
+        if (slot2FlashTimer > 0) {
+            slot2FlashTimer -= deltaTime;
+        }
+
+        if (slot3FlashTimer > 0) {
+            slot3FlashTimer -= deltaTime;
+        }
         
     }
 
@@ -197,24 +212,58 @@ window.addEventListener('keydown', (event) => {
     if (event.key === '1') {
         console.log(deck);
         if (deck.slot1_Movement.length > 0) {
+
             deck.slot1_Movement[0].effect();
+            slot1FlashTimer = 300;
+
+            // burn the active card
             deck.slot1_Movement.shift(); // shift() method removes the first element from an array and returns it, shifting all remaining elements one position forward
+        
+            // replace    
+            if (deck.slot1_Movement.length > 0) { // if the array has at least one element
+                // randomRange(size,start) from game_functions.js
+                let randomIndex = randomRange(deck.slot1_Movement.length); // generates a random index in the array
+                let newCard = deck.slot1_Movement.splice(randomIndex, 1)[0]; // splice starts in randomIndex and will delete 1 element, thats the second argument, it will return it as an array, [0] gets the actual element, not the array, so basically it removes a random card and stores it in newCard
+                deck.slot1_Movement.unshift(newCard); // adds the newCard to the beginning of the array with unshift() method
+            }
         }
     }
 
     // card slot 2
     if (event.key === '2') {
         if (deck.slot2_Combat.length > 0) {
+
             deck.slot2_Combat[0].effect();
+            slot2FlashTimer = 300;
+
+            // burn the active card
             deck.slot2_Combat.shift(); 
+
+            // replace
+            if (deck.slot2_Combat.length > 0) {
+                let randomIndex = randomRange(deck.slot2_Combat.length);
+                let newCard = deck.slot2_Combat.splice(randomIndex, 1)[0];
+                deck.slot2_Combat.unshift(newCard);
+            }
         }
     }
 
     // card slot 3
     if (event.key === '3') {
         if (deck.slot3_Utility.length > 0) {
+
             deck.slot3_Utility[0].effect();
+            slot3FlashTimer = 300;
+
+            // burn the active card
             deck.slot3_Utility.shift(); 
+
+            // replace
+            if (deck.slot3_Utility.length > 0) {
+                let randomIndex = randomRange(deck.slot3_Utility.length);
+                let newCard = deck.slot3_Utility.splice(randomIndex, 1)[0];
+                deck.slot3_Utility.unshift(newCard);
+            }
         }
     }
 
