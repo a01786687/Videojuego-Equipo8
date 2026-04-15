@@ -33,7 +33,7 @@ We use a connection pool instead of a single connection.
 const pool = mysql.createPool({
     host: '127.0.0.1', // localhost
     user: 'root',
-    password: 'Cerplirp&130506',
+    password: '#Clifjumper4406',
     database: 'anura'
 }).promise() // promise -> enables async/await
 
@@ -49,13 +49,74 @@ const pool = mysql.createPool({
 */
 
 export async function getUsers() { // export so it can be read from a diff file
-    const [users] = await pool.query("SELECT * FROM users");
+    const [users] = await pool.query("SELECT * FROM anura.users");
 
     // Debug (remove later if needed)
     console.log(users);
-    return users
-        
+    return users  
 }
+
+export async function getUsersById(id) { 
+    const [user] = await pool.query("SELECT * FROM anura.users WHERE user_id = ?", [id]);
+
+    // Debug (remove later if needed)
+    console.log(user);
+    return user;
+}
+
+export async function createUser(username,email,password){
+    const[new_user] = await pool.query(`
+        INSERT INTO anura.users (username, email, password)
+        VALUES (?,?,?);
+        `,[username,email,password]);
+
+    const result = getUsersById(new_user.insertId)
+    console.log(result);
+    return result;
+
+}
+
+export async function getSesionById(id){
+    const [user] = await pool.query("SELECT * FROM anura.sesions WHERE sesion_user_id = ?", [id]);
+
+    // Debug (remove later if needed)
+    console.log(user);
+    return user;
+}
+
+
+export async function startSesion(id){
+    const [result] = await pool.query(`
+        INSERT INTO anura.sesions (sesion_user_id)
+        VALUES (?);
+        `,[id]);
+
+    const verify = getSesionById(id)
+    console.log(verify);
+    return verify;
+}
+
+// Probar esta primero
+export async function saveRun(sesion_id,mosqCollect,bosses_defeated,victory,start_time){
+    const [run] = await pool.query(`
+        INSERT INTO anura.runs (run_sesion_id, mosquitoes_collected, bosses_defeated, victory, start_time)
+        VALUES (?,?,?,?,?);
+        `,[sesion_id,mosqCollect,bosses_defeated,victory,start_time]);
+
+    const result = run.insertId;
+    console.log(result);
+    return result;
+}
+
+//Enemigos **Será de los primeros a probar en el javascript
+export async function getMobData(name){
+    const [mob_data] = await pool.query("SELECT * FROM anura.mobs WHERE mob_name = ?",[name]);
+
+    console.log(mob_data);
+    return mob_data;
+}
+
+// export async function addMosquitoes(id)
 
 /*
  FUTURE FUNCTIONS:
