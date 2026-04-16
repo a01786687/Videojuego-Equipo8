@@ -70,8 +70,10 @@ async function gameOver() {
     // shows what backend returned in JSON format
     console.log("Backend response:", response);
 
-    // after backend confirms -> continue game flow
-    drawGameOver(); // or scene switch
+    // transition to cardSelection screen from gameOver after 2 Seconds
+    setTimeout(() => {
+        currentScene = "cardSelection";
+    }, 2000);
 }
 
 
@@ -165,6 +167,7 @@ function drawPlayScene(deltaTime) {
         
     }
 
+    // game Over rendering
     if (isGameOver) {
         drawGameOver();
     }
