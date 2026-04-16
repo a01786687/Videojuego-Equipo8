@@ -76,8 +76,8 @@ export async function createUser(username,email,password){
 
 }
 
-export async function getSesionById(id){
-    const [user] = await pool.query("SELECT * FROM anura.sesions WHERE sesion_user_id = ?", [id]);
+export async function getSessionById(id){
+    const [user] = await pool.query("SELECT * FROM anura.sessions WHERE session_user_id = ?", [id]);
 
     // Debug (remove later if needed)
     console.log(user);
@@ -85,23 +85,24 @@ export async function getSesionById(id){
 }
 
 
-export async function startSesion(id){
+export async function startSession(id){
     const [result] = await pool.query(`
-        INSERT INTO anura.sesions (sesion_user_id)
+        INSERT INTO anura.sessions (session_user_id)
         VALUES (?);
         `,[id]);
 
-    const verify = getSesionById(id)
+    const verify = getSessionById(id)
     console.log(verify);
     return verify;
 }
 
 // Probar esta primero
-export async function saveRun(sesion_id,mosqCollect,bosses_defeated,victory,start_time){
+export async function saveRun(session_id,mosqCollect,bosses_defeated,victory,start_time){
+    console.log(session_id);
     const [run] = await pool.query(`
-        INSERT INTO anura.runs (run_sesion_id, mosquitoes_collected, bosses_defeated, victory, start_time)
+        INSERT INTO anura.runs (run_session_id, mosquitoes_collected, bosses_defeated, victory, start_time)
         VALUES (?,?,?,?,?);
-        `,[sesion_id,mosqCollect,bosses_defeated,victory,start_time]);
+        `,[session_id,mosqCollect,bosses_defeated,victory,start_time]);
 
     const result = run.insertId;
     console.log(result);
