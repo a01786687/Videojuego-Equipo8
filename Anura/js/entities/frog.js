@@ -21,6 +21,8 @@ let frog = {
     gravity: 0.8, // pulls the frog down each frame
     jumpForce: -15, // makes the frog jump up, its negative because on the canvas Y increases down, so negative = up
 
+
+    // double jump
     canDoubleJump: false,
     hasDoubleJump: false,
     doubleJumpCooldown: 3000,

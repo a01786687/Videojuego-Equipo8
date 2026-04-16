@@ -45,14 +45,36 @@ function handleKeyDown(event) {
 
 }
 
-// temporary game over function MUST BE MODIFIED ON ITS ASSIGNED SPRINT
-function gameOver() {
-    console.log("Game Over, Health: ", currentHealth);
-    isGameOver = true;
+// gameOver function that awaits for the server
+async function gameOver() {
+    if (isGameOver) return; // if game is already over, do nothing, prevents double triggers
+    
+    isGameOver = true; // sets gameOver to true
+
+    // gameloop running check
+    // stop game loop so the game freezes when the player dies
+    if (gameLoopID !== null) { // if the game loop is not null
+        cancelAnimationFrame(gameLoopID); // stops the next frame of the game from running
+        gameLoopID = null; // theres no active game loop anymore
+    }
+
+    // deletes all active objects, enemies disappear and damage text disappears, prevents bugs so objects that are leftover stop updating, drawing, etc causing bugs
+    enemies = [];
+    damageNumbers = [];
+
+    console.log("Game Over"); // for debugging
+
+    // send death data to backend and WAIT for a reply, front end sends mosquitoes and deck to the backend
+    const response = await saveProgressOnDeath();
+
+    // shows what backend returned in JSON format
+    console.log("Backend response:", response);
+
+    // transition to cardSelection screen from gameOver after 2 Seconds
+    setTimeout(() => {
+        currentScene = "cardSelection";
+    }, 2000);
 }
-
-// input handlers for card deck
-
 
 
 // --- PLAY SCENE RENDERING ---
@@ -145,6 +167,7 @@ function drawPlayScene(deltaTime) {
         
     }
 
+    // game Over rendering
     if (isGameOver) {
         drawGameOver();
     }
@@ -353,4 +376,22 @@ class DamageNumber {
         ctx.restore();
     }
 
+}
+
+
+// GAME OVER async function for API call
+
+async function saveProgressOnDeath() {
+    const res = await fetch ("http://localhost:8080/run/death", {
+        method: "POST",
+        headers: {
+            "Content-Type" : "application/json" 
+        },
+        body: JSON.stringify({
+            mosquitoes: runMosquitos,
+            deck: deck
+        })
+    });
+
+    return await res.json();
 }

@@ -105,6 +105,11 @@ function draw(newTime) { // draws the actual scene
         case "boss":
             drawBossScene1();
             break; 
+
+    // cardSelectionScene.js
+    case "cardSelection":
+        drawCardSelectionScene();
+        break;
     }
 
     updateLoginForm();
@@ -126,6 +131,11 @@ function handleClick(event) {
     const mouseY = event.clientY - rect.top;
 
     console.log(mouseX, mouseY);
+
+    if (currentScene === "cardSelection") {
+        beginRun();
+        return; // return so it doesnt trigger title buttons, back button logic
+    }
 
     // Handle clicks depending on the current scene
     if (currentScene == "title") {
