@@ -705,7 +705,7 @@ A clean interface featuring a mosquito counter, a health bar for the frog, and a
 
 ### Sketches
 
-![Screen Sketches](./InspoImages/ScreenSketches.png)
+![Screen Sketches](./GDD_Images/ScreenSketches.png)
 
 
 
