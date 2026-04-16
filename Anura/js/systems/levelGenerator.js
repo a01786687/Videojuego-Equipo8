@@ -7,8 +7,19 @@
 
 let caveEntrance = null; // stores the cave position, its null until createLevel() finds the ! tile
 
-async function receiveMobtData(mob_name){
+async function receiveMobData(mob_name){
+    const res = await fetch(`http://localhost:8080/getMobData/${mob_name}`);
+    const data = await res.json();
+
+    if(data.length > 0){
+        const attributes = await data[0];
     
+        return [attributes.base_hp,attributes.base_damage];
+    }
+    
+    return;
+    
+        
 }
 
 function generateLevelPlan() {
@@ -52,7 +63,7 @@ function createLevel() {
     let yOffset = canvasHeight - (rows.length * TILE_SIZE);
     
     rows.forEach((row, y) => {
-        [...row].forEach((char, x) => {
+        [...row].forEach(async (char, x) => {
             let posX = x * TILE_SIZE;
             let posY = y * TILE_SIZE + yOffset;
 
@@ -71,10 +82,16 @@ function createLevel() {
             }
             else if (char === "$") {
                 if(Math.random() < 0.75){
-                    enemies.push(new Enemy(posX, posY, 40, 40, "black", "mosquito", 4, 100, 2, 0));
+                    const mob_name = "mosquito";
+                    const values = await receiveMobData(mob_name);
+                    console.log(values);
+                    enemies.push(new Enemy(posX, posY, 40, 40, "black", mob_name, 4, 100, values[0], values[1]));
                 }
                 else{
-                    enemies.push(new Enemy(posX, posY, 60, 60, "red", "spider", 4, 100, 5, 10));
+                    const mob_name = "spider"
+                    const values = await receiveMobData(mob_name);
+                    console.log(values);
+                    enemies.push(new Enemy(posX, posY, 60, 60, "red", mob_name, 4, 100, values[0], values[1]));
                 }
                     
             }
