@@ -45,26 +45,29 @@ function handleKeyDown(event) {
 
 }
 
-// 
+// gameOver function that awaits for the server
 async function gameOver() {
-    if (isGameOver) return; // prevents double triggers
-
+    if (isGameOver) return; // if game is already over, do nothing, prevents double triggers
     
-    isGameOver = true;
+    isGameOver = true; // sets gameOver to true
 
-    // stop game loop to be used later
-    if (gameLoopID !== null) {
+    // gameloop running check
+    // stop game loop so the game freezes when the player dies
+    if (gameLoopID !== null) { // if the game loop is not null
         cancelAnimationFrame(gameLoopID); // stops the next frame of the game from running
         gameLoopID = null; // theres no active game loop anymore
     }
 
+    // deletes all active objects, enemies disappear and damage text disappears, prevents bugs so objects that are leftover stop updating, drawing, etc causing bugs
     enemies = [];
     damageNumbers = [];
 
-    console.log("Game Over");
+    console.log("Game Over"); // for debugging
 
+    // send death data to backend and WAIT for a reply, front end sends mosquitoes and deck to the backend
     const response = await saveProgressOnDeath();
 
+    // shows what backend returned in JSON format
     console.log("Backend response:", response);
 
     // after backend confirms -> continue game flow
