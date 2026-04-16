@@ -7,6 +7,10 @@
 
 let caveEntrance = null; // stores the cave position, its null until createLevel() finds the ! tile
 
+async function receiveMobtData(mob_name){
+    
+}
+
 function generateLevelPlan() {
     // we could choose the number of middle chunks based on the current level, for now its set to 4 for testing
     let middleCount = 5;
