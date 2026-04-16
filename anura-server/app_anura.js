@@ -23,7 +23,7 @@ import express from 'express'
 import cors from 'cors'
 
 // importing database functions (queries)
-import { createUser, getMobData, getUsers, getUsersById, startSesion, saveRun } from './db.js'
+import { createUser, getMobData, getUsers, getUsersById, startSession, saveRun } from './db.js'
 
 const app = express();
 const port = 8080;
@@ -59,8 +59,8 @@ app.get("/user", async (req, res) => {
     res.send(user);
 })
 
-app.get("/sesionStart", async (req, res) => {
-    const user = await startSesion(4);
+app.get("/sessionStart", async (req, res) => {
+    const user = await startSession(4);
     res.send(user);
 })
 
@@ -79,20 +79,20 @@ app.get("/getMobData/:mob_name",async (req, res) =>{
 // POST /run/death endpoint -> game sends "player died" data to the backend 
 // When someone sends POST /run/death, run this function:
 app.post("/run/death", async (req, res) => {
+    
     try {
-        const { mosquitoes, deck } = req.body;
+        const { mosquitoes, deck, session_id } = req.body;
 
         console.log("Death endpoint hit!");
         console.log("Body received:", req.body);
 
         // temporary values (replace later) used for testing RF-02 and saving basic progress, remove when login/session system, boss, run tracking is done
-        const sesion_id = 1;
         const bosses_defeated = 0;
         const victory = false;
         const start_time = new Date();
 
         const runId = await saveRun(
-            sesion_id,
+            session_id,
             mosquitoes,
             bosses_defeated,
             victory,
@@ -114,6 +114,9 @@ app.post("/run/death", async (req, res) => {
         });
     }
 });
+
+
+
 
 // --- SERVER START ---
 
