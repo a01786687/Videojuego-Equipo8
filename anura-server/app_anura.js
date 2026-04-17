@@ -23,7 +23,7 @@ import express from 'express'
 import cors from 'cors'
 
 // importing database functions (queries)
-import { createUser, getMobData, getUsers, getUsersById, startSession, saveRun } from './db.js'
+import { createUser, getMobData, getUsers, getUsersById, startSession, saveRun, countRunsPerSession } from './db.js'
 
 const app = express();
 const port = 8080;
@@ -100,8 +100,14 @@ app.post("/run/death", async (req, res) => {
         });
     }
         
-
 });
+
+app.get("/stats", async (req, res) =>{
+
+
+    const data = await countRunsPerSession();
+    res.send(data);
+})
 
 
 
