@@ -73,6 +73,7 @@ async function gameOver() {
     // transition to cardSelection screen from gameOver after 2 Seconds
     setTimeout(() => {
         currentScene = "cardSelection";
+        generateCardOffers();
     }, 2000);
 }
 
