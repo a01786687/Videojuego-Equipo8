@@ -54,8 +54,9 @@ app.get("/users", async (req, res) => {
     res.send(users);
 })
 
-app.get("/user", async (req, res) => {
-    const user = await getUsersById(100);
+app.get("/user/:username", async (req, res) => {
+    const username = req.params.username; //Le agregamos parámetro para el front
+    const user = await getUsersById(username);
     res.send(user);
 })
 
@@ -64,8 +65,12 @@ app.get("/sessionStart", async (req, res) => {
     res.send(user);
 })
 
-app.get("/createUser", async (req, res) => {
-    const new_user = await createUser("Chalva","chalva67@prodigy.net",67676767);
+app.get("/createUser/:new_username/:new_email/:new_password", async (req, res) => {
+    const new_username = req.params.new_username;
+    const new_email = req.params.new_email;
+    const new_password = req.params.new_password;
+    
+    const new_user = await createUser(new_username,new_password,new_password);
     res.send(new_user);
 })
 //Primer get a usar en el juego

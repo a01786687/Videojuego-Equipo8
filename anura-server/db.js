@@ -56,8 +56,9 @@ export async function getUsers() { // export so it can be read from a diff file
     return users  
 }
 
-export async function getUsersById(id) { 
-    const [user] = await pool.query("SELECT * FROM anura.users WHERE user_id = ?", [id]);
+//Cambue a getUser por id a getUSer por nombre o username
+export async function getUsersById(username) { 
+    const [user] = await pool.query("SELECT * FROM anura.users WHERE username = ?", [username]);
 
     // Debug (remove later if needed)
     console.log(user);
@@ -70,7 +71,7 @@ export async function createUser(username,email,password){
         VALUES (?,?,?);
         `,[username,email,password]);
 
-    const result = getUsersById(new_user.insertId)
+    const result = new_user.insertId
     console.log(result);
     return result;
 
