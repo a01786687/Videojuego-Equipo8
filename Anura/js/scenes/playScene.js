@@ -389,7 +389,7 @@ async function saveProgressOnDeath() {
         },
         body: JSON.stringify({
             mosquitoes: runMosquitos,
-            deck: deck
+            session_id: 1
         })
     });
 
