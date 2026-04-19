@@ -1,17 +1,19 @@
 /*
- * Side-scrolling camera system that follows the frog horizontally with bounds checking.
- * Authors: Renata Uruchurtu, Carlos Rosete, Emilio Torres
+ * Side-scrolling camera system.
  */
 "use strict";
 
 let cameraX = 0;
 
 function updateCamera() {
-    
-    cameraX = frog.x - (canvasWidth / 2);
+    // Check if frog exists before trying to access its position
+    if (frog) {
+        // Use frog.position.x because it's a class now
+        cameraX = frog.position.x - (canvasWidth / 2);
 
-    if (cameraX < 0) {
-        cameraX = 0;
+        // Keep camera within left bounds
+        if (cameraX < 0) {
+            cameraX = 0;
+        }
     }
-
 }
