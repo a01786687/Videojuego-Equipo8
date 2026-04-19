@@ -17,34 +17,52 @@ let activeUserId = null; // stores userId after login
 let activeSessionId = null; // stores sessionId after login, used for creating runs
 
 // username and password parameters
-function registerUser(username, password) {
+async function apiRegister(username, password, email) {
     // for each user in the array, check if that user's username property matched the username we passed in
-    if (users.find(user => user.username === username)) {
+    let res = await fetch(`http://localhost:8080/user/${username}`);
+    const user = await res.json();
+    
+    if (user.length == 0) {
 
-        // using an object to return multiple pieces of info to the front end
+        res = await fetch ("http://localhost:8080/createUser",{
+            method: "POST",
+            headers: { "Content-Type" : "application/json" },
+            body: JSON.stringify({
+                new_username: username,
+                new_email: email,
+                new_password: password
+            })
+        });
+        return { success: true, message: "Registration success." }; // using an object to return multiple pieces of info to the front end
+        
+    } 
+    else {
         return { success: false, message: "Username already exists." };
-    } else {
-        users.push({ username: username, password: password });
-        return { success: true, message: "Registration success." };
+        
     };
 }
 
-function apiLogin(username, password) {
+async function apiLogin(front_username, front_password) {
 
-    const user = users.find(user => user.username === username);
-    
+    const res = await fetch(`http://localhost:8080/user/${front_username}`);
+    const user = await res.json();
     // if user isnt found in the array
-    if (!user) {
+    
+    if (user.length == 0) {
         return { success: false, message: "User not found. Please register."};
     } 
-    
-    // if the password matches the password associated with the username
-    if (user.password === password) {
-        activeUser = username;
-        return { success: true, message: "Login successful." };
-    } else {
-        return { success: false, message: "Incorrect password." };
+    else{
+        if (user[0].password == front_password) {
+            
+            return { success: true, message: "Login successful." };
+            
+        } 
+        else {
+            return { success: false, message: "Incorrect password." };
+        }
     }
+    // if the password matches the password associated with the username
+        
 };
 
 /* TESTS

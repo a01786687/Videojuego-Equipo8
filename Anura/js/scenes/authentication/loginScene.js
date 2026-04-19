@@ -42,18 +42,19 @@ function initLoginScene() {
         
         if (!usernameInput.value || !passwordInput.value) {
             loginMessage.textContent = "Please fill in all fields."
-        } else {
+        } 
+        else {
             const result = await apiLogin(usernameInput.value, passwordInput.value); // changed from loginUser to apiLogin
             loginMessage.textContent = result.message;
-            if (result.success === true) {
-                activeUser = result.username;
-                activeUserId = result.userId
-                activeSessionId = result.sessionId;
+            if (result.success == true) {
+                activeUser = usernameInput.value;
+                activeSessionId = 1; //Change to another get or post request
                 loginMessage.textContent = "";
                 currentScene = "title";
             }
         }
 
+        loginMessage.textContent = "";
         usernameInput.value = "";
         passwordInput.value = "";
     });

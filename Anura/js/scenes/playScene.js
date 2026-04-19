@@ -384,9 +384,7 @@ class DamageNumber {
 async function saveProgressOnDeath() {
     const res = await fetch ("http://localhost:8080/run/death", {
         method: "POST",
-        headers: {
-            "Content-Type" : "application/json" 
-        },
+        headers: { "Content-Type" : "application/json" },
         body: JSON.stringify({
             mosquitoes: runMosquitos,
             session_id: 1

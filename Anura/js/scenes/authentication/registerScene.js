@@ -39,7 +39,7 @@ function initRegisterScene() {
             const result = await apiRegister(usernameInput.value, emailInput.value, passwordInput.value); // changed from registerUser to apiRegister
             registerMessage.textContent = result.message;
             if (result.success === true){
-                registerMessage.textContent = "";
+                result.message = "";
                 currentScene = "login";
             }
         }

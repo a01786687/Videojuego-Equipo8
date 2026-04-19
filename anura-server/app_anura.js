@@ -52,34 +52,35 @@ app.use(cors()); // Allows requests from other apps (like the frontend) since it
 app.get("/users", async (req, res) => {
     const users = await getUsers();
     res.send(users);
-})
+});
 
 app.get("/user/:username", async (req, res) => {
     const username = req.params.username; //Le agregamos parámetro para el front
     const user = await getUsersById(username);
     res.send(user);
-})
+});
 
 app.get("/sessionStart", async (req, res) => {
     const user = await startSession(4);
     res.send(user);
-})
+});
 
-app.get("/createUser/:new_username/:new_email/:new_password", async (req, res) => {
-    const new_username = req.params.new_username;
-    const new_email = req.params.new_email;
-    const new_password = req.params.new_password;
+app.post("/createUser", async (req, res) => {
+    const {new_username, new_email, new_password} = req.body;
     
-    const new_user = await createUser(new_username,new_password,new_password);
-    res.send(new_user);
-})
+    const new_user = await createUser(new_username,new_email,new_password);
+    res.json({
+        savedData: new_user
+    });
+});
+
 //Primer get a usar en el juego
 app.get("/getMobData/:mob_name",async (req, res) =>{
     const mob_name = req.params.mob_name;
 
     const data = await getMobData(mob_name);
     res.send(data);
-})
+});
 
 // POST /run/death endpoint -> game sends "player died" data to the backend 
 // When someone sends POST /run/death, run this function:
@@ -112,7 +113,7 @@ app.get("/stats", async (req, res) =>{
 
     const data = await countRunsPerSession();
     res.send(data);
-})
+});
 
 
 
