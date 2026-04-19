@@ -129,3 +129,10 @@ deck.slot1_Movement.push(glideMembrane);
 deck.slot1_Movement.push(bubbleDash);
 deck.slot1_Movement.push(rocketFrog);
 
+// CARD POOL
+let cardPool = [ironHindlegs, dragonflyHop, glideMembrane, bubbleDash, rocketFrog];
+
+
+
+
+

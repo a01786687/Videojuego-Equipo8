@@ -33,6 +33,8 @@ VALUES ('mosquito',0,2,1),('spider',10,5,5);
 SELECT * FROM anura.playable_character;
 SELECT * FROM anura.users AS X;
 
+SELECT * FROM anura.mobs;
+
 SELECT * FROM anura.runs;
 SELECT * FROM anura.run_boss;
 
@@ -96,6 +98,7 @@ WHERE Y.boss_id = 10;
 DELETE FROM anura.runs AS Z
 WHERE Z.run_id = 1;
 
+UPDATE anura.mobs SET base_damage = 100 where mob_id = 2;
 
 
 

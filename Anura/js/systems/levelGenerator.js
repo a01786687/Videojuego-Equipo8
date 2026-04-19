@@ -72,13 +72,12 @@ function createLevel() {
                 platforms.push(new Platform(posX + TILE_SIZE/2, posY + TILE_SIZE/2, TILE_SIZE, TILE_SIZE));
             } 
             else if (char === "@") {
-                frog.x = posX;
-                // Ajust Y to place the frog on top of the tilteado, not inside it
-                frog.y = posY - frog.height; 
-    
-                
-                frog.position.x = frog.x + frog.width / 2;
-                frog.position.y = frog.y + frog.height / 2;
+                frog = new Frog(
+                    { x: posX + TILE_SIZE / 2, y: posY - 25 }, // Centered position
+                    50, // width
+                    50, // height
+                    4   // sheetCols (adjust based on your spritesheet)
+                );  
             }
             else if (char === "$") {
                 if(Math.random() < 0.75){

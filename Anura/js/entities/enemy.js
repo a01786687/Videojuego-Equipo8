@@ -87,12 +87,12 @@ class Enemy extends AnimatedObject {
         }
 
         // Logic to track the player (frog)
-        let dx = target.x - this.position.x;
-        let dy = target.y - this.position.y;
-        let distance = Math.sqrt(dx * dx + dy * dy);
+        let dx = target.position.x - this.position.x;
+        let dy = target.position.y - this.position.y;
+        let distance = (dx * dx + dy * dy);
 
         // State switching
-        if (distance < this.detectionRadius) {
+        if (distance < this.detectionRadius**2) {
             this.state = ENEMY_STATE.CHASE;
         } else {
             this.state = ENEMY_STATE.PATROL;

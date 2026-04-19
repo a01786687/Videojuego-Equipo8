@@ -39,48 +39,26 @@
     </section>
     
     <!-- cat grid layout -->
-    <section class="catsLayout">
-
-        <!-- cat 1-->
-        <div class="catCard">
-            <img src="assets/cats/Frida.png" alt="Frida">
-            <h3>Frida</h3>
-            <p><b>Age:</b> 2 years old</p>
-            <p><b>Character:</b> Sweet, curious, and gentle.</p>
-        </div>
-
-        <!-- cat 2-->
-        <div class="catCard">
-            <img src="assets/cats/Salem.png" alt="Salem">
-            <h3>Salem</h3>
-            <p><b>Age:</b> 3 years old</p>
-            <p><b>Character:</b> Elegant, calm, and observant.</p>
-        </div>
-
-        <!-- cat 3-->
-        <div class="catCard">
-            <img src="assets/cats/Tangerine.png" alt="">
-            <h3>Tangerine</h3>
-            <p><b>Age:</b> 2 years old</p>
-            <p><b>Character:</b> Playful, silly, and full of energy.</p>
-        </div>
-
-        <!-- cat 4-->
-        <div class="catCard">
-            <img src="assets/cats/Mochi.png" alt="">
-            <h3>Mochi</h3>
-            <p><b>Age:</b> 4 years old</p>
-            <p><b>Character:</b> Affectionate, quiet, and very cuddly.</p>
-        </div>
-
-        <!-- cat 5-->
-        <div class="catCard">
-            <img src="assets/cats/Bruno.png" alt="">
-            <h3>Bruno</h3>
-            <p><b>Age:</strbong> 5 years old</p>
-            <p><b>Character:</b> Grumpy, independent, but secretly lovable.</p>
-        </div>
+    <section class="catsLayout" id="catsLayout">
+        
     </section>
     
+    <script>
+        fetch('http://localhost:8080/api/cats')
+        .then(res => res.json())
+        .then(cats => {
+            const container = document.getElementById('catsLayout')
+            cats.forEach(cat => {
+                container.innerHTML += `
+                    <div class="catCard">
+                        <img src="${cat.image}" alt="${cat.name}">
+                        <h3>${cat.name}</h3>
+                        <p><b>Age:</b> ${cat.age}</p>
+                        <p><b>Character:</b> ${cat.personality}</p>
+                    </div>
+                `
+            });
+        })
+    </script>
 </body>
 </html>
