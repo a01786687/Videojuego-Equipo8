@@ -51,6 +51,7 @@ function initLoginScene() {
                 activeSessionId = 1; //Change to another get or post request
                 loginMessage.textContent = "";
                 currentScene = "title";
+                dispActiveUser();
             }
         }
 

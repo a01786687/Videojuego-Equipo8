@@ -5,6 +5,7 @@
 "use strict";
 
 let HP_display;
+let user_disp;
 
 function drawHeart(ctx, x, y, size) {
     ctx.fillStyle = "red";
@@ -89,6 +90,11 @@ function updateMosquitoHUD() {
     Mosquito_dipslay.draw(ctx,'Mosq: '+ runMosquitos);
     drawMosquito(ctx, x - 60, y - 10 ,5);
 
+}
+
+function dispActiveUser(){
+    user_disp = new TextLabel(canvasWidth/2,90,"80spx Ubuntu Mono","red");
+    user_disp.draw(ctx,'User: '+ activeUser);
 }
 
 function drawGameOver() {

@@ -25,15 +25,17 @@ function drawTitleScreen() {
     ctx.drawImage(logo, centerX, 0, 400, 400)
 
     // draw buttons
-    drawPlayButton();
+    if (activeUser !== null && activeUser !== undefined) {
+        drawPlayButton();
+    }
     drawLogInButton();
     drawSettingsButton();
 
     // continue run only shows if the player is logged in
     // real saved progress check will connect to API when RF-49 expands
 
-    if (activeUserId !== null && activeUserId !== undefined) {
-    drawContinueRunButton();
+    if (activeUser !== null && activeUser !== undefined) {
+        drawContinueRunButton();
     }
 }
 
@@ -149,3 +151,4 @@ function drawSettingsButton() {
     ctx.textBaseline = "middle";
     ctx.fillText("Settings", buttonX + buttonWidth / 2, buttonY + buttonHeight / 2);
 }
+
