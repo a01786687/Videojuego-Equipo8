@@ -88,7 +88,11 @@ function drawPlayScene(deltaTime) {
 
     if (!isGameOver) {
         // update player and handle collisions
-        updateFrog(deltaTime);
+        if (frog) {
+            frog.update(deltaTime, keys, platforms, canvasHeight, cameraX);
+
+            updateCamera();
+        }
         checkFrogEnemyCollisions(deltaTime);
 
         // when frog walks into the cave there's a transition to boss scene
@@ -136,7 +140,10 @@ function drawPlayScene(deltaTime) {
         }
 
         // draw player and restore camera transform
-        drawFrog();
+        if (frog) {
+        frog.draw(ctx);
+        }
+
         ctx.restore();
 
         damageNumbers.forEach(dn => {
@@ -328,9 +335,10 @@ function beginRun() {
 
     damageNumbers = [];
 
-    frogReset();
 
-    frog.invincibilityTimer = 0; // resetting the timer for every new run
+    if (frog) {
+        frog.invincibilityTimer = 0; 
+    } // resetting the timer for every new run
 
 
     currentScene = "play";
