@@ -117,6 +117,13 @@ export async function getMobData(name){
     return mob_data;
 }
 
+export async function countRunsPerSession(){
+    const [runs] = await pool.query("SELECT * FROM anura.sampleView");
+
+    console.log(runs);
+    return runs;
+}
+
 // export async function addMosquitoes(id)
 
 /*

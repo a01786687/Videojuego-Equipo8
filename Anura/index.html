@@ -123,38 +123,65 @@ Authors: Renata Uruchurtu, Carlos Rosete, Emilio Torres
 
     <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
     <script>
-        const xValues = ["Italy", "France", "Spain", "USA", "Argentina"];
-        const yValues = [55, 49, 44, 24, 15];
-        const barColors = [
-            "#b91d47",
-            "#00aba9",
-            "#2b5797",
-            "#e8c3b9",
-            "#1e7145"
-        ];
+        async function testStats(){
+            const res = await fetch("http://localhost:8080/stats");
+            let data = await res.json();
 
-        ctx = document.getElementById('myChart');
+            if(data.length > 0){
+                return data;
+            }
 
-        new Chart(ctx, {
-            type: "pie",
-            data: {
-                labels: xValues,
-                datasets: [{
-                    backgroundColor: barColors,
-                    data: yValues
-                }]
-            },
-            options: {
-                plugins: {
-                    legend: { display: true },
-                    title: {
-                        display: true,
-                        text: "World Wine Production 2018",
-                        font: { size: 16 }
+        }
+       
+        async function plot(){
+            const xValues = [];
+            const yValues = [];
+            const data = await testStats();
+            console.log(data);
+            for (let i = 0; i < data.length; i++){
+                
+                xValues.push(data[i].run_session_id);
+                yValues.push(data[i].totalRunPerSession);
+            }
+
+                const barColors = [
+                "#b91d47",
+                "#00aba9",
+                "#2b5797"
+            ];
+
+            ctx = document.getElementById('myChart');
+
+            new Chart(ctx, {
+                type: "pie",
+                data: {
+                    labels: xValues,
+                    datasets: [{
+                        backgroundColor: barColors,
+                        data: yValues
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: { display: true },
+                        title: {
+                            display: true,
+                            text: "Totals runs per session",
+                            font: { size: 16 }
+                        }
                     }
                 }
-            }
-        });
+            });
+            
+        }
+        
+        // plot();
+
+        
+        
+        
+        
+        
     </script>
     </div>
     </main>

@@ -23,7 +23,7 @@ import express from 'express'
 import cors from 'cors'
 
 // importing database functions (queries)
-import { createUser, getMobData, getUsers, getUsersById, startSession, saveRun } from './db.js'
+import { createUser, getMobData, getUsers, getUsersById, startSession, saveRun, countRunsPerSession } from './db.js'
 
 const app = express();
 const port = 8080;
@@ -80,40 +80,34 @@ app.get("/getMobData/:mob_name",async (req, res) =>{
 // When someone sends POST /run/death, run this function:
 app.post("/run/death", async (req, res) => {
     
-    try {
-        const { mosquitoes, deck, session_id } = req.body;
-
-        console.log("Death endpoint hit!");
-        console.log("Body received:", req.body);
+    const { mosquitoes, session_id } = req.body;
 
         // temporary values (replace later) used for testing RF-02 and saving basic progress, remove when login/session system, boss, run tracking is done
-        const bosses_defeated = 0;
-        const victory = false;
-        const start_time = new Date();
+    const bosses_defeated = 0;
+    const victory = false;
+    const start_time = new Date();
 
-        const runId = await saveRun(
-            session_id,
-            mosquitoes,
-            bosses_defeated,
-            victory,
-            start_time
-        );
-
+    if(session_id == null || session_id == 0 || session_id == undefined){
         res.json({
-            message: "Run saved successfully",
-            success: true,
-            runId: runId
-        });
-
-    } catch (error) {
-        console.error(error);
-
-        res.status(500).json({
-            success: false,
-            message: "Error saving run"
+            printError: "session_id can't be a null value"
         });
     }
+    else{
+        const runId = await saveRun(session_id,mosquitoes,bosses_defeated,victory,start_time);
+
+        res.json({
+            savedData: runId
+        });
+    }
+        
 });
+
+app.get("/stats", async (req, res) =>{
+
+
+    const data = await countRunsPerSession();
+    res.send(data);
+})
 
 
 

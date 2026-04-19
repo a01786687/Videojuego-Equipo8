@@ -29,7 +29,7 @@ function registerUser(username, password) {
     };
 }
 
-function loginUser(username, password) {
+function apiLogin(username, password) {
 
     const user = users.find(user => user.username === username);
     
