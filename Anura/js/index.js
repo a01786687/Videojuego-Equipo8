@@ -133,7 +133,40 @@ function handleClick(event) {
     console.log(mouseX, mouseY);
 
     if (currentScene === "cardSelection") {
-        beginRun();
+
+        const startX = 235; // x position where the first card starts
+        const cardY = 140; // y position where all 3 cards start
+        const spacing = 20; // gap between each card
+        const cardWidth = 150; 
+        const cardHeight = 250;
+
+        // card 1
+        if (mouseX >= startX && mouseX <= startX + cardWidth && mouseY >= cardY && mouseY <= cardY + cardHeight) {
+            if (!cardPurchased && runMosquitos >= cardOptions[0].cost) {
+                purchaseCard(cardOptions[0]);
+            }
+        }
+
+        // card 2
+        if (mouseX >= startX + cardWidth + spacing && mouseX <= startX + (cardWidth + spacing) + cardWidth && mouseY >= cardY && mouseY <= cardY + cardHeight) {
+            if (!cardPurchased && runMosquitos >= cardOptions[1].cost) {
+                purchaseCard(cardOptions[1]);
+            }
+        }
+
+        // card 3
+        if (mouseX >= startX + (cardWidth + spacing) * 2 && mouseX <= startX + (cardWidth + spacing) * 2 + cardWidth && mouseY >= cardY && mouseY <= cardY + cardHeight) {
+            if (!cardPurchased && runMosquitos >= cardOptions[2].cost) {
+                purchaseCard(cardOptions[2]);
+            }
+        }
+
+        // skip button
+
+        if (mouseX >= 410 && mouseX <= 550 && mouseY >= 475 && mouseY <= 505) {
+            beginRun();
+        }
+
         return; // return so it doesnt trigger title buttons, back button logic
     }
 

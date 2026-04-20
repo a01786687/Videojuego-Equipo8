@@ -1,8 +1,12 @@
 "use strict";
 
 let cardOptions = [];
+let cardPurchased = false;
 
 function generateCardOffers() {
+
+    cardPurchased = false; // gets called everytime the screen shows up, it tracks when the player has already bought a card on the current scene or not
+
     // card pool array copy so the original pool doesn't get modified
     let pool = [...cardPool]; // Spread Operator (...) -> way to unpack or expand elements of an array, string or object into individual pieces
 
@@ -26,32 +30,41 @@ function generateCardOffers() {
 function drawCardOffer(card, x, y) {
 
     const cardWidth = 150;
-    const cardHeight = 250;
+    const imageHeight = Math.round(cardWidth * 1.67); // 250 - maintains correct ratio
+    const cardHeight = imageHeight + 45; // image + space for cost and description below
 
     // card background
     ctx.fillStyle = "#333";
     ctx.fillRect(x , y , cardWidth, cardHeight);
 
     // card border
-    ctx.strokeStyle = "white";
-    ctx.lineWidth = 2;
-    ctx.strokeRect(x , y , cardWidth, cardHeight);
+    // ctx.strokeStyle = "white";
+    // ctx.lineWidth = 2;
+    // ctx.strokeRect(x , y , cardWidth, cardHeight);
 
     // card image
     if (card.image && card.image.complete) {
-        ctx.drawImage(card.image, x, y, cardWidth, cardHeight - 50);
+        ctx.drawImage(card.image, x, y, cardWidth, imageHeight);
     }
 
-    // card name
-    ctx.fillStyle = "white";
-    ctx.font = "13px Pixelify Sans";
-    ctx.textAlign = "center";
-    ctx.fillText(card.name, x + cardWidth / 2, y + cardHeight - 30);
-
-    // card cost placeholder
+    // card cost
     ctx.fillStyle = "#FFD700";
-    ctx.font = "12px Pixelify Sans";
-    ctx.fillText("Cost: 10", x + cardWidth / 2, y + cardHeight - 10);
+    ctx.font = "11px Pixelify Sans";
+    ctx.textAlign = "center";
+    ctx.fillText("Cost: " + card.cost, x + cardWidth / 2, y + imageHeight + 15);
+
+    // card description
+    ctx.fillStyle = "#aaaaaa";
+    ctx.font = "10px Pixelify Sans";
+    ctx.fillText(card.description, x + cardWidth / 2, y + imageHeight + 32);
+
+    // disabled card visual effect if player can't afford the card
+    if (runMosquitos < card.cost) {
+        ctx.globalAlpha = 0.5;
+        ctx.fillStyle = "#000000";
+        ctx.fillRect(x, y, cardWidth, cardHeight);
+        ctx.globalAlpha = 1;
+    }
 
 }
 
@@ -80,5 +93,34 @@ function drawCardSelectionScene() {
         drawCardOffer(cardOptions[0], startX, cardY);
         drawCardOffer(cardOptions[1], startX + cardWidth + spacing, cardY);
         drawCardOffer(cardOptions[2], startX + (cardWidth + spacing) * 2, cardY);
+
+        // skip button
+        ctx.fillStyle = "#444";
+        ctx.fillRect(410, 475, 140, 30);
+        ctx.strokeStyle = "white";
+        ctx.lineWidth = 2;
+        ctx.strokeRect(410, 475, 140, 30);
+        ctx.fillStyle = "white";
+        ctx.font = "20px Pixelify Sans";
+        ctx.textAlign = "center";
+        ctx.fillText("Skip", 480, 490);
     }
+}
+
+function purchaseCard(card) {
+
+    // substract cost from player balance
+    runMosquitos -= card.cost;
+
+    // add card to the correct deck slot 
+    if (card.category === "Movement") {
+        deck.slot1_Movement.push(card);
+    } else if (card.category === "Combat") {
+        deck.slot2_Combat.push(card);
+    } else if (card.category === "Utility") {
+        deck.slot3_Utility.push(card);
+    }
+
+    cardPurchased = true;
+    console.log("purchased:", card.name, " mosquitos left:", runMosquitos);
 }
