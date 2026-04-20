@@ -22,6 +22,7 @@ function initRegisterScene() {
  
     goLoginLink.addEventListener("click", () => {
         currentScene = "login";
+        registerMessage.textContent = "";
     });
 
     registerButton.addEventListener("click", async () => {
@@ -37,13 +38,18 @@ function initRegisterScene() {
             registerMessage.textContent = "Please fill in all fields."
         } else {
             const result = await apiRegister(usernameInput.value, emailInput.value, passwordInput.value); // changed from registerUser to apiRegister
-            registerMessage.textContent = result.message;
-            if (result.success === true){
-                result.message = "";
+            
+            if (result.success == true){
+                registerMessage.textContent = "";
                 currentScene = "login";
+            }
+            else{
+                registerMessage.textContent = result.message;
+                currentScene = "register";
             }
         }
 
+        
         usernameInput.value = "";
         emailInput.value = "";
         passwordInput.value = "";

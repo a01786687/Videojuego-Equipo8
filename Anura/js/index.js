@@ -172,17 +172,17 @@ function handleClick(event) {
 
     // Handle clicks depending on the current scene
     if (currentScene == "title") {
-    
-        // NEW GAME button
-        if (mouseX >= 270 && mouseX <= 470 && mouseY >= 350 && mouseY <= 410) {
-            beginRun(); // if the player clicks on the button, beginRun() is called from playScene.js
-        }
+        if (activeUser !== null && activeUser !== undefined) {
+            // NEW GAME button
+            if (mouseX >= 270 && mouseX <= 470 && mouseY >= 350 && mouseY <= 410) {
+                beginRun(); // if the player clicks on the button, beginRun() is called from playScene.js
+            }
 
-        // CONTINUE RUN button
-        if (mouseX >= 490 && mouseX <= 690 && mouseY >= 350 && mouseY <= 410) {
-            continueRun(); // if the player clicks on the button, continueRun() is called from playScene.js
+            // CONTINUE RUN button
+            if (mouseX >= 490 && mouseX <= 690 && mouseY >= 350 && mouseY <= 410) {
+                continueRun(); // if the player clicks on the button, continueRun() is called from playScene.js
+            }
         }
-
         // LOG IN button 
         if (mouseX >= 270 && mouseX <= 470 && mouseY >= 420 && mouseY <= 480) {
             currentScene = "login";

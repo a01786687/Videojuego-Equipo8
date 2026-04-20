@@ -17,7 +17,7 @@ let activeUserId = null; // stores userId after login
 let activeSessionId = null; // stores sessionId after login, used for creating runs
 
 // username and password parameters
-async function apiRegister(username, password, email) {
+async function apiRegister(username, email,password ) {
     // for each user in the array, check if that user's username property matched the username we passed in
     let res = await fetch(`http://localhost:8080/user/${username}`);
     const user = await res.json();
