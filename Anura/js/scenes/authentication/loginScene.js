@@ -50,7 +50,7 @@ function initLoginScene() {
 
             if (result.success == true) {
                 activeUser = usernameInput.value;
-                activeSessionId = 1; //Change to another get or post request
+                activeSessionId = 5; //Change to another get or post request
                 loginMessage.textContent = "";
                 currentScene = "title";
                 
