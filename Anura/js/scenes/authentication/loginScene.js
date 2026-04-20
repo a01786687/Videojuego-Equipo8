@@ -18,7 +18,8 @@ let goRegisterLink;
 // called once from main() 
 function initLoginScene() {
 
-    // goes to the html and grabs the input element by its id
+    // goes t
+    // o the html and grabs the input element by its id
     loginForm = document.getElementById("login-form");
     goRegisterLink = document.getElementById("go-register");
 
@@ -29,6 +30,7 @@ function initLoginScene() {
  
     goRegisterLink.addEventListener("click", () => {
         currentScene = "register";
+        loginMessage.textContent = "";
     });
 
     loginButton.addEventListener("click", async () => {
@@ -45,20 +47,25 @@ function initLoginScene() {
         } 
         else {
             const result = await apiLogin(usernameInput.value, passwordInput.value); // changed from loginUser to apiLogin
-            loginMessage.textContent = result.message;
+
             if (result.success == true) {
                 activeUser = usernameInput.value;
                 activeSessionId = 1; //Change to another get or post request
                 loginMessage.textContent = "";
                 currentScene = "title";
-                dispActiveUser();
+                
+            }
+            else{
+                loginMessage.textContent = result.message;
+                currentScene = "login";
             }
         }
 
-        loginMessage.textContent = "";
+        
         usernameInput.value = "";
         passwordInput.value = "";
     });
+    
 };
 
 
