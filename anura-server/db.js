@@ -125,6 +125,11 @@ export async function countRunsPerSession(){
     return runs;
 }
 
+export async function getRandomCards() {
+    const [cards] = await pool.query("SELECT * FROM anura.cards ORDER BY RAND() LIMIT 3");
+    return cards;
+}
+
 // export async function addMosquitoes(id)
 
 /*
