@@ -164,6 +164,12 @@ function handleClick(event) {
         // skip button
 
         if (mouseX >= 410 && mouseX <= 550 && mouseY >= 475 && mouseY <= 505) {
+            deckPreview = true; // show deck preview before starting a new run
+        }
+
+        // start run button has deck preview before
+        if (deckPreview && mouseX >= 380 && mouseX <= 580 && mouseY >= 460 && mouseY <= 505) {
+            deckPreview = false;
             beginRun();
         }
 

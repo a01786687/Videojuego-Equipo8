@@ -63,14 +63,13 @@ async function gameOver() {
     damageNumbers = [];
 
     console.log("Game Over"); // for debugging
-
+    
     // send death data to backend and WAIT for a reply, front end sends mosquitoes and deck to the backend
     const response = await saveProgressOnDeath();
-
     // shows what backend returned in JSON format
     console.log("Backend response:", response);
 
-    // transition to cardSelection screen from gameOver after 2 Seconds
+    // always transition to cardSelection screen from gameOver after 2 Seconds 
     setTimeout(() => {
         currentScene = "cardSelection";
         generateCardOffers();

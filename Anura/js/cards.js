@@ -25,7 +25,7 @@ const cardImages = {
     "Rocket Frog": "assets/cards/movementCards/rocket_frog.png",
 
     // COMBAT CARDS
-    "Chamaleon Veil": "assets/cards/combatCards/chamaleon_veil.png",
+    "Chameleon Veil": "assets/cards/combatCards/chameleon_veil.png",
     "Fire Kiss": "assets/cards/combatCards/fire_kiss.png",
     "Thunder Tongue": "assets/cards/combatCards/thunder_tongue.png",
     "Toad Shockwave": "assets/cards/combatCards/toad_shockwave.png",

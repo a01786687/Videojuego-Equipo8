@@ -2,11 +2,30 @@
 
 let cardOptions = [];
 let cardPurchased = false;
+let deckPreview = false;
 
-function generateCardOffers() {
+async function generateCardOffers() {
 
     cardPurchased = false; // gets called everytime the screen shows up, it tracks when the player has already bought a card on the current scene or not
+    deckPreview = false;
 
+    // fetch 3 random cards from the api
+    const res = await fetch("http://localhost:8080/cards/random"); // sends a GET request to the server at the /cards/random endpoint, await pauses until server responds
+    const cards = await res.json(); // response comes back as http data and .json() converts it into a js array
+
+    // translate database field names to game object property names
+    cardOptions = cards.map(card => ({
+        name: card.card_name,
+        category: card.card_type,
+        cost: card.card_cost,
+        description: card.card_description,
+        image: getImageByName(card.card_name)
+
+    }));
+
+    /*
+
+    CODE FOR NO API BACKEND CONNECTION
     // card pool array copy so the original pool doesn't get modified
     let pool = [...cardPool]; // Spread Operator (...) -> way to unpack or expand elements of an array, string or object into individual pieces
 
@@ -24,6 +43,7 @@ function generateCardOffers() {
 
     // final result
     cardOptions = [option1, option2, option3];
+    */
 }
 
 
@@ -43,7 +63,7 @@ function drawCardOffer(card, x, y) {
     // ctx.strokeRect(x , y , cardWidth, cardHeight);
 
     // card image
-    if (card.image && card.image.complete) {
+    if (card.image && card.image.complete && card.image.naturalWidth !== 0) {
         ctx.drawImage(card.image, x, y, cardWidth, imageHeight);
     }
 
@@ -69,6 +89,12 @@ function drawCardOffer(card, x, y) {
 }
 
 function drawCardSelectionScene() {
+
+    // draws deckPreview if its true instead of the return
+    if (deckPreview) {
+        drawDeckPreview();
+        return;
+    }
     // dark background
     ctx.fillStyle = "#111";
     ctx.fillRect(0, 0, canvasWidth, canvasHeight);
@@ -122,5 +148,97 @@ function purchaseCard(card) {
     }
 
     cardPurchased = true;
+    deckPreview = true; 
     console.log("purchased:", card.name, " mosquitos left:", runMosquitos);
+}
+
+function drawDeckPreview() {
+    ctx.fillStyle = "#111111";
+    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+    // title
+    ctx.fillStyle = "white";
+    ctx.font = "36px Pixelify Sans";
+    ctx.textAlign = "center";
+    ctx.fillText("YOUR DECK", canvasWidth / 2, 55);
+
+    // mosquito balance
+    ctx.fillStyle = "#FFD700";
+    ctx.font = "18px Pixelify Sans";
+    ctx.fillText(runMosquitos, canvasWidth / 2, 90);
+
+    // Movement cards column
+    ctx.fillStyle = "#FFD700";
+    ctx.font = "16px Pixelify Sans";
+    ctx.fillText("MOVEMENT (" + deck.slot1_Movement.length + ")", 160, 130);
+
+    if (deck.slot1_Movement.length === 0){
+        ctx.fillStyle = "#6f6f6f";
+        ctx.fillText("empty", 160, 160);
+    } else {
+        // for each card in the movement deck
+        for (let i = 0; i < deck.slot1_Movement.length; i++){
+            if (i === 0) {
+                ctx.fillStyle = "#90EE90"; // green for the active card
+            } else {
+                ctx.fillStyle = "white"; // white for reserve cards
+            }
+            
+            ctx.fillText(deck.slot1_Movement[i].name, 160, 160 + i * 22); // prints card name, but 160 + i * 22 moves each card 22 px lower than the previous one
+
+        }
+    }
+
+    // Combat cards column
+    ctx.fillStyle = "#FFD700";
+    ctx.font = "16px Pixelify Sans";
+    ctx.fillText("COMBAT (" + deck.slot2_Combat.length + ")", 480, 130);
+
+    if (deck.slot2_Combat.length === 0){
+        ctx.fillStyle = "#6f6f6f";
+        ctx.fillText("empty", 480, 160);
+    } else {
+        // for each card in the movement deck
+        for (let i = 0; i < deck.slot2_Combat.length; i++){
+            if (i === 0) {
+                ctx.fillStyle = "#90EE90"; // green for the active card
+            } else {
+                ctx.fillStyle = "white"; // white for reserve cards
+            }
+            
+            ctx.fillText(deck.slot2_Combat[i].name, 480, 160 + i * 22); // prints card name, but 160 + i * 22 moves each card 22 px lower than the previous one
+        }
+    }
+
+    // Utility cards column
+    ctx.fillStyle = "#FFD700";
+    ctx.font = "16px Pixelify Sans";
+    ctx.fillText("UTILITY (" + deck.slot3_Utility.length + ")", 800, 130);
+
+    if (deck.slot3_Utility.length === 0){
+        ctx.fillStyle = "#6f6f6f";
+        ctx.fillText("empty", 800, 160);
+    } else {
+        // for each card in the movement deck
+        for (let i = 0; i < deck.slot3_Utility.length; i++){
+            if (i === 0) {
+                ctx.fillStyle = "#90EE90"; // green for the active card
+            } else {
+                ctx.fillStyle = "white"; // white for reserve cards
+            }
+            
+            ctx.fillText(deck.slot3_Utility[i].name, 800, 160 + i * 22); // prints card name, but 160 + i * 22 moves each card 22 px lower than the previous one
+        }
+    }
+
+    // start run button
+    ctx.fillStyle = "#895654";
+    ctx.fillRect(380, 460, 200, 45);
+    ctx.strokeStyle = "white";
+    ctx.lineWidth = 2;
+    ctx.strokeRect(380, 460, 200, 45);
+    ctx.fillStyle = "white";
+    ctx.font = "20px Pixelify Sans";
+    ctx.textAlign = "center";
+    ctx.fillText("Start Run", 480, 489);
 }
