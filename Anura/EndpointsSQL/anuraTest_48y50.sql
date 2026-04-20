@@ -31,20 +31,28 @@ VALUES ('mosquito',0,2,1),('spider',10,5,5);
 
 #Consultas simples
 SELECT * FROM anura.playable_character;
-SELECT * FROM anura.users AS X;
-
+SELECT anura.users.username, anura.users.password FROM anura.users;
 SELECT * FROM anura.mobs;
-
+UPDATE anura.mobs SET base_damage = 15 WHERE mob_id = 2;
 SELECT * FROM anura.runs;
 SELECT * FROM anura.run_boss;
 
-#Creaciones de view
+-- Creaciones de view
 ALTER VIEW sampleView as
-SELECT X.run_sesSion_id, COUNT(X.run_id) as totalRunPerSesSion
+SELECT X.run_session_id AS session_id, COUNT(X.run_id) as totalRunPerSession
 FROM anura.runs AS X
- GROUP BY run_session_id;
+GROUP BY run_session_id;
  
 SELECT * FROM anura.sampleView;
+
+-- Implementacion runs per user USAR EN ENDPOINTS
+SELECT X.session_user_id, Y.username, SUM(Z.totalRunPerSession)
+FROM anura.sessions AS X INNER JOIN anura.sampleView AS Z
+USING (session_id)
+INNER JOIN anura.users AS Y
+ON session_user_id = user_id
+GROUP BY (user_id);
+
 
 #Checar cambio si se añade una run
 INSERT INTO runs (run_session_id, mosquitoes_collected, bosses_defeated, victory, start_time)
@@ -76,8 +84,8 @@ SELECT * FROM anura.sesions;
 #No cambiable
 
 UPDATE anura.users AS X
-SET X.user_id = 445
-WHERE X.username = "Em1Pro";  #En este caso si hay datos en sesions con ese ID no se puede cambiar el id del user
+SET X.user_id = 12
+WHERE X.username = "july";  #En este caso si hay datos en sesions con ese ID no se puede cambiar el id del user
 
 #Si cambiable
 UPDATE anura.boss AS Y
@@ -90,7 +98,7 @@ SELECT * FROM anura.run_boss;
 #DELETES ISSUE 50
 
 DELETE FROM anura.users AS X
-WHERE X.user_id = 1; 
+WHERE X.user_id = 12; 
 
 DELETE FROM anura.boss AS Y
 WHERE Y.boss_id = 10;
@@ -98,7 +106,6 @@ WHERE Y.boss_id = 10;
 DELETE FROM anura.runs AS Z
 WHERE Z.run_id = 1;
 
-UPDATE anura.mobs SET base_damage = 100 where mob_id = 2;
 
 
 

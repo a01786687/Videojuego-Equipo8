@@ -397,7 +397,7 @@ async function saveProgressOnDeath() {
         headers: { "Content-Type" : "application/json" },
         body: JSON.stringify({
             mosquitoes: runMosquitos,
-            session_id: 1
+            session_id: activeSessionId
         })
     });
 
