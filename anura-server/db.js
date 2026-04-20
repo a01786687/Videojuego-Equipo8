@@ -33,7 +33,7 @@ We use a connection pool instead of a single connection.
 const pool = mysql.createPool({
     host: '127.0.0.1', // localhost
     user: 'root',
-    password: '#Clifjumper4406',
+    password: '',
     database: 'anura'
 }).promise() // promise -> enables async/await
 
@@ -123,6 +123,11 @@ export async function countRunsPerSession(){
 
     console.log(runs);
     return runs;
+}
+
+export async function getRandomCards() {
+    const [cards] = await pool.query("SELECT * FROM anura.cards ORDER BY RAND() LIMIT 3");
+    return cards;
 }
 
 // export async function addMosquitoes(id)

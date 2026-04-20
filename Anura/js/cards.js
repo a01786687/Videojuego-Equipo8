@@ -25,7 +25,7 @@ const cardImages = {
     "Rocket Frog": "assets/cards/movementCards/rocket_frog.png",
 
     // COMBAT CARDS
-    "Chamaleon Veil": "assets/cards/combatCards/chamaleon_veil.png",
+    "Chameleon Veil": "assets/cards/combatCards/chameleon_veil.png",
     "Fire Kiss": "assets/cards/combatCards/fire_kiss.png",
     "Thunder Tongue": "assets/cards/combatCards/thunder_tongue.png",
     "Toad Shockwave": "assets/cards/combatCards/toad_shockwave.png",
@@ -59,6 +59,8 @@ function getImageByName(name) {
 let ironHindlegs = {
     name: "Iron Hindlegs",
     category: "Movement",
+    cost: 15,
+    description: "Grants the frog a double jump.",
     effect: function() {
         frog.canDoubleJump = true;
         frog.hasDoubleJump = true;
@@ -76,6 +78,8 @@ let ironHindlegs = {
 let dragonflyHop = {
     name: "Dragonfly Hop",
     category: "Movement",
+    cost: 10,
+    description: "Grants the frog a double jump.",
     effect: function() {
         console.log("Dragonfly hop test card");
     }
@@ -84,6 +88,8 @@ let dragonflyHop = {
 let glideMembrane = {
     name: "Glide Membrane",
     category: "Movement",
+    cost: 20,
+    description: "Grants the frog a double jump.",
     effect: function() {
         console.log("Glide Membrane");
     }
@@ -92,6 +98,8 @@ let glideMembrane = {
 let bubbleDash = {
     name: "Bubble Dash",
     category: "Movement",
+    cost: 5,
+    description: "Grants the frog a double jump.",
     effect: function() {
         console.log("Bubble Dash");
     }
@@ -100,6 +108,8 @@ let bubbleDash = {
 let rocketFrog = {
     name: "Rocket Frog",
     category: "Movement",
+    cost: 25,
+    description: "Grants the frog a double jump.",
     effect: function() {
         console.log("Rocket Frog");
     }

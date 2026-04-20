@@ -23,7 +23,7 @@ import express from 'express'
 import cors from 'cors'
 
 // importing database functions (queries)
-import { createUser, getMobData, getUsers, getUsersById, startSession, saveRun, countRunsPerSession } from './db.js'
+import { createUser, getMobData, getUsers, getUsersById, startSession, saveRun, countRunsPerSession, getRandomCards } from './db.js'
 
 const app = express();
 const port = 8080;
@@ -108,12 +108,20 @@ app.post("/run/death", async (req, res) => {
         
 });
 
+// GET /cards/random -> gets 3 random cards from the database for the card selection screen
+app.get("/cards/random", async (req, res) => {
+    const cards = await getRandomCards();
+    res.json(cards);
+});
+
+
 app.get("/stats", async (req, res) =>{
 
 
     const data = await countRunsPerSession();
     res.send(data);
 });
+
 
 
 
