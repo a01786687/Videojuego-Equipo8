@@ -23,7 +23,7 @@ import express from 'express'
 import cors from 'cors'
 
 // importing database functions (queries)
-import { createUser, getMobData, getUsers, getUsersById, startSession, saveRun, countRunsPerSession, getRandomCards } from './db.js'
+import { createUser, getMobData, getUsers, getUsersById, startSession, saveRun, countRunsPerSession, getRandomCards, getTotalMosquitoesBySession, updateDeck, getAllCards } from './db.js'
 
 const app = express();
 const port = 8080;
@@ -86,24 +86,39 @@ app.get("/getMobData/:mob_name",async (req, res) =>{
 // When someone sends POST /run/death, run this function:
 app.post("/run/death", async (req, res) => {
     
-    const { mosquitoes, session_id } = req.body;
+    const { mosquitoes, session_id, deck } = req.body;
 
-        // temporary values (replace later) used for testing RF-02 and saving basic progress, remove when login/session system, boss, run tracking is done
-    const bosses_defeated = 0;
-    const victory = false;
-    const start_time = new Date();
-
-    if(session_id == null || session_id == 0 || session_id == undefined){
-        res.json({
-            printError: "session_id can't be a null value"
-        });
+    if (!session_id) {
+        return res.status(400).json({ error: " a valid session_id is required" });
     }
-    else{
-        const runId = await saveRun(session_id,mosquitoes,bosses_defeated,victory,start_time);
+
+    try {
+        // save the run
+        const bosses_defeated = 0;
+        const victory = false;
+        const start_time = new Date();
+        const runId = await saveRun(session_id, mosquitoes, bosses_defeated, victory, start_time);
+
+        // get the updated lifetime mosquito total
+        const mosquitoData = await getTotalMosquitoesBySession(session_id);
+
+        // save the deck
+        const cardIds = deck ? deck.flat() : [];
+        const deckResult = await updateDeck(session_id, cardIds);
 
         res.json({
-            savedData: runId
+            success: true,
+            savedData: {
+                runId,
+                mosquitoes_this_run: mosquitoes,
+                mosquitoes_total: mosquitoData?.mosquitoes_total ?? null,
+                deck_cards_saved: deckResult.cardsInserted
+            }
         });
+
+    } catch (err) {
+        console.error("Error in POST /run/death:", err);
+        res.status(500).json({ error: "Failed to save progress on death" });
     }
         
 });
@@ -111,6 +126,12 @@ app.post("/run/death", async (req, res) => {
 // GET /cards/random -> gets 3 random cards from the database for the card selection screen
 app.get("/cards/random", async (req, res) => {
     const cards = await getRandomCards();
+    res.json(cards);
+});
+
+// GET /cards/all -> returns all cards from the database so the frontend can load them with their IDs
+app.get("/cards/all", async (req, res) => {
+    const cards = await getAllCards();
     res.json(cards);
 });
 
