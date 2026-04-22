@@ -117,3 +117,16 @@ CREATE TABLE run_boss(
     FOREIGN KEY(rb_run_id) REFERENCES runs(run_id) ON UPDATE CASCADE ON DELETE CASCADE,
     updated_at TIMESTAMP DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+ALTER TABLE playable_character ADD CONSTRAINT UNIQUE (character_name);
+ALTER TABLE cards ADD CONSTRAINT UNIQUE (card_name);
+ALTER TABLE mobs ADD CONSTRAINT UNIQUE (mob_name);
+ALTER TABLE boss ADD CONSTRAINT UNIQUE (boss_name);
+
+
+
+-- Un jugador puede tener un sólo playable character
+ALTER TABLE user_character ADD CONSTRAINT UNIQUE (uc_user_id, uc_character_id);
+
+-- Un jugador no puede repetir niveles es decir pasar de nivel 1 a 2 y luego a 1
+ALTER TABLE run_stages ADD CONSTRAINT UNIQUE (rs_run_id, stage_number);
