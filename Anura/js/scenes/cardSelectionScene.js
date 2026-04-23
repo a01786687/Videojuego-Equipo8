@@ -15,6 +15,7 @@ async function generateCardOffers() {
 
     // translate database field names to game object property names
     cardOptions = cards.map(card => ({
+        card_id: card.card_id,
         name: card.card_name,
         category: card.card_type,
         cost: card.card_cost,
