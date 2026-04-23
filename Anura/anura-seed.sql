@@ -4,20 +4,20 @@
 
 USE anura;
 
--- TEST USERS (for local development only)
-INSERT INTO users (username, email, password) VALUES
+-- TEST USERS (for local development only) REMOVE LATER
+INSERT IGNORE INTO users (username, email, password) VALUES
 ('Renata', 'renata@mail.com', '1234'),
 ('Carlos', 'carlos@mail.com', '1234'),
 ('Emilio', 'emilio@mail.com', '1234');
 
--- TEST PLAYABLE CHARACTERS (one per user)
-INSERT INTO playable_character (pc_user_id, character_name, base_hp, base_speed, base_damage) VALUES
+-- TEST PLAYABLE CHARACTERS (one per user) REMOVE LATER
+INSERT IGNORE INTO playable_character (pc_user_id, character_name, base_hp, base_speed, base_damage) VALUES
 (1, 'Froggy_Renata', 100, 10, 15),
 (2, 'Froggy_Carlos', 100, 10, 15),
 (3, 'Froggy_Emilio', 100, 10, 15);
 
 -- CARDS
-INSERT INTO cards (card_name, card_cost, card_type, effect_value, effect_parameter, card_description) VALUES
+INSERT IGNORE INTO cards (card_name, card_cost, card_type, effect_value, effect_parameter, card_description) VALUES
 
 -- MOVEMENT CARDS
 ('Iron Hindlegs', 15, 'Movement', 1, 'canDoubleJump', 'Grants the frog a double jump.'),
