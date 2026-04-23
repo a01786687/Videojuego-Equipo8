@@ -62,6 +62,14 @@ CREATE VIEW cardCost AS
 SELECT card_name, card_cost FROM cards;
 
 
+CREATE VIEW cardDetails AS
+SELECT card_name, card_type, effect_value, effect_parameter
+FROM anura.cards;
+
+CREATE VIEW mobStats AS
+SELECT mob_name, base_damage, base_hp 
+FROM anura.mobs;
+
 
 -- TRIGGERS
 
@@ -94,6 +102,32 @@ CREATE PROCEDURE cardEffectFrog(IN effect_value2 SMALLINT, IN effect_parameter2 
     END$$
 DELIMITER ;
 
+DELIMITER $$
+CREATE PROCEDURE addNewUser(IN u_name VARCHAR(50), IN u_email VARCHAR(50), IN u_pass VARCHAR(255))
+BEGIN
+    INSERT INTO anura.users (username, email, password) 
+    VALUES (u_name, u_email, u_pass);
+END$$
+DELIMITER ;
+
+
+DELIMITER $$
+CREATE PROCEDURE addNewCard(IN name_c VARCHAR(50), IN cost_c SMALLINT, IN type_c VARCHAR(25), IN param_c VARCHAR(30), IN desc_c VARCHAR(250))
+BEGIN
+    INSERT INTO anura.cards (card_name, card_cost, card_type, effect_parameter, card_description)
+    VALUES (name_c, cost_c, type_c, param_c, desc_c);
+END$$
+DELIMITER ;
+
+
+DELIMITER $$
+CREATE PROCEDURE addRunStage(IN id_run SMALLINT, IN num_stage SMALLINT)
+BEGIN
+    INSERT INTO anura.run_stages (rs_run_id, stage_number) VALUES (id_run, num_stage);
+END$$
+DELIMITER ;
+
+
 DROP TRIGGER IF EXISTS updateFrogStats;
 DELIMITER $$
 CREATE TRIGGER updateFrogStats
@@ -112,6 +146,30 @@ BEGIN
 END$$
 DELIMITER ;
 
+DELIMITER $$
+CREATE TRIGGER set_end_time_on_victory
+BEFORE UPDATE ON anura.runs
+FOR EACH ROW
+BEGIN
+    IF NEW.victory = TRUE AND OLD.victory = FALSE THEN
+        SET NEW.end_time = CURRENT_TIMESTAMP;
+    END IF;
+END$$
+DELIMITER ;
+
+
+DELIMITER $$
+CREATE TRIGGER default_card_cost
+BEFORE INSERT ON anura.cards
+FOR EACH ROW
+BEGIN
+    IF NEW.card_cost < 0 THEN
+        SET NEW.card_cost = 1;
+    END IF;
+END$$
+DELIMITER ;
+
+
 SET @card_id2 = NULL;
 SET @character_id2 = NULL;
 
@@ -121,6 +179,7 @@ SELECT card_id INTO @card_id2  FROM cards WHERE card_id = 10;
 
 INSERT INTO character_deck(cd_card_id, cd_character_id) 
 VALUES (@card_id2, @character_id2);
+
 
 -- SELECT * FROM playable_character WHERE character_id = 22;
 -- SELECT  *  FROM cards WHERE card_id = 10;
