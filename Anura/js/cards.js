@@ -62,13 +62,17 @@ let ironHindlegs = {
     cost: 15,
     description: "Grants the frog a double jump.",
     effect: function() {
-        frog.canDoubleJump = true;
-        frog.hasDoubleJump = true;
+        if(frog) {
+            frog.canDoubleJump = true;
+            frog.hasDoubleJump = true;
+        }
     },
 
     reset: function() {
-        frog.canDoubleJump = false
-        frog.hasDoubleJump = false;
+        if(frog) {
+            frog.canDoubleJump = false;
+            frog.hasDoubleJump = false;
+        }
     },
 
     image: getImageByName("Iron Hindlegs")

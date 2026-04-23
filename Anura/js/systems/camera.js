@@ -16,4 +16,9 @@ function updateCamera() {
             cameraX = 0;
         }
     }
+    
+    if (currentScene === "boss") {
+        cameraX = 0;
+        return;
+    }
 }
