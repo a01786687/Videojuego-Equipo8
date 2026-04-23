@@ -4,6 +4,18 @@
 
 USE anura;
 
+-- TEST USERS (for local development only)
+INSERT INTO users (username, email, password) VALUES
+('Renata', 'renata@mail.com', '1234'),
+('Carlos', 'carlos@mail.com', '1234'),
+('Emilio', 'emilio@mail.com', '1234');
+
+-- TEST PLAYABLE CHARACTERS (one per user)
+INSERT INTO playable_character (pc_user_id, character_name, base_hp, base_speed, base_damage) VALUES
+(1, 'Froggy_Renata', 100, 10, 15),
+(2, 'Froggy_Carlos', 100, 10, 15),
+(3, 'Froggy_Emilio', 100, 10, 15);
+
 -- CARDS
 INSERT INTO cards (card_name, card_cost, card_type, effect_value, effect_parameter, card_description) VALUES
 

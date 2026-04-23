@@ -86,15 +86,17 @@ export async function getSessionById(id){
 }
 
 
-export async function startSession(id){
+export async function startSession(user_id){
+    // insert a new session for this user and get back the new session's id
     const [result] = await pool.query(`
         INSERT INTO anura.sessions (session_user_id)
         VALUES (?);
-        `,[id]);
+        `,[user_id]);
 
-    const verify = getSessionById(id)
-    console.log(verify);
-    return verify;
+    const sessions = await getSessionById(user_id); // getSessionById returns ALL sessions for that user, not the new one
+    const newSessionId = sessions[sessions.length - 1].session_id; // we must grab the most recent session id
+    console.log("New session created, ID:", newSessionId);
+    return newSessionId;
 }
 
 // Probar esta primero
@@ -170,24 +172,25 @@ export async function updateDeck(session_id, cardIds) {
 
     const user_id = sessionRows[0].session_user_id;
 
-    // getting user_character_id
-    const[userCharacterRows] = await pool.query("SELECT user_character_id FROM anura.user_character WHERE uc_user_id = ?", [user_id]);
+    // getting character_id directly from playable character using pc_user_id, changed this since we removed the user_character table in the new schema
+    const[characterRows] = await pool.query("SELECT character_id FROM anura.playable_character WHERE pc_user_id = ?", [user_id]);
 
-    if (!userCharacterRows.length) {
-        throw new Error(`No user_character found for user_id: ${user_id}`);
+    if (!characterRows.length) {
+        throw new Error(`No character found for user_id: ${user_id}`);
     }
-    const user_character_id = userCharacterRows[0].user_character_id;
+
+    const character_id = characterRows[0].character_id;
 
     // delete old deck
-    await pool.query("DELETE FROM anura.character_deck WHERE cd_user_character_id = ?", [user_character_id]);
+    await pool.query("DELETE FROM anura.character_deck WHERE cd_character_id = ?", [character_id]);
 
     // insert new deck
     for (const card_id of cardIds) {
-        await pool.query("INSERT INTO anura.character_deck (cd_card_id, cd_user_character_id) VALUES (?, ?)", [card_id, user_character_id]);
+        await pool.query("INSERT INTO anura.character_deck (cd_card_id, cd_character_id) VALUES (?, ?)", [card_id, character_id]);
     }
 
-    console.log("Deck updated for user_character_id:", user_character_id, " cards saved:", cardIds.length);
-    return { user_character_id, cardsInserted: cardIds.length };
+    console.log("Deck updated for character_id:", character_id, " cards saved:", cardIds.length);
+    return { character_id, cardsInserted: cardIds.length };
 }
 
 /*
