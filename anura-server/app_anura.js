@@ -60,9 +60,22 @@ app.get("/user/:username", async (req, res) => {
     res.send(user);
 });
 
-app.get("/sessionStart", async (req, res) => {
-    const user = await startSession(4);
-    res.send(user);
+// POST /sessionStart -> creates a new session for the logged in user
+// recieves user_id from the frontend after a successful login
+// must be a POST because we're creating something new in the db -> a session
+app.post("/sessionStart", async (req, res) => {
+    const user_id = req.body.user_id;
+
+    // safety check
+    // 400 HTTP status code -> bad request
+    if (!user_id) {
+        return res.status(400).json({error: "user_id is required"});
+    }
+
+    // calls startSession function in db.js, passing the real user_id
+    // creates a new run in the sessions table and returns the new session_id
+    const newSessionId = await startSession(user_id);
+    res.json({ session_id: newSessionId });
 });
 
 app.post("/createUser", async (req, res) => {
