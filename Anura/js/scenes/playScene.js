@@ -391,12 +391,27 @@ class DamageNumber {
 // GAME OVER async function for API call
 
 async function saveProgressOnDeath() {
+
+    // collect all card IDs from each slot into one array
+    const cardIds = [];
+
+    for (const card of deck.slot1_Movement) {
+        cardIds.push(card.card_id);
+    }
+    for (const card of deck.slot2_Combat) {
+        cardIds.push(card.card_id);
+    }
+    for (const card of deck.slot3_Utility) {
+        cardIds.push(card.card_id);
+    }
+
     const res = await fetch ("http://localhost:8080/run/death", {
         method: "POST",
         headers: { "Content-Type" : "application/json" },
         body: JSON.stringify({
             mosquitoes: runMosquitos,
-            session_id: activeSessionId
+            session_id: activeSessionId,
+            deck: cardIds
         })
     });
 

@@ -1,6 +1,6 @@
 -- Creaciones de view
 ALTER VIEW sampleView as
-SELECT X.run_session_id AS session_id, COUNT(X.run_id) as totalRunPerSession
+SELECT X.run_session_id AS session_id, COUNT(X.run_id) as totalRunPerSession , SUM(X.mosquitoes_collected) AS mosquitoesPerSession
 FROM anura.runs AS X
 GROUP BY run_session_id;
  
@@ -13,3 +13,12 @@ USING (session_id)
 INNER JOIN anura.users AS Y
 ON session_user_id = user_id
 GROUP BY (user_id);
+
+-- Implementacion runs per user USAR EN ENDPOINTS PARA MOSQUITOES COLLECTED
+SELECT X.session_user_id, Y.username, SUM(Z.mosquitoesPerSession)
+FROM anura.sessions AS X INNER JOIN anura.sampleView AS Z
+USING (session_id)
+INNER JOIN anura.users AS Y
+ON session_user_id = user_id
+GROUP BY (user_id);
+

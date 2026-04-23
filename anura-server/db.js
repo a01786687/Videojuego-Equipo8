@@ -130,7 +130,65 @@ export async function getRandomCards() {
     return cards;
 }
 
-// export async function addMosquitoes(id)
+// getAllCards() -> returns all cards from the database so the frontend can load them with their IDs
+export async function getAllCards() {
+    const [cards] = await pool.query("SELECT * FROM anura.cards");
+    console.log(cards);
+    return cards;
+}
+
+// addMosquitoesToUser(session_id, mosquitoes) -> adds the mosquitoes collected in this run to the player's all time total, its calculated with a JOIN across sessions + runs
+// given a session_id, returns the lifetime mosquito total for the owner of that session, they're stored per run in mosquitoes_collected so to get the lifetime amount you have to add up all runs across all sessions for that user
+// the view does the sum per session
+export async function getTotalMosquitoesBySession(session_id) {
+    const [rows] = await pool.query(`
+        SELECT X.session_user_id, Y.username, SUM(Z.mosquitoesPerSession) AS mosquitoes_total
+        FROM anura.sessions AS X INNER JOIN mosquitoesPerSessionView AS Z
+        USING (session_id)
+        INNER JOIN anura.users AS Y
+        ON session_user_id = user_id
+        WHERE X.session_id = ? 
+        GROUP BY user_id`
+        , [session_id]);
+
+        console.log("Total mosquitoes for session", session_id, ":", rows[0]);
+        return rows[0] ?? null; // returns { session_user_id, username, mosquitoes_total }
+}
+
+// updateDeck(session_id, cardIds) -> replaces the player's saved deck in character_deck
+// cards already come with their IDs from the database via GET /cards/all
+// get user_id from session_id -> get user_character_id from user_character -> delete old deck -> insert new deck
+
+export async function updateDeck(session_id, cardIds) {
+    
+    // getting user id from the session
+    const [sessionRows] = await pool.query("SELECT session_user_id FROM anura.sessions WHERE session_id = ?", [session_id]);
+
+    if (!sessionRows.length) {
+        throw new Error(`No session found for session_id: ${session_id}`);
+    }
+
+    const user_id = sessionRows[0].session_user_id;
+
+    // getting user_character_id
+    const[userCharacterRows] = await pool.query("SELECT user_character_id FROM anura.user_character WHERE uc_user_id = ?", [user_id]);
+
+    if (!userCharacterRows.length) {
+        throw new Error(`No user_character found for user_id: ${user_id}`);
+    }
+    const user_character_id = userCharacterRows[0].user_character_id;
+
+    // delete old deck
+    await pool.query("DELETE FROM anura.character_deck WHERE cd_user_character_id = ?", [user_character_id]);
+
+    // insert new deck
+    for (const card_id of cardIds) {
+        await pool.query("INSERT INTO anura.character_deck (cd_card_id, cd_user_character_id) VALUES (?, ?)", [card_id, user_character_id]);
+    }
+
+    console.log("Deck updated for user_character_id:", user_character_id, " cards saved:", cardIds.length);
+    return { user_character_id, cardsInserted: cardIds.length };
+}
 
 /*
  FUTURE FUNCTIONS:

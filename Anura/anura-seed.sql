@@ -27,3 +27,9 @@ INSERT INTO cards (card_name, card_cost, card_type, effect_value, effect_paramet
 ('Spiked Whip', 15, 'Utility', 5, 'whipDamage', 'Extends tongue range with spikes.'),
 ('Tadpole Heart', 20, 'Utility', 25, 'bonusHealth', 'Grants bonus health at run start.'),
 ('Thorn Skin', 15, 'Utility', 5, 'thornDamage', 'Reflects damage back to attackers.');
+
+-- VIEWS
+CREATE OR REPLACE VIEW mosquitoesPerSessionView AS
+SELECT run_session_id AS session_id, SUM(mosquitoes_collected) AS mosquitoesPerSession
+FROM anura.runs
+GROUP BY run_session_id;
