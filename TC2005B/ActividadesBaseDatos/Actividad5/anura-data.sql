@@ -2,14 +2,56 @@
 -- DUMMY DATA
 -- =============================================
 
+INSERT INTO users (username, email, password) VALUES
+('Froggy1', 'f1@mail.com', 'pass1'), ('ToadMaster', 'tm@mail.com', 'pass2'),
+('LilyPad', 'lp@mail.com', 'pass3'), ('CroakFan', 'cf@mail.com', 'pass4'),
+('GreenHero', 'gh@mail.com', 'pass5'), ('BugEater', 'be@mail.com', 'pass6'),
+('SwampKing', 'sk@mail.com', 'pass7'), ('RainyDay', 'rd@mail.com', 'pass8'),
+('FlyCatcher', 'fc@mail.com', 'pass9'), ('PondLife', 'pl@mail.com', 'pass10'),
+('Tadpole', 'tp@mail.com', 'pass11'), ('BullFrog', 'bf@mail.com', 'pass12'),
+('Jumper', 'j1@mail.com', 'pass13'), ('Slimy', 's1@mail.com', 'pass14'),
+('AnuraLover', 'al@mail.com', 'pass15'), ('WebFoot', 'wf@mail.com', 'pass16'),
+('DeepWater', 'dw@mail.com', 'pass17'), ('MarshLord', 'ml@mail.com', 'pass18'),
+('Ribbit', 'r1@mail.com', 'pass19'), ('AquaJump', 'aj@mail.com', 'pass20'),
+('StickyTongue', 'st@mail.com', 'pass21'), ('MudPie', 'mp@mail.com', 'pass22'),
+('NightCrawler', 'nc@mail.com', 'pass23'), ('GoldenToad', 'gt@mail.com', 'pass24'),
+('LeafFrog', 'lf@mail.com', 'pass25'), ('RedEye', 're@mail.com', 'pass26'),
+('Creeper', 'c1@mail.com', 'pass27'), ('Splash', 's2@mail.com', 'pass28'),
+('Vortex', 'v1@mail.com', 'pass29'), ('ZeroCool', 'zc@mail.com', 'pass30');
 
 
 -- Personajes jugables
-INSERT INTO playable_character (character_name, base_hp, base_speed, base_damage) VALUES 
-('Rana de Bosque', 100, 10, 15), 
-('Sapo Blindado', 150, 5, 20), 
-('Renacuajo Veloz', 80, 20, 10), 
-('Rana Venenosa', 90, 12, 18);
+INSERT INTO playable_character (pc_user_id,character_name, base_hp, base_speed, base_damage) VALUES 
+(1,'Rana de Bosque', 100, 10, 15), 
+(2,'Sapo Blindado', 150, 5, 20), 
+(3,'Renacuajo Veloz', 80, 20, 10), 
+(4,'Rana Venenosa', 90, 12, 18),
+(5,'Sapo de Cueva', 130, 7, 16),
+(6,'Rana de Cristal', 70, 18, 22),
+(7,'Sapo Gigante', 200, 4, 25),
+(8,'Rana Saltarina', 95, 25, 12),
+(9,'Sapo Cornudo', 140, 6, 21),
+(10,'Rana de Lluvia', 110, 11, 14),
+(11,'Sapo de Fuego', 120, 9, 24),
+(12,'Rana Eléctrica', 85, 22, 19),
+(13,'Sapo de Musgo', 160, 5, 17),
+(14,'Rana de Tundra', 105, 13, 13),
+(15,'Sapo Dorado', 115, 10, 30),
+(16,'Rana Albina', 88, 16, 16),
+(17,'Sapo de Pantano', 170, 3, 23),
+(18,'Rana Fantasma', 75, 28, 11),
+(19,'Sapo Guerrero', 145, 8, 19),
+(20,'Rana del Desierto', 100, 15, 15),
+(21,'Sapo Volcánico', 180, 4, 28),
+(22,'Rana Mística', 92, 14, 25),
+(23,'Sapo Esmeralda', 135, 9, 18),
+(24,'Rana de Arrecife', 98, 19, 14),
+(25,'Sapo Sombrío', 125, 12, 20),
+(26,'Rana Ninja', 82, 30, 12),
+(27,'Sapo de Hierro', 220, 2, 22),
+(28,'Rana Cósmica', 110, 20, 20),
+(29,'Sapo Ancestral', 190, 5, 26),
+(30,'Rana Rey', 150, 15, 25);
 
 -- Enemigos (Mobs) - 30 registros
 INSERT INTO mobs (mob_name, base_damage, base_hp, mosquito_reward) VALUES
@@ -70,23 +112,9 @@ INSERT INTO boss (boss_name, base_hp, base_damage, mosquito_reward) VALUES
 -- 2. USUARIOS Y SISTEMA (30 registros)
 -- =============================================
 
-INSERT INTO users (username, email, password) VALUES
-('Froggy1', 'f1@mail.com', 'pass1'), ('ToadMaster', 'tm@mail.com', 'pass2'),
-('LilyPad', 'lp@mail.com', 'pass3'), ('CroakFan', 'cf@mail.com', 'pass4'),
-('GreenHero', 'gh@mail.com', 'pass5'), ('BugEater', 'be@mail.com', 'pass6'),
-('SwampKing', 'sk@mail.com', 'pass7'), ('RainyDay', 'rd@mail.com', 'pass8'),
-('FlyCatcher', 'fc@mail.com', 'pass9'), ('PondLife', 'pl@mail.com', 'pass10'),
-('Tadpole', 'tp@mail.com', 'pass11'), ('BullFrog', 'bf@mail.com', 'pass12'),
-('Jumper', 'j1@mail.com', 'pass13'), ('Slimy', 's1@mail.com', 'pass14'),
-('AnuraLover', 'al@mail.com', 'pass15'), ('WebFoot', 'wf@mail.com', 'pass16'),
-('DeepWater', 'dw@mail.com', 'pass17'), ('MarshLord', 'ml@mail.com', 'pass18'),
-('Ribbit', 'r1@mail.com', 'pass19'), ('AquaJump', 'aj@mail.com', 'pass20'),
-('StickyTongue', 'st@mail.com', 'pass21'), ('MudPie', 'mp@mail.com', 'pass22'),
-('NightCrawler', 'nc@mail.com', 'pass23'), ('GoldenToad', 'gt@mail.com', 'pass24'),
-('LeafFrog', 'lf@mail.com', 'pass25'), ('RedEye', 're@mail.com', 'pass26'),
-('Creeper', 'c1@mail.com', 'pass27'), ('Splash', 's2@mail.com', 'pass28'),
-('Vortex', 'v1@mail.com', 'pass29'), ('ZeroCool', 'zc@mail.com', 'pass30');
 
+
+SELECT user_id FROM users;
 -- Generar sesiones para todos los usuarios creados
 INSERT INTO sessions (session_user_id, login_time) 
 SELECT user_id, CURRENT_TIMESTAMP FROM users;
@@ -96,9 +124,7 @@ INSERT INTO sessions (session_user_id, login_time)
 SELECT user_id, CURRENT_TIMESTAMP FROM users LIMIT 5;
 
 
--- Asignar un personaje a cada usuario
-INSERT INTO user_character (uc_user_id, uc_character_id)
-SELECT user_id, (user_id % 4) + 1 FROM users;
+
 
 -- =============================================
 -- 3. PROGRESO DE JUEGO (Runs y Mazos)
@@ -135,5 +161,5 @@ INSERT INTO run_boss (rb_boss_id, rb_run_id, time_to_defeat, defeated) VALUES
 (1, 26, 105, 1), (2, 27, 275, 1), (3, 28, 155, 1), (4, 29, 390, 0), (5, 30, 720, 1);
 
 -- Asignar cartas a los mazos de los usuarios (30 registros)
-INSERT INTO character_deck (cd_card_id, cd_user_character_id)
-SELECT (user_character_id % 30) + 1, user_character_id FROM user_character;
+INSERT INTO character_deck (cd_card_id, cd_character_id)
+SELECT (character_id % 30) + 1, character_id FROM playable_character;
