@@ -48,9 +48,21 @@ function initLoginScene() {
         else {
             const result = await apiLogin(usernameInput.value, passwordInput.value); // changed from loginUser to apiLogin
 
-            if (result.success == true) {
+            if (result.success == true) { // only runs if login was succesful
                 activeUser = usernameInput.value;
-                activeSessionId = 3; //Change to another get or post request
+                activeUserId = result.user_id; // stores the user_id that auth.js sends after successful login
+
+                // RF-49 !!!! Creating a real session for the active user
+                // sends a request to the /sessionStart endpoint
+                const sessionRes = await fetch("http://localhost:8080/sessionStart", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"}, // so the server knows how to read the body 
+                    body: JSON.stringify({user_id: result.user_id})
+                });
+
+                const sessionData = await sessionRes.json(); // server responds with { session_id: # }, .json() converts the response to a js object
+        
+                activeSessionId = sessionData.session_id; // storing the session_id
                 loginMessage.textContent = "";
                 currentScene = "title";
                 

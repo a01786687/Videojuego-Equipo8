@@ -57,6 +57,7 @@ function getImageByName(name) {
 // --- MOVEMENT CARD DEFINITIONS ---
 
 let ironHindlegs = {
+    card_id: 1,
     name: "Iron Hindlegs",
     category: "Movement",
     cost: 15,
@@ -80,6 +81,7 @@ let ironHindlegs = {
 
 
 let dragonflyHop = {
+    card_id: 2,
     name: "Dragonfly Hop",
     category: "Movement",
     cost: 10,
@@ -90,6 +92,7 @@ let dragonflyHop = {
 };
 
 let glideMembrane = {
+    card_id: 3,
     name: "Glide Membrane",
     category: "Movement",
     cost: 20,
@@ -100,6 +103,7 @@ let glideMembrane = {
 };
 
 let bubbleDash = {
+    card_id: 4,
     name: "Bubble Dash",
     category: "Movement",
     cost: 5,
@@ -110,6 +114,7 @@ let bubbleDash = {
 };
 
 let rocketFrog = {
+    card_id: 5,
     name: "Rocket Frog",
     category: "Movement",
     cost: 25,

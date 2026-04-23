@@ -52,10 +52,10 @@ async function apiLogin(front_username, front_password) {
         return { success: false, message: "User not found. Please register."};
     } 
     else{
+
         if (user[0].password == front_password) {
-            
-            return { success: true, message: "Login successful." };
-            
+            // added user_id so the loginScene knows who the user is
+            return { success: true, message: "Login successful.", user_id: user[0].user_id };
         } 
         else {
             return { success: false, message: "Incorrect password." };

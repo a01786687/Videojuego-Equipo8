@@ -4,6 +4,18 @@
 
 USE anura;
 
+-- TEST USERS (for local development only)
+INSERT INTO users (username, email, password) VALUES
+('Renata', 'renata@mail.com', '1234'),
+('Carlos', 'carlos@mail.com', '1234'),
+('Emilio', 'emilio@mail.com', '1234');
+
+-- TEST PLAYABLE CHARACTERS (one per user)
+INSERT INTO playable_character (pc_user_id, character_name, base_hp, base_speed, base_damage) VALUES
+(1, 'Froggy_Renata', 100, 10, 15),
+(2, 'Froggy_Carlos', 100, 10, 15),
+(3, 'Froggy_Emilio', 100, 10, 15);
+
 -- CARDS
 INSERT INTO cards (card_name, card_cost, card_type, effect_value, effect_parameter, card_description) VALUES
 
@@ -27,3 +39,9 @@ INSERT INTO cards (card_name, card_cost, card_type, effect_value, effect_paramet
 ('Spiked Whip', 15, 'Utility', 5, 'whipDamage', 'Extends tongue range with spikes.'),
 ('Tadpole Heart', 20, 'Utility', 25, 'bonusHealth', 'Grants bonus health at run start.'),
 ('Thorn Skin', 15, 'Utility', 5, 'thornDamage', 'Reflects damage back to attackers.');
+
+-- VIEWS
+CREATE OR REPLACE VIEW mosquitoesPerSessionView AS
+SELECT run_session_id AS session_id, SUM(mosquitoes_collected) AS mosquitoesPerSession
+FROM anura.runs
+GROUP BY run_session_id;
