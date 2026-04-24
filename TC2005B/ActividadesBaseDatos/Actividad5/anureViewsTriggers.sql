@@ -159,6 +159,7 @@ DELIMITER ;
 
 
 DELIMITER $$
+
 CREATE TRIGGER default_card_cost
 BEFORE INSERT ON anura.cards
 FOR EACH ROW
