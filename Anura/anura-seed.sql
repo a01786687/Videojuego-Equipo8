@@ -20,8 +20,8 @@ INSERT IGNORE INTO playable_character (pc_user_id, character_name, base_hp, base
 INSERT IGNORE INTO cards (card_name, card_cost, card_type, effect_value, effect_parameter, card_description) VALUES
 
 -- MOVEMENT CARDS
-('Iron Hindlegs', 15, 'Movement', 1, 'canDoubleJump', 'Grants the frog a double jump.'),
-('Dragonfly Hop', 10, 'Movement', 1, 'canDoubleJump', 'A light hop inspired by dragonflies.'),
+('Iron Hindlegs', 15, 'Movement', 1, 'extraJumps', 'Grants the frog a double jump.'),
+('Dragonfly Hop', 10, 'Movement', 2, 'extraJumps', 'Replaces normal jump with three rapid micro jumps.'),
 ('Glide Membrane', 20, 'Movement', 1, 'canGlide', 'Allows the frog to glide through the air.'),
 ('Bubble Dash', 5, 'Movement', 1, 'canDash', 'A quick dash encased in a bubble.'),
 ('Rocket Frog', 25, 'Movement', 2, 'jumpForce', 'Launches the frog with rocket power.'),

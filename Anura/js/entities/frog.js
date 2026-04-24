@@ -24,15 +24,21 @@ class Frog extends AnimatedObject {
         this.gravity = 0.8;
         this.jumpForce = -15;
 
-        // --- DOUBLE JUMP ---
-        this.canDoubleJump = false;
-        this.hasDoubleJump = false;
-        this.doubleJumpCooldown = 3000;
-        this.doubleJumpCooldownTimer = 0;
+        // --- EXTRA JUMPS ---
+        this.extraJumps = 0; // set by card: Iron Hindlegs = 1, Dragonfly Hop = 2
+        this.jumpsRemaining = 0; 
+        this.extraJumpCooldown = 150; // 3 sec between extra jumps
+        this.extraJumpCooldownTimer = 0;
+
+        // --- GLIDE ---
+        this.canGlide = false; 
+        this.isGliding = false;
+        this.glideGravity = 0.01; 
 
         // --- DASH ---
+        this.canDash = false; // used in Bubble Dash card
         this.dashSpeed = 15;
-        this.dashDuration = 150;
+        this.dashDuration = 300;
         this.dashTimer = 0;
         this.dashCooldown = 3000;
         this.dashCooldownTimer = 0;
@@ -70,7 +76,7 @@ class Frog extends AnimatedObject {
         this.updateFrame(deltaTime);
 
         // --- TIMERS ---
-        if (this.doubleJumpCooldownTimer > 0) this.doubleJumpCooldownTimer -= deltaTime;
+        if (this.extraJumpCooldownTimer > 0) this.extraJumpCooldownTimer -= deltaTime;
         if (this.dashTimer > 0) {
             this.dashTimer -= deltaTime;
             if (this.dashTimer <= 0) { 
@@ -105,9 +111,22 @@ class Frog extends AnimatedObject {
         }
 
         // --- VERTICAL MOVEMENT (GRAVITY) ---
-        this.velocityY += this.gravity * (deltaTime / 16);
-        if (this.velocityY > 20) this.velocityY = 20; // Terminal velocity limit
-        this.position.y += this.velocityY * (deltaTime / 16);
+
+        // sets gliding to true if ALL four conditions are true at the same time
+        this.isGliding = this.canGlide && !this.isOnGround && this.velocityY > 0 && (keys["s"] || keys["S"]); //  player burns card, frog on air, frog falling down, keys are active
+
+        let activeGravity; // gravity value
+
+        if (this.isGliding) { //if frog is gliding
+            activeGravity = this.glideGravity; // 0.1 slow fall
+        } else {
+            activeGravity = this.gravity; // normal fall
+        }
+
+        // gravity applied, every frame we add a bit more pull down to the vertical speed,
+        this.velocityY += activeGravity * (deltaTime / 16);
+        if (this.velocityY > 20) this.velocityY = 20; // Terminal velocity limit, without it the frog would fall faster forever with no limit, so if VelocityY tries to exceed it, it goes back to 20
+        this.position.y += this.velocityY * (deltaTime / 16); // move frog, if velocitY is + = frog moves down, else if negative, it would move up
 
         // --- SIMPLE PLATFORM COLLISION ---
         // --- FULL SOLID PLATFORM COLLISION  ---
@@ -148,8 +167,8 @@ class Frog extends AnimatedObject {
                         this.velocityY = 0;
                         this.isOnGround = true;
                         
-                        // Reset double jump mechanics
-                        if (this.canDoubleJump) this.hasDoubleJump = true;
+                        // reset extra jumps on landing
+                        this.jumpsRemaining = this.extraJumps;
                     }
                 }
             }
@@ -161,7 +180,8 @@ class Frog extends AnimatedObject {
             this.position.y = groundLimitY;
             this.velocityY = 0;
             this.isOnGround = true;
-            if (this.canDoubleJump) this.hasDoubleJump = true;
+            // reset extra jumps on landing
+            this.jumpsRemaining = this.extraJumps;
         }
 
         // Camera limit (Prevent moving backwards off-screen)
