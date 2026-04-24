@@ -111,17 +111,22 @@ export async function startSession(user_id){
     return newSessionId;
 }
 
-// Probar esta primero
-export async function saveRun(session_id,mosqCollect,bosses_defeated,victory,start_time){
-    console.log(session_id);
-    const [run] = await pool.query(`
-        INSERT INTO anura.runs (run_session_id, mosquitoes_collected, bosses_defeated, victory, start_time)
-        VALUES (?,?,?,?,?);
-        `,[session_id,mosqCollect,bosses_defeated,victory,start_time]);
+//Creamos start run para poder marcar un tiempo inicial
+export async function startRun(session_id){
+    const [save] = await pool.query(`INSERT INTO runs(run_session_id, start_time)
+    VALUES (?,NOW());`,[session_id]);
 
-    const result = run.insertId;
-    console.log(result);
+    const result = save.insertId;
+    console.log("Run started, run_id: ", result);
     return result;
+}
+
+// Probar esta primero
+export async function saveRun(run_id,mosqCollect,bosses_defeated,victory){
+    const [run] = await pool.query("CALL saveRun (?,?,?,?);",[run_id,mosqCollect,bosses_defeated,victory]);
+
+    console.log(run);
+    return run;
 }
 
 //Enemigos **Será de los primeros a probar en el javascript

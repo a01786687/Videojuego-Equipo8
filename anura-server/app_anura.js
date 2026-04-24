@@ -23,7 +23,7 @@ import express from 'express'
 import cors from 'cors'
 
 // importing database functions (queries)
-import { createUser, getMobData, getUsers, getUsersById, startSession, saveRun, countRunsPerSession, getRandomCards, getTotalMosquitoesBySession, updateDeck, getAllCards, getNewSessionById } from './db.js'
+import { createUser, getMobData, getUsers, getUsersById, startSession, saveRun, countRunsPerSession, getRandomCards, getTotalMosquitoesBySession, updateDeck, getAllCards, getNewSessionById, startRun } from './db.js'
 
 const app = express();
 const port = 8080;
@@ -95,21 +95,40 @@ app.get("/getMobData/:mob_name",async (req, res) =>{
     res.send(data);
 });
 
+app.post("/run/start", async (req,res) => {
+    const {session_id} = req.body;
+
+    if(!session_id){
+        return res.status(400).json({ error: " a valid session_id is required" });
+    }
+    try{
+        const runID = await startRun(session_id);
+        res.json({
+            success: true,
+            data: runID
+        });
+    }
+    catch (err) {
+        console.error("Error in POST /run/start:", err);
+        res.status(500).json({ error: "Failed to start run, session_id might not be valid" });
+    }
+});
+
 // POST /run/death endpoint -> game sends "player died" data to the backend 
 // When someone sends POST /run/death, run this function:
 app.post("/run/death", async (req, res) => {
     
-    const { mosquitoes, session_id, deck } = req.body;
+    const { mosquitoes, run_id, deck, session_id } = req.body;
 
     if (!session_id) {
-        return res.status(400).json({ error: " a valid session_id is required" });
+        return res.status(400).json({ error: " a valid run_id is required" });
     }
 
     try {
         // save the run
         const bosses_defeated = 0;
         const victory = false;
-        const runId = await saveRun(session_id, mosquitoes, bosses_defeated, victory);
+        const runId = await saveRun(run_id, mosquitoes, bosses_defeated, victory);
 
         // get the updated lifetime mosquito total
         const mosquitoData = await getTotalMosquitoesBySession(session_id);

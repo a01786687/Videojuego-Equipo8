@@ -65,5 +65,26 @@ DELIMITER ;
 CALL newCharacter2newUser(4);
 DELETE FROM playable_character WHERE pc_user_id = 4;
 SELECT * FROM playable_character;
+
+INSERT INTO runs(run_session_id, start_time)
+VALUES (1,NOW());
+
+UPDATE anura.mobs SET base_damage = 17 
+WHERE mob_name = 'spider';
+
+-- Calcular tiempo al finalizar runs
+DELIMITER $$
+CREATE TRIGGER calculateRunTime
+BEFORE INSERT ON anura.runs
+FOR EACH ROW
+BEGIN
+    IF NEW.end_time IS NOT NULL
+        THEN
+            SET NEW.run_time = TIMESTAMPDIFF(SECOND, NEW.start_time, NEW.end_time);
+    END IF;
+END$$
+DELIMITER ;
+
+
         
         

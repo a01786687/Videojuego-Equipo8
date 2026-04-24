@@ -322,9 +322,10 @@ window.addEventListener('keyup', (event) => {
 
 // --- BEGIN AND CONTINUE RUN ---
 
-function beginRun() {
+async function beginRun() {
     // reset game state for a new run
     isGameOver = false; 
+    activeRunId = await getActiveRunID(activeSessionId);
     createLevel(); // generates a new level layout with platforms and enemies
     
     currentHealth = 100;
@@ -410,10 +411,30 @@ async function saveProgressOnDeath() {
         headers: { "Content-Type" : "application/json" },
         body: JSON.stringify({
             mosquitoes: runMosquitos,
-            session_id: activeSessionId,
-            deck: cardIds
+            run_id: activeRunId,
+            deck: cardIds,
+            session_id: activeSessionId
         })
     });
 
     return await res.json();
+}
+
+async function getActiveRunID(current_session_id){
+    if(!activeSessionId){
+        return { success: false, message: "Unable to get session_id"};
+    }
+    else{
+        let res = await fetch("http://localhost:8080/run/start",{
+            method: "POST",
+            headers: { "Content-Type" : "application/json" },
+            body: JSON.stringify({
+                session_id: current_session_id
+            })
+        });
+        const new_run_id = await res.json();
+        return activeRunId = new_run_id.data;
+    }
+    
+
 }
