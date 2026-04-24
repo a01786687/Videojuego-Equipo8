@@ -16,7 +16,7 @@ CREATE TABLE cards(
     card_name VARCHAR(50) NOT NULL,
     card_cost SMALLINT UNSIGNED NOT NULL,
     card_type VARCHAR(25) NOT NULL,
-    effect_value SMALLINT UNSIGNED DEFAULT 0,
+    effect_value DECIMAL(5,2) UNSIGNED DEFAULT 0,
     effect_parameter VARCHAR(30) NOT NULL,
     card_description VARCHAR(250) NOT NULL,
     updated_at TIMESTAMP DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP

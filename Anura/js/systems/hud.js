@@ -155,4 +155,13 @@ function drawCardHUD(deck) {
     drawCard(startX, startY, deck.slot1_Movement[0], "1", slot1FlashTimer);
     drawCard(startX + cardWidth + spacing, startY, deck.slot2_Combat[0], "2", slot2FlashTimer);
     drawCard(startX + (cardWidth + spacing) * 2, startY, deck.slot3_Utility[0], "3", slot3FlashTimer);
+
+    // ACTIVE EFFECT -> shows which card is currently active on the frog
+    if (lastBurnedSlot1) {
+        ctx.fillStyle = "lime";
+        ctx.font = "10px Pixelify Sans";
+        ctx.textAlign = "left";
+        ctx.fillText("ACTIVE: " + lastBurnedSlot1.name, startX, startY + cardHeight + 20);
+    }
+
 }

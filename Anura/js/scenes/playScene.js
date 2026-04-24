@@ -48,8 +48,10 @@ function handleKeyDown(event) {
 // gameOver function that awaits for the server
 async function gameOver() {
     if (isGameOver) return; // if game is already over, do nothing, prevents double triggers
-    
     isGameOver = true; // sets gameOver to true
+
+    // clear all card effects, so the frog returns to base state on death
+    clearAllMovementEffects();
 
     // gameloop running check
     // stop game loop so the game freezes when the player dies
@@ -211,24 +213,27 @@ window.addEventListener('keydown', (event) => {
     if (event.key === ' ' && frog.isOnGround) { 
         frog.velocityY = frog.jumpForce; // set vertical speed 
         frog.isOnGround = false;
-    // DOUBLE JUMP
-    } else if (event.key === ' ' && frog.canDoubleJump && frog.hasDoubleJump && frog.doubleJumpCooldownTimer <= 0 && !frog.isOnGround) { // space was pressed and the ability is unlocked and a double jump is still available and frog is in the air
-        frog.hasDoubleJump = false; // double jump consumed
-        frog.doubleJumpCooldownTimer = frog.doubleJumpCooldown; // start the cooldown
+
+    // DOUBLE AND TRIPLE JUMP
+
+    } else if (event.key === ' ' && !frog.isOnGround && frog.jumpsRemaining > 0 && frog.extraJumpCooldownTimer <= 0) {
+        frog.jumpsRemaining--; // consume one jump charge
+        frog.extraJumpCooldownTimer = frog.extraJumpCooldown; // start cooldown
         frog.velocityY = 0; // cancel downward velocity so the jump is clean
-        frog.velocityY = frog.jumpForce * 1; // stronger jump force
+        frog.velocityY = frog.jumpForce; // stronger jump force
         frog.isOnGround = false;
     }
 
     // dash (j key)
+    // requires Bubble Dash card to be active (canDash)
     // !event.repeat → only triggers on the first key press (not when holding the key)
-    // only works if there's no active dash and the cooldown finished
-    if (event.key === 'j' && !event.repeat && !frog.isDashing && frog.dashCooldownTimer <= 0) {
-        frog.color = "blue";
-
+    // protective bubble gives invincibility for the duration of the dash
+    if (event.key === 'j' && !event.repeat && frog.canDash && !frog.isDashing && frog.dashCooldownTimer <= 0) {
         frog.isDashing = true;
-        frog.dashTimer = frog.dashDuration; 
+        frog.dashTimer = frog.dashDuration;
         frog.dashCooldownTimer = frog.dashCooldown;
+        frog.invincibilityTimer = frog.dashDuration; // protective bubble lasts as long as the dash
+        console.log("Bubble Dash activated — invincibility active for", frog.dashDuration, "ms");
     }
 
     // attack (i key)
@@ -339,6 +344,11 @@ function beginRun() {
 
     if (frog) {
         frog.invincibilityTimer = 0; 
+
+        // clear any card effects left over from the previous run
+        // so the frog always starts fresh with no active abilities
+        clearAllMovementEffects();
+
     } // resetting the timer for every new run
 
 
