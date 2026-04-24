@@ -23,7 +23,7 @@ import express from 'express'
 import cors from 'cors'
 
 // importing database functions (queries)
-import { createUser, getMobData, getUsers, getUsersById, startSession, saveRun, countRunsPerSession, getRandomCards, getTotalMosquitoesBySession, updateDeck, getAllCards } from './db.js'
+import { createUser, getMobData, getUsers, getUsersById, startSession, saveRun, countRunsPerSession, getRandomCards, getTotalMosquitoesBySession, updateDeck, getAllCards, getNewSessionById } from './db.js'
 
 const app = express();
 const port = 8080;
@@ -109,8 +109,7 @@ app.post("/run/death", async (req, res) => {
         // save the run
         const bosses_defeated = 0;
         const victory = false;
-        const start_time = new Date();
-        const runId = await saveRun(session_id, mosquitoes, bosses_defeated, victory, start_time);
+        const runId = await saveRun(session_id, mosquitoes, bosses_defeated, victory);
 
         // get the updated lifetime mosquito total
         const mosquitoData = await getTotalMosquitoesBySession(session_id);
@@ -156,9 +155,10 @@ app.get("/stats", async (req, res) =>{
     res.send(data);
 });
 
-
-
-
+app.get("/test", async (req,res) =>{
+    const data = await getNewSessionById(17);
+    res.send(data);
+});
 
 // --- SERVER START ---
 

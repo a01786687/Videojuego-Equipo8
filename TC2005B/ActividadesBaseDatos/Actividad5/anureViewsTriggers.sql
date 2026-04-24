@@ -185,4 +185,5 @@ VALUES (@card_id2, @character_id2);
 -- SELECT  *  FROM cards WHERE card_id = 10;
 
 
+USE anura;
         

@@ -61,7 +61,7 @@ function initLoginScene() {
                 });
 
                 const sessionData = await sessionRes.json(); // server responds with { session_id: # }, .json() converts the response to a js object
-        
+                
                 activeSessionId = sessionData.session_id; // storing the session_id
                 loginMessage.textContent = "";
                 currentScene = "title";
