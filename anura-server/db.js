@@ -172,6 +172,20 @@ export async function getDeck(session_id) {
 
 }
 
+// addCardToDeck(session_id, card_id) -> adds a card to the player's deck after purchasing it
+export async function addCardToDeck(session_id, card_id) {
+    const [sessionRows] = await pool.query("SELECT session_user_id FROM anura.sessions WHERE session_id = ?",[session_id]);
+    const user_id = sessionRows[0].session_user_id;
+
+    const[characterRows] = await pool.query("SELECT character_id FROM anura.playable_character WHERE pc_user_id = ?", [user_id]);
+    const character_id = characterRows[0].character_id;
+
+    await pool.query("INSERT INTO anura.character_deck (cd_card_id, cd_character_id) VALUES (?, ?)", [card_id, character_id]);
+    
+    console.log("Card", card_id, "added to deck for character_id:", character_id);
+    return {success: true};
+}
+
 // addMosquitoesToUser(session_id, mosquitoes) -> adds the mosquitoes collected in this run to the player's all time total, its calculated with a JOIN across sessions + runs
 // given a session_id, returns the lifetime mosquito total for the owner of that session, they're stored per run in mosquitoes_collected so to get the lifetime amount you have to add up all runs across all sessions for that user
 // the view does the sum per session
