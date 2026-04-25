@@ -134,7 +134,7 @@ function drawCardSelectionScene() {
     }
 }
 
-function purchaseCard(card) {
+async function purchaseCard(card) {
 
     // substract cost from player balance
     sessionMosquitos -= card.cost;
@@ -146,6 +146,22 @@ function purchaseCard(card) {
         deck.slot2_Combat.push(card);
     } else if (card.category === "Utility") {
         deck.slot3_Utility.push(card);
+    }
+
+    // save the card to the DB so it persists across runs
+    try {
+        // send post req to the endpoint, await (it waits for server to respond)
+        await fetch("http://localhost:8080/deck/add", {
+            method: "POST", // POST request so we're sending data
+            headers: { "Content-Type": "application/json" }, // letting the server know that we're sending JSON format, so it knows how to read it
+            body: JSON.stringify({
+                session_id: activeSessionId,
+                card_id: card.card_id
+            })
+        });
+        console.log("Card saved to DB:", card.name);
+    } catch (err) {
+        console.error("Failed to save card to DB:", err);
     }
 
     cardPurchased = true;
