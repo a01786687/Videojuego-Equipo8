@@ -27,6 +27,7 @@ let logo = new Image(); // Image() constructor
 // current active scene
 let currentScene = "title";
 
+let previousScene = "title"; 
 // main(), runs once when the page loads
 
 function main() {
@@ -71,6 +72,11 @@ function main() {
 
 function draw(newTime) { // draws the actual scene
 
+    if (currentScene !== previousScene) {
+        oldTime       = newTime;
+        previousScene = currentScene;
+    }
+
     const deltaTime = (newTime - oldTime); // miliseconds
     oldTime = newTime;
 
@@ -103,7 +109,7 @@ function draw(newTime) { // draws the actual scene
 
     // bossScene1.js
         case "boss":
-            drawBossScene1();
+            drawBossScene1(deltaTime);
             break; 
 
     // cardSelectionScene.js

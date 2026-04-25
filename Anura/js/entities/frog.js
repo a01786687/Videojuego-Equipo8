@@ -71,7 +71,7 @@ class Frog extends AnimatedObject {
         this.halfSize = { x: width / 2, y: height / 2 };
     }
 
-    update(deltaTime, keys, platforms, canvasHeight, cameraX) {
+    update(deltaTime, keys, platforms, canvasHeight, cameraX, worldBoundsLeft = 0, worldBoundsRight = Infinity) {
         // Update animation frames from parent class
         this.updateFrame(deltaTime);
 
@@ -184,10 +184,12 @@ class Frog extends AnimatedObject {
             this.jumpsRemaining = this.extraJumps;
         }
 
-        // Camera limit (Prevent moving backwards off-screen)
-        if (this.position.x - this.width/2 < cameraX) {
-            this.position.x = cameraX + this.width/2;
-        }
+
+        // --- WORLD BOUNDS (replaces the old cameraX clamp that caused teleport) ---
+        // Each scene passes its own world boundaries, so we never use cameraX here.
+        // That broke with lerp because cameraX lagged behind the frog's real position.
+        if (this.position.x - this.halfSize.x < worldBoundsLeft)  this.position.x = worldBoundsLeft  + this.halfSize.x;
+        if (this.position.x + this.halfSize.x > worldBoundsRight) this.position.x = worldBoundsRight - this.halfSize.x;
     }
 
     draw(ctx) {

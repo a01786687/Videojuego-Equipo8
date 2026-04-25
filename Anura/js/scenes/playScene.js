@@ -30,6 +30,10 @@ let damageNumbers = []; // array for damage numbers
 let gameLoopID = null;
 let activeRunId = null; // stores the current run's ID from the database
 
+//This variable is used to store the last active scene before a game over, so when the player continues, they return to the correct scene (play or boss)
+let lastActiveScene = "play";
+
+
 
 // --- GLOBAL ASSETS ---
 let swampSurfaceBg = new Image();
@@ -89,19 +93,22 @@ function drawPlayScene(deltaTime) {
     ctx.drawImage(swampSurfaceBg, 0, 0, canvasWidth, canvasHeight);
 
     if (!isGameOver) {
-        // update player and handle collisions
         if (frog) {
-            frog.update(deltaTime, keys, platforms, canvasHeight, cameraX);
-
+            // World left bound = 0 (left edge of the level), right = Infinity (no hard right wall in play)
+            frog.update(deltaTime, keys, platforms, canvasHeight, cameraX, 0, Infinity);
             updateCamera();
         }
         checkFrogEnemyCollisions(deltaTime);
 
         // when frog walks into the cave there's a transition to boss scene
         // check cave transition BEFORE drawing, outside camera transform
-        if (caveEntrance && boxOverlap(frog, caveEntrance)) {
-            currentScene = "boss";
-            return; // exit drawPlayScene after transition
+        if (caveEntrance && frog && boxOverlap(frog, caveEntrance) && currentScene === "play") {
+            caveEntrance    = null;
+            lastActiveScene = "boss";
+            initBossLevel().then(() => {
+                currentScene = "boss";
+            });
+            return;
         }
 
         // Camera transformation for side-scrolling
@@ -331,7 +338,7 @@ async function beginRun() {
     // reset game state for a new run
     isGameOver = false; 
     activeRunId = await getActiveRunID(activeSessionId);
-    createLevel(); // generates a new level layout with platforms and enemies
+    await createLevel(); // generates a new level layout with platforms and enemies
     
     currentHealth = 100;
     maxHealth = 100;
@@ -360,15 +367,9 @@ async function beginRun() {
 
 // Continue an existing run 
 function continueRun() {
-    isGameOver = false;
-
-    currentHealth = 100;
-    // runMosquitos, deck and currentLevel persist — will load from API when RF-49 expands
-    currentScene = "play";
-
-    //gameLoopID = requestAnimationFrame(draw); INACTIVE, AWAITING API
-};
-
+    isGameOver   = false;
+    currentScene = lastActiveScene;
+}
 
 // DamageNumber constructor
 
