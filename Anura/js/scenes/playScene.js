@@ -21,6 +21,7 @@ let isGameOver = false; // game over state flag
 let currentHealth = 100;
 let maxHealth = 100;
 let runMosquitos = 0;
+let sessionMosquitos = 0;
 let currentLevel = 1;
 let enemies = []; // Array for enemies
 let damageNumbers = []; // array for damage numbers
@@ -74,6 +75,8 @@ async function gameOver() {
     const response = await saveProgressOnDeath();
     // shows what backend returned in JSON format
     console.log("Backend response:", response);
+    sessionMosquitos = response.savedData.mosquitoes_total;
+    console.log("Cheking...",sessionMosquitos);
 
     // always transition to cardSelection screen from gameOver after 2 Seconds 
     setTimeout(() => {
@@ -332,6 +335,52 @@ window.addEventListener('keyup', (event) => {
     keys[event.key] = false; 
 });
 
+
+// loadDeck() -> gets the player's saved deck from the API at the beginning of every run, it calls createCardFromDatabase() on each card
+// to make the cards objects, and it sorts cards into its correct slot based on the card type
+async function loadDeck() {
+
+    // safety check in case the activeSessionId is not found
+    if (!activeSessionId) {
+        console.warn("loadDeck: no activeSessionId found, deck not loaded.");
+        return;
+    }
+
+    try {
+        // call the api
+        const res = await fetch(`http://localhost:8080/deck/${activeSessionId}`);
+        const cards = await res.json();
+
+        // reset all slots, without this the old cards from previous runs would still be in the slots
+        deck.slot1_Movement = [];
+        deck.slot2_Combat   = [];
+        deck.slot3_Utility  = [];
+
+        // loop through every card the api returned, to build a card object from each db row, it gets sorted into its corresponding slot
+        for (const dbCard of cards) {
+            const card = createCardFromDatabase(dbCard);
+
+            if (card.category === "Movement") {
+                deck.slot1_Movement.push(card);
+            } else if (card.category === "Combat") {
+                deck.slot2_Combat.push(card);
+            } else if (card.category === "Utility") {
+                deck.slot3_Utility.push(card);
+            }
+        }
+
+        console.log("Deck loaded from API:",
+            deck.slot1_Movement.length, "Movement,",
+            deck.slot2_Combat.length, "Combat,",
+            deck.slot3_Utility.length, "Utility"
+        );
+
+
+    } catch (err) {
+        console.error("loadDeck failed:", err);
+    }
+}
+
 // --- BEGIN AND CONTINUE RUN ---
 
 async function beginRun() {
@@ -356,6 +405,9 @@ async function beginRun() {
         // clear any card effects left over from the previous run
         // so the frog always starts fresh with no active abilities
         clearAllMovementEffects();
+
+        // load the player's saved deck from the api
+        await loadDeck();
 
     } // resetting the timer for every new run
 

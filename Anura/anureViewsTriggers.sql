@@ -50,6 +50,23 @@ SELECT X.username, Y.character_name, X.card_name FROM usersDeck AS X
 INNER JOIN playable_character AS Y
 USING (character_id);
 
+-- deckBySession: returns the full deck of cards for a session_id
+-- it is used by GET /deck/session_id to load the player's saved deck when the run starts
+
+CREATE VIEW deckBySession AS
+SELECT S.session_id, -- S (sessions table), C (cards table)
+       C.card_id, 
+       C.card_name, 
+       C.card_type, 
+       C.card_cost, 
+       C.effect_parameter, 
+       C.effect_value, 
+       C.card_description
+FROM anura.sessions AS S -- start from S (sessions table) 
+INNER JOIN anura.playable_character AS PC on PC.pc_user_id = S.session_user_id -- Connect sessions to playable_character, to find the character that belongs to this session's user
+INNER JOIN anura.character_deck AS CD ON CD.cd_character_id = PC.character_id -- Connect playable_character to character_deck, to find all cards saved for that character
+INNER JOIN anura.cards AS C ON C.card_id = CD.cd_card_id; -- Get the full card details for each saved card
+
 
 -- TRIGGERS
 

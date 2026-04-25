@@ -33,7 +33,7 @@ We use a connection pool instead of a single connection.
 const pool = mysql.createPool({
     host: '127.0.0.1', // localhost
     user: 'root',
-    password: 'Cerplirp&130506',
+    password: '',
     database: 'anura'
 }).promise() // promise -> enables async/await
 
@@ -129,6 +129,13 @@ export async function saveRun(run_id,mosqCollect,bosses_defeated,victory){
     return run;
 }
 
+export async function boughtCard(cost, session_id){
+    const [update_currency] = await pool.query("CALL boughtCard(?, ?)",[cost,session_id]);
+
+    console.log(update_currency);
+    return update_currency;
+}
+
 //Enemigos **Será de los primeros a probar en el javascript
 export async function getMobData(name){
     const [mob_data] = await pool.query("SELECT * FROM anura.mobs WHERE mob_name = ?",[name]);
@@ -154,6 +161,29 @@ export async function getAllCards() {
     const [cards] = await pool.query("SELECT * FROM anura.cards");
     console.log(cards);
     return cards;
+}
+
+// getDeck(session_id) -> returns all cards saved in the player's deck for this session, it uses the deckBySession view which
+// joins sessions, playable_character, character_deck and cards
+export async function getDeck(session_id) {
+    const [cards] = await pool.query("SELECT * FROM anura.deckBySession WHERE session_id = ?",[session_id]);
+    console.log("Deck loaded for session", session_id, ":", cards.length, "cards");
+    return cards;
+
+}
+
+// addCardToDeck(session_id, card_id) -> adds a card to the player's deck after purchasing it
+export async function addCardToDeck(session_id, card_id) {
+    const [sessionRows] = await pool.query("SELECT session_user_id FROM anura.sessions WHERE session_id = ?",[session_id]);
+    const user_id = sessionRows[0].session_user_id;
+
+    const[characterRows] = await pool.query("SELECT character_id FROM anura.playable_character WHERE pc_user_id = ?", [user_id]);
+    const character_id = characterRows[0].character_id;
+
+    await pool.query("INSERT INTO anura.character_deck (cd_card_id, cd_character_id) VALUES (?, ?)", [card_id, character_id]);
+    
+    console.log("Card", card_id, "added to deck for character_id:", character_id);
+    return {success: true};
 }
 
 // addMosquitoesToUser(session_id, mosquitoes) -> adds the mosquitoes collected in this run to the player's all time total, its calculated with a JOIN across sessions + runs
