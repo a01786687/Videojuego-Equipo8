@@ -87,7 +87,7 @@ function updateMosquitoHUD() {
     let y = 130;
 
     let Mosquito_dipslay = new TextLabel(x, y,"80spx Ubuntu Mono","white");
-    Mosquito_dipslay.draw(ctx,'Mosq: '+ runMosquitos);
+    Mosquito_dipslay.draw(ctx,'Mosq: '+ (Number(sessionMosquitos) + Number(runMosquitos)));
     drawMosquito(ctx, x - 60, y - 10 ,5);
 
 }
