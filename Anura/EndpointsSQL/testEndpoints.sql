@@ -69,8 +69,7 @@ SELECT * FROM playable_character;
 INSERT INTO runs(run_session_id, start_time)
 VALUES (1,NOW());
 
-UPDATE anura.mobs SET base_damage = 17 
-WHERE mob_name = 'spider';
+
 
 -- Calcular tiempo al finalizar runs
 DELIMITER $$
@@ -84,6 +83,8 @@ BEGIN
     END IF;
 END$$
 DELIMITER ;
+
+SELECT * FROM usersMosquitoes;
 
 
         

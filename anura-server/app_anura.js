@@ -25,7 +25,7 @@ import cors from 'cors'
 // importing database functions (queries)
 import { createUser, getMobData, getUsers, getUsersById, startSession, 
          saveRun, countRunsPerSession, getRandomCards, getTotalMosquitoesBySession, 
-         updateDeck, getAllCards, getNewSessionById, startRun, getDeck } from './db.js'
+         updateDeck, getAllCards, getNewSessionById, startRun, getDeck, boughtCard } from './db.js'
 
 const app = express();
 const port = 8080;
@@ -116,6 +116,25 @@ app.post("/run/start", async (req,res) => {
     }
 });
 
+//We built a POST to update currency when a card is bought
+app.post("/boughtCard", async (req, res) =>{
+    const {cost, session_id} = req.body;
+    if (!session_id) {
+        return res.status(400).json({ error: " a valid run_id is required" });
+    }
+    try{
+        const updatedCurrency = await boughtCard(cost, session_id);
+        res.json({
+            success: true,
+            updatedData: updatedCurrency
+        });
+    }
+    catch (err) {
+        console.error("Error in POST /boughtCard", err);
+        res.status(500).json({ error: "Failed to update currecny (HINT: might've send object to params)" });
+    }
+});
+
 // POST /run/death endpoint -> game sends "player died" data to the backend 
 // When someone sends POST /run/death, run this function:
 app.post("/run/death", async (req, res) => {
@@ -144,7 +163,7 @@ app.post("/run/death", async (req, res) => {
             savedData: {
                 runId,
                 mosquitoes_this_run: mosquitoes,
-                mosquitoes_total: mosquitoData?.mosquitoes_total ?? null,
+                mosquitoes_total: mosquitoData.mosquitoesPerSession,
                 deck_cards_saved: deckResult.cardsInserted
             }
         });
