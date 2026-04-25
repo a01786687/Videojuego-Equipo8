@@ -100,7 +100,6 @@ function drawPlayScene(deltaTime) {
         // when frog walks into the cave there's a transition to boss scene
         // check cave transition BEFORE drawing, outside camera transform
         if (caveEntrance && boxOverlap(frog, caveEntrance)) {
-            initBossLevel(); // initialize boss scene entities and state
             currentScene = "boss";
             return; // exit drawPlayScene after transition
         }

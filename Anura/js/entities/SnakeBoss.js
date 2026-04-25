@@ -2,57 +2,65 @@
  * Inherits from Enemy to reuse stun and health logic
  */
 class SnakeBoss extends Enemy {
-    constructor(x, y, range) {
-        // Stats de jefe: Más vida (50) y daño (10)
-        super(x, y, 120, 60, "green", "boss_snake", 8, range, 50, 10);
+    constructor(x, y, width, height, color, mob_name, speed, range, hp, dmg) {
+        super(x, y, width, height, color, mob_name, speed, range, hp, dmg);
         
         this.phase = 1;
-        this.dashSpeed = 4.5;
+        this.dashSpeed = 6;
         this.isDashing = false;
-        this.dashCooldown = 2000; // 2 segundos entre ataques especiales
+        this.dashCooldown = 2000; // ms entre dashes
         this.lastDashTime = 0;
+        this.dashDuration = 300;  // ms que dura el dash
+        this.dashTimer = 0;
+        this.dashDirectionX = 0;
     }
-
-    // Sobrescribimos update para añadir las fases de jefe
+ 
     update(target, deltaTime) {
-        // Si está aturdida, usamos la lógica de la clase padre
         if (this.state === ENEMY_STATE.STUNNED) {
             super.update(target, deltaTime);
             return;
         }
-
-        // Cambio de fase según la vida
+ 
+        // Cambio de fase según vida
         if (this.health < 25 && this.phase === 1) {
             this.phase = 2;
-            this.speed *= 1.2; // Se vuelve más errática
+            this.speed *= 1.2;
+            this.dashCooldown = 1200; // más agresivo en fase 2
             console.log("Fase 2: ¡La serpiente está furiosa!");
         }
-
-        // Lógica de ataque especial (Dash)
-        let dx = target.position.x - this.position.x;
-        let distance = Math.abs(dx);
-
-        if (distance < 200 && Date.now() - this.lastDashTime > this.dashCooldown) {
-            this.performDash(dx);
+ 
+        // Tick del dash activo
+        if (this.isDashing) {
+            this.dashTimer -= deltaTime;
+            // Aplicamos velocidad de dash directo (la clase padre moverá con esto)
+            this.velocityX = this.dashDirectionX * this.dashSpeed;
+            if (this.dashTimer <= 0) {
+                this.isDashing = false;
+                this.velocityX = 0;
+            }
+        } else {
+            // Solo intentar dash si estamos cerca y el cooldown terminó
+            let dx = target.position.x - this.position.x;
+            let distance = Math.abs(dx);
+ 
+            if (distance < 250 && Date.now() - this.lastDashTime > this.dashCooldown) {
+                this.performDash(dx);
+            }
         }
-
+ 
         super.update(target, deltaTime);
     }
-
+ 
     performDash(dx) {
         this.isDashing = true;
+        this.dashTimer = this.dashDuration;
         this.lastDashTime = Date.now();
-        // Lógica para que se mueva rápido hacia el jugador
-        this.position.x += (dx > 0 ? 1 : -1) * this.dashSpeed * 5;
-        
-        // Pequeño feedback visual o delay
-        setTimeout(() => { this.isDashing = false; }, 500);
+        // Guardamos la dirección, la velocidad se aplica en update()
+        this.dashDirectionX = dx > 0 ? 1 : -1;
     }
-
+ 
     die() {
         super.die();
         console.log("¡Has derrotado a la Gran Serpiente!");
-        // Aquí podrías disparar un evento para que Renata o Emilio 
-        // guarden la estadística del jefe en la DB de MySQL
     }
 }
