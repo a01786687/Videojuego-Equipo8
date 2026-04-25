@@ -23,7 +23,10 @@ import express from 'express'
 import cors from 'cors'
 
 // importing database functions (queries)
-import { createUser, getMobData, getUsers, getUsersById, startSession, saveRun, countRunsPerSession, getRandomCards, getTotalMosquitoesBySession, updateDeck, getAllCards, getNewSessionById, startRun, boughtCard } from './db.js'
+import { createUser, getMobData, getUsers, getUsersById, startSession, 
+         saveRun, countRunsPerSession, getRandomCards, getTotalMosquitoesBySession, 
+         updateDeck, getAllCards, getNewSessionById, startRun, getDeck, boughtCard,
+         addCardToDeck } from './db.js'
 
 const app = express();
 const port = 8080;
@@ -185,10 +188,32 @@ app.get("/cards/all", async (req, res) => {
     res.json(cards);
 });
 
+// GET /deck/:session_id -> returns the player's saved deck for this session, it is called by loadDeck() in playScene.js at the start of every run
+// it uses getDeck() in db.js which uses the deckBySession view
+app.get("/deck/:session_id", async (req, res) => {
+    const session_id = req.params.session_id;
+    const cards = await getDeck(session_id);
+    res.json(cards);
+});
+
+// POST /deck/add -> saves a purchased card to the player's deck in the db, it is called by purchaseCard() in cardSelectionScene.js when the player buys a card
+app.post("/deck/add", async (req, res) => {
+    const { session_id, card_id } = req.body;
+
+    if (!session_id || !card_id) {
+        return res.status(400).json({ error: "session_id and card_id are required" });
+    }
+
+    try {
+        const result = await addCardToDeck(session_id, card_id);
+        res.json({ success: true, data: result });
+    } catch (err) {
+        console.error("Error in POST /deck/add:", err);
+        res.status(500).json({ error: "Failed to add card to deck" });
+    }
+});
 
 app.get("/stats", async (req, res) =>{
-
-
     const data = await countRunsPerSession();
     res.send(data);
 });
