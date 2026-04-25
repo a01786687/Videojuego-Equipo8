@@ -33,7 +33,7 @@ We use a connection pool instead of a single connection.
 const pool = mysql.createPool({
     host: '127.0.0.1', // localhost
     user: 'root',
-    password: '#Clifjumper4406',
+    password: '',
     database: 'anura'
 }).promise() // promise -> enables async/await
 
@@ -154,6 +154,15 @@ export async function getAllCards() {
     const [cards] = await pool.query("SELECT * FROM anura.cards");
     console.log(cards);
     return cards;
+}
+
+// getDeck(session_id) -> returns all cards saved in the player's deck for this session, it uses the deckBySession view which
+// joins sessions, playable_character, character_deck and cards
+export async function getDeck(session_id) {
+    const [cards] = await pool.query("SELECT * FROM anura.deckBySession WHERE session_id = ?",[session_id]);
+    console.log("Deck loaded for session", session_id, ":", cards.length, "cards");
+    return cards;
+
 }
 
 // addMosquitoesToUser(session_id, mosquitoes) -> adds the mosquitoes collected in this run to the player's all time total, its calculated with a JOIN across sessions + runs

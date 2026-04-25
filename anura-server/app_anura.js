@@ -23,7 +23,9 @@ import express from 'express'
 import cors from 'cors'
 
 // importing database functions (queries)
-import { createUser, getMobData, getUsers, getUsersById, startSession, saveRun, countRunsPerSession, getRandomCards, getTotalMosquitoesBySession, updateDeck, getAllCards, getNewSessionById, startRun } from './db.js'
+import { createUser, getMobData, getUsers, getUsersById, startSession, 
+         saveRun, countRunsPerSession, getRandomCards, getTotalMosquitoesBySession, 
+         updateDeck, getAllCards, getNewSessionById, startRun, getDeck } from './db.js'
 
 const app = express();
 const port = 8080;
@@ -166,6 +168,13 @@ app.get("/cards/all", async (req, res) => {
     res.json(cards);
 });
 
+// GET /deck/:session_id -> returns the player's saved deck for this session, it is called by loadDeck() in playScene.js at the start of every run
+// it uses getDeck() in db.js which uses the deckBySession view
+app.get("/deck/:session_id", async (req, res) => {
+    const session_id = req.params.session_id;
+    const cards = await getDeck(session_id);
+    res.json(cards);
+});
 
 app.get("/stats", async (req, res) =>{
 
