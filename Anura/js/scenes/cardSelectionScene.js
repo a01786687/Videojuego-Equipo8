@@ -80,7 +80,7 @@ function drawCardOffer(card, x, y) {
     ctx.fillText(card.description, x + cardWidth / 2, y + imageHeight + 32);
 
     // disabled card visual effect if player can't afford the card
-    if (runMosquitos < card.cost) {
+    if (sessionMosquitos < card.cost) {
         ctx.globalAlpha = 0.5;
         ctx.fillStyle = "#000000";
         ctx.fillRect(x, y, cardWidth, cardHeight);
@@ -166,6 +166,7 @@ function drawDeckPreview() {
     // mosquito balance
     ctx.fillStyle = "#FFD700";
     ctx.font = "18px Pixelify Sans";
+    console.log("Try again.. ",sessionMosquitos);
     ctx.fillText(sessionMosquitos, canvasWidth / 2, 90);
 
     // Movement cards column

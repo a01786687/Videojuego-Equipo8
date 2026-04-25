@@ -129,6 +129,13 @@ export async function saveRun(run_id,mosqCollect,bosses_defeated,victory){
     return run;
 }
 
+export async function boughtCard(cost, session_id){
+    const [update_currency] = await pool.query("CALL boughtCard(?, ?)",[cost,session_id]);
+
+    console.log(update_currency);
+    return update_currency;
+}
+
 //Enemigos **Será de los primeros a probar en el javascript
 export async function getMobData(name){
     const [mob_data] = await pool.query("SELECT * FROM anura.mobs WHERE mob_name = ?",[name]);

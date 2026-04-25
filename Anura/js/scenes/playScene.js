@@ -71,8 +71,8 @@ async function gameOver() {
     const response = await saveProgressOnDeath();
     // shows what backend returned in JSON format
     console.log("Backend response:", response);
-    let sessionMosquito = response.savedData.mosquitoes_total;
-    console.log("Cheking...",sessionMosquito);
+    sessionMosquitos = response.savedData.mosquitoes_total;
+    console.log("Cheking...",sessionMosquitos);
 
     // always transition to cardSelection screen from gameOver after 2 Seconds 
     setTimeout(() => {

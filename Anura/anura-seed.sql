@@ -141,3 +141,13 @@ BEGIN
     END IF;
 END$$
 DELIMITER ;
+
+DROP PROCEDURE IF EXISTS boughtCard;
+DELIMITER $$
+CREATE PROCEDURE boughtCard(IN cost SMALLINT, IN session_id2 SMALLINT)
+BEGIN
+	UPDATE anura.mosquitoesPerSessionView
+    SET mosquitoes_collected = mosquitoes_collected - cost
+    WHERE session_id = session_id2;
+END$$
+DELIMITER ;

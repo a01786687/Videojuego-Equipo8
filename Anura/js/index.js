@@ -107,9 +107,9 @@ function draw(newTime) { // draws the actual scene
             break; 
 
     // cardSelectionScene.js
-    case "cardSelection":
-        drawCardSelectionScene();
-        break;
+        case "cardSelection":
+            drawCardSelectionScene();
+            break;
     }
 
     updateLoginForm();
@@ -142,21 +142,21 @@ function handleClick(event) {
 
         // card 1
         if (mouseX >= startX && mouseX <= startX + cardWidth && mouseY >= cardY && mouseY <= cardY + cardHeight) {
-            if (!cardPurchased && runMosquitos >= cardOptions[0].cost) {
+            if (!cardPurchased && sessionMosquitos >= cardOptions[0].cost) {
                 purchaseCard(cardOptions[0]);
             }
         }
 
         // card 2
         if (mouseX >= startX + cardWidth + spacing && mouseX <= startX + (cardWidth + spacing) + cardWidth && mouseY >= cardY && mouseY <= cardY + cardHeight) {
-            if (!cardPurchased && runMosquitos >= cardOptions[1].cost) {
+            if (!cardPurchased && sessionMosquitos >= cardOptions[1].cost) {
                 purchaseCard(cardOptions[1]);
             }
         }
 
         // card 3
         if (mouseX >= startX + (cardWidth + spacing) * 2 && mouseX <= startX + (cardWidth + spacing) * 2 + cardWidth && mouseY >= cardY && mouseY <= cardY + cardHeight) {
-            if (!cardPurchased && runMosquitos >= cardOptions[2].cost) {
+            if (!cardPurchased && sessionMosquitos >= cardOptions[2].cost) {
                 purchaseCard(cardOptions[2]);
             }
         }

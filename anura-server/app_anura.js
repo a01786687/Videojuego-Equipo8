@@ -23,7 +23,7 @@ import express from 'express'
 import cors from 'cors'
 
 // importing database functions (queries)
-import { createUser, getMobData, getUsers, getUsersById, startSession, saveRun, countRunsPerSession, getRandomCards, getTotalMosquitoesBySession, updateDeck, getAllCards, getNewSessionById, startRun } from './db.js'
+import { createUser, getMobData, getUsers, getUsersById, startSession, saveRun, countRunsPerSession, getRandomCards, getTotalMosquitoesBySession, updateDeck, getAllCards, getNewSessionById, startRun, boughtCard } from './db.js'
 
 const app = express();
 const port = 8080;
@@ -111,6 +111,25 @@ app.post("/run/start", async (req,res) => {
     catch (err) {
         console.error("Error in POST /run/start:", err);
         res.status(500).json({ error: "Failed to start run, session_id might not be valid" });
+    }
+});
+
+//We built a POST to update currency when a card is bought
+app.post("/boughtCard", async (req, res) =>{
+    const {cost, session_id} = req.body;
+    if (!session_id) {
+        return res.status(400).json({ error: " a valid run_id is required" });
+    }
+    try{
+        const updatedCurrency = await boughtCard(cost, session_id);
+        res.json({
+            success: true,
+            updatedData: updatedCurrency
+        });
+    }
+    catch (err) {
+        console.error("Error in POST /boughtCard", err);
+        res.status(500).json({ error: "Failed to update currecny (HINT: might've send object to params)" });
     }
 });
 
