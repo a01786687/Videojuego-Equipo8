@@ -40,6 +40,11 @@ INSERT IGNORE INTO cards (card_name, card_cost, card_type, effect_value, effect_
 ('Tadpole Heart', 20, 'Utility', 25, 'bonusHealth', 'Grants bonus health at run start.'),
 ('Thorn Skin', 15, 'Utility', 5, 'thornDamage', 'Reflects damage back to attackers.');
 
+-- MOBS DATA
+
+INSERT INTO mobs (mob_name,base_damage,base_hp,mosquito_reward)
+VALUES ('mosquito',0,2,1),('spider',10,5,5);
+
 -- VIEWS
 CREATE OR REPLACE VIEW mosquitoesPerSessionView AS
 SELECT run_session_id AS session_id, SUM(mosquitoes_collected) AS mosquitoesPerSession

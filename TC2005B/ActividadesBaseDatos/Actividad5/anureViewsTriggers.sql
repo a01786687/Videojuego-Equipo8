@@ -72,10 +72,10 @@ FROM anura.mobs;
 
 
 -- TRIGGERS
-
+DROP TRIGGER IF EXISTS addEndTime2Run;
 DELIMITER $$
 CREATE TRIGGER addEndTime2Run
-BEFORE INSERT ON runs
+BEFORE UPDATE ON runs
 FOR EACH ROW
 BEGIN
     IF NEW.mosquitoes_collected IS NOT NULL 
@@ -185,5 +185,27 @@ VALUES (@card_id2, @character_id2);
 -- SELECT * FROM playable_character WHERE character_id = 22;
 -- SELECT  *  FROM cards WHERE card_id = 10;
 
+
+-- Salvar después de run 
+DROP PROCEDURE IF EXISTS saveRun;   
+DELIMITER $$
+CREATE PROCEDURE saveRun(IN run_id2 SMALLINT, 
+IN mosquitoes_collected2 SMALLINT, 
+IN bosses_defeated2 SMALLINT, 
+IN victory2 BOOLEAN)
+    BEGIN
+        UPDATE anura.runs 
+        SET mosquitoes_collected = mosquitoes_collected2  
+        WHERE run_id = run_id2;
+
+        UPDATE anura.runs
+        SET bosses_defeated = bosses_defeated2
+        WHERE run_id = run_id2;
+
+        UPDATE anura.runs
+        SET victory = victory2
+        WHERE run_id = run_id2;
+    END$$
+DELIMITER ; 
 
         

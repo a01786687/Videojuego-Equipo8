@@ -33,6 +33,7 @@ async function apiRegister(username, email,password ) {
                 new_password: password
             })
         });
+        
         return { success: true, message: "Registration success." }; // using an object to return multiple pieces of info to the front end
         
     } 

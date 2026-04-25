@@ -78,10 +78,22 @@ export async function createUser(username,email,password){
 }
 
 export async function getSessionById(id){
-    const [user] = await pool.query("SELECT * FROM anura.sessions WHERE session_user_id = ?", [id]);
+    const [user] = await pool.query("SELECT * FROM anura.sessions WHERE session_id = ?", [id]);
 
     // Debug (remove later if needed)
     console.log(user);
+    return user;
+}
+
+//New quert to get recent session from a user
+export async function getNewSessionById(id){
+    const [user] = await pool.query(`SELECT * FROM sessions 
+    WHERE session_user_id = ? 
+    AND login_time = (SELECT MAX(login_time) FROM sessions 
+    WHERE session_user_id = ?);`, [id,id]);
+
+    // Debug (remove later if needed)
+    //console.log(user[0].session_id);
     return user;
 }
 
@@ -93,23 +105,28 @@ export async function startSession(user_id){
         VALUES (?);
         `,[user_id]);
 
-    const sessions = await getSessionById(user_id); // getSessionById returns ALL sessions for that user, not the new one
-    const newSessionId = sessions[sessions.length - 1].session_id; // we must grab the most recent session id
+    const sessions = await getNewSessionById(user_id); // getSessionById returns ALL sessions for that user, not the new one
+    const newSessionId = sessions[0].session_id; // we must grab the most recent session id
     console.log("New session created, ID:", newSessionId);
     return newSessionId;
 }
 
-// Probar esta primero
-export async function saveRun(session_id,mosqCollect,bosses_defeated,victory,start_time){
-    console.log(session_id);
-    const [run] = await pool.query(`
-        INSERT INTO anura.runs (run_session_id, mosquitoes_collected, bosses_defeated, victory, start_time)
-        VALUES (?,?,?,?,?);
-        `,[session_id,mosqCollect,bosses_defeated,victory,start_time]);
+//Creamos start run para poder marcar un tiempo inicial
+export async function startRun(session_id){
+    const [save] = await pool.query(`INSERT INTO runs(run_session_id, start_time)
+    VALUES (?,NOW());`,[session_id]);
 
-    const result = run.insertId;
-    console.log(result);
+    const result = save.insertId;
+    console.log("Run started, run_id: ", result);
     return result;
+}
+
+// Probar esta primero
+export async function saveRun(run_id,mosqCollect,bosses_defeated,victory){
+    const [run] = await pool.query("CALL saveRun (?,?,?,?);",[run_id,mosqCollect,bosses_defeated,victory]);
+
+    console.log(run);
+    return run;
 }
 
 //Enemigos **Será de los primeros a probar en el javascript
@@ -143,14 +160,7 @@ export async function getAllCards() {
 // given a session_id, returns the lifetime mosquito total for the owner of that session, they're stored per run in mosquitoes_collected so to get the lifetime amount you have to add up all runs across all sessions for that user
 // the view does the sum per session
 export async function getTotalMosquitoesBySession(session_id) {
-    const [rows] = await pool.query(`
-        SELECT X.session_user_id, Y.username, SUM(Z.mosquitoesPerSession) AS mosquitoes_total
-        FROM anura.sessions AS X INNER JOIN mosquitoesPerSessionView AS Z
-        USING (session_id)
-        INNER JOIN anura.users AS Y
-        ON session_user_id = user_id
-        WHERE X.session_id = ? 
-        GROUP BY user_id`
+    const [rows] = await pool.query("SELECT * FROM mosquitoesPerSessionView WHERE session_id = ?;"
         , [session_id]);
 
         console.log("Total mosquitoes for session", session_id, ":", rows[0]);
