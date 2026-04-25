@@ -108,7 +108,7 @@ function drawCardSelectionScene() {
 
     // mosquito balance
     ctx.font = "20px Pixelify Sans";
-    ctx.fillText("Mosquitos: " + runMosquitos, canvasWidth / 2, 110);
+    ctx.fillText("Mosquitos: " + sessionMosquitos, canvasWidth / 2, 110);
 
     // draw the 3 card offers
     if (cardOptions.length === 3) {
@@ -137,7 +137,7 @@ function drawCardSelectionScene() {
 function purchaseCard(card) {
 
     // substract cost from player balance
-    runMosquitos -= card.cost;
+    sessionMosquitos -= card.cost;
 
     // add card to the correct deck slot 
     if (card.category === "Movement") {
@@ -150,7 +150,7 @@ function purchaseCard(card) {
 
     cardPurchased = true;
     deckPreview = true; 
-    console.log("purchased:", card.name, " mosquitos left:", runMosquitos);
+    console.log("purchased:", card.name, " mosquitos left:", sessionMosquitos);
 }
 
 function drawDeckPreview() {
@@ -166,7 +166,7 @@ function drawDeckPreview() {
     // mosquito balance
     ctx.fillStyle = "#FFD700";
     ctx.font = "18px Pixelify Sans";
-    ctx.fillText(runMosquitos, canvasWidth / 2, 90);
+    ctx.fillText(sessionMosquitos, canvasWidth / 2, 90);
 
     // Movement cards column
     ctx.fillStyle = "#FFD700";

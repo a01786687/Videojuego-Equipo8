@@ -142,7 +142,7 @@ app.post("/run/death", async (req, res) => {
             savedData: {
                 runId,
                 mosquitoes_this_run: mosquitoes,
-                mosquitoes_total: mosquitoData?.mosquitoes_total ?? null,
+                mosquitoes_total: mosquitoData.mosquitoesPerSession,
                 deck_cards_saved: deckResult.cardsInserted
             }
         });

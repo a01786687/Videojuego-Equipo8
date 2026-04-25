@@ -21,6 +21,7 @@ let isGameOver = false; // game over state flag
 let currentHealth = 100;
 let maxHealth = 100;
 let runMosquitos = 0;
+let sessionMosquitos = 0;
 let currentLevel = 1;
 let enemies = []; // Array for enemies
 let damageNumbers = []; // array for damage numbers
@@ -70,6 +71,8 @@ async function gameOver() {
     const response = await saveProgressOnDeath();
     // shows what backend returned in JSON format
     console.log("Backend response:", response);
+    let sessionMosquito = response.savedData.mosquitoes_total;
+    console.log("Cheking...",sessionMosquito);
 
     // always transition to cardSelection screen from gameOver after 2 Seconds 
     setTimeout(() => {
