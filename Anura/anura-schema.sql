@@ -116,3 +116,4 @@ ALTER TABLE cards ADD CONSTRAINT UNIQUE (card_name);
 ALTER TABLE mobs ADD CONSTRAINT UNIQUE (mob_name);
 ALTER TABLE boss ADD CONSTRAINT UNIQUE (boss_name);
 ALTER TABLE run_stages ADD CONSTRAINT UNIQUE (rs_run_id, stage_number);
+ALTER TABLE runs MODIFY mosquitoes_collected SMALLINT SIGNED; 
