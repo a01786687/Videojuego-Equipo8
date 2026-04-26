@@ -136,6 +136,12 @@ app.post("/boughtCard", async (req, res) =>{
     }
 });
 
+app.get("/updateAfterPurchase/:session_id", async (req,res) => {
+    const session_id = req.params.session_id;
+    const updated = await getTotalMosquitoesBySession(session_id);
+    res.send(updated.mosquitoesPerSession);
+});
+
 // POST /run/death endpoint -> game sends "player died" data to the backend 
 // When someone sends POST /run/death, run this function:
 app.post("/run/death", async (req, res) => {

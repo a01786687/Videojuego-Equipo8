@@ -33,7 +33,7 @@ We use a connection pool instead of a single connection.
 const pool = mysql.createPool({
     host: '127.0.0.1', // localhost
     user: 'root',
-    password: '',
+    password: '#Clifjumper4406',
     database: 'anura'
 }).promise() // promise -> enables async/await
 
@@ -132,7 +132,7 @@ export async function saveRun(run_id,mosqCollect,bosses_defeated,victory){
 export async function boughtCard(cost, session_id){
     const [update_currency] = await pool.query("CALL boughtCard(?, ?)",[cost,session_id]);
 
-    console.log(update_currency);
+    console.log("En backend?...", update_currency);
     return update_currency;
 }
 

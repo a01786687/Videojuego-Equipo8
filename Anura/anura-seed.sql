@@ -185,9 +185,9 @@
 	DELIMITER $$
 	CREATE PROCEDURE boughtCard(IN cost SMALLINT, IN session_id2 SMALLINT)
 	BEGIN
-		UPDATE anura.mosquitoesPerSessionView
+		UPDATE anura.runs
 		SET mosquitoes_collected = mosquitoes_collected - cost
-		WHERE session_id = session_id2;
+		WHERE run_session_id = session_id2 LIMIT 1;
 	END$$
 	DELIMITER ;
 

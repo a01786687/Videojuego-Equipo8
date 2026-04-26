@@ -86,6 +86,8 @@ DELIMITER ;
 
 SELECT * FROM usersMosquitoes;
 
+-- Día 2 probando mamadas
+
 
         
         
