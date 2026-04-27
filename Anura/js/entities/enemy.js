@@ -5,6 +5,14 @@
 "use strict";
 
 // --- ENEMY CLASS ---
+const frameW = 88; // Ancho total del frame en la imagen
+const frameH = 64; // Alto total del frame en la imagen
+
+// Estimación de recorte (ajusta estos valores si ves que se corta una pata)
+const offsetX = 22; // Píxeles que nos saltamos desde la izquierda
+const offsetY = 15; // Píxeles que nos saltamos desde arriba
+const cropW = 44;   // Ancho real de la araña (88 - 15 de cada lado aprox)
+const cropH = 34;
 
 const ENEMY_STATE = {
     PATROL: "patrol",
@@ -77,6 +85,18 @@ class Enemy extends AnimatedObject {
             console.log("Mosquitoes collected:", runMosquitos);
         }
     }
+    updateAnimation(){
+        if (this.type === 'mosquito') {
+            // Asumiendo dimensiones similares para el mosquito
+            this.setSprite("./assets/enemies/finalMosqSprites.png", new Rect(offsetX, offsetY, cropW, cropH));
+            this.setAnimation(0, 6, true, 250); 
+        } 
+        else if (this.type === 'spider') {
+            // Rect(x, y, ancho_frame, alto_frame) -> Tomamos el primer frame de la cuadrícula
+            this.setSprite("./assets/enemies/finalSpiderSprites.png", new Rect(offsetX, offsetY, cropW, cropH));
+            this.setAnimation(2, 6, true, 250); 
+        }
+    }
 
     update(target, deltaTime) {
         // Stop movement logic if the enemy is stunned
@@ -112,6 +132,7 @@ class Enemy extends AnimatedObject {
         
         this.updateFrame(deltaTime);
         this.updateCollider();
+        this.updateAnimation();
     }
 
     draw(ctx) {
