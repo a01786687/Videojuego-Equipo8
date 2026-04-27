@@ -19,14 +19,19 @@ let ctx;
 
 let oldTime = 0;
 
-let backgroundImage = new Image();
 let bgReady = false;
+let backgroundImage = new Image();
 let logo = new Image(); // Image() constructor
+let loginRegisterBg = new Image();
+let cardSelectionSceneBg = new Image();
 
 // audio assets
 let titleMusic;
 let swampSurfaceMusic;
 let bossMusic;
+
+// sound effect assets
+let tongueAttackSound;
 
 // current active scene
 let currentScene = "title";
@@ -65,6 +70,12 @@ function main() {
     backgroundImage.src = "./assets/titleScreenBG.png"
     logo.src = "./assets/logoTemp2.png";
 
+    // login and register scene bacgkround
+    loginRegisterBg.src = "../Anura/assets/login_registerBg.png";
+
+    // cardSelectionScene background
+    cardSelectionSceneBg.src = "../Anura/assets/cardSelectionSceneBg.png";
+
     // add audio element
 
     // title screen music
@@ -78,6 +89,12 @@ function main() {
     // boss fight music
     bossMusic = document.createElement("audio");
     bossMusic.src = "./assets/music/bossMusic.wav";
+
+    // SOUND EFFECTS
+
+    // tongue attack sound effect
+    tongueAttackSound = document.createElement("audio");
+    tongueAttackSound.src = "./assets/music/tongueAttack.wav";
 
     // Each scene initializes its own form wiring
     initLoginScene();    // loginScene.js

@@ -97,8 +97,7 @@ function drawCardSelectionScene() {
         return;
     }
     // dark background
-    ctx.fillStyle = "#111";
-    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+    ctx.drawImage(cardSelectionSceneBg, 0, 0, canvasWidth, canvasHeight);
 
     // title
     ctx.fillStyle = "white";
@@ -181,8 +180,7 @@ async function purchaseCard(card) {
 }
 
 function drawDeckPreview() {
-    ctx.fillStyle = "#111111";
-    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+    ctx.drawImage(cardSelectionSceneBg, 0, 0, canvasWidth, canvasHeight);
 
     // title
     ctx.fillStyle = "white";

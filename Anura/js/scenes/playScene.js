@@ -40,6 +40,9 @@ let lastActiveScene = "play";
 let swampSurfaceBg = new Image();
 swampSurfaceBg.src = "../Anura/assets/swamp_surface/swamp_surface_background.png";
 
+let denseSwampBg = new Image();
+denseSwampBg.src = "../Anura/assets/dense_swamp/dense_swamp_background.png";
+
 // --- INPUT HANDLERS ---
 
 function handleKeyUp(event) {
@@ -93,7 +96,12 @@ function drawPlayScene(deltaTime) {
 
     // clear previous frame and draw background
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-    ctx.drawImage(swampSurfaceBg, 0, 0, canvasWidth, canvasHeight);
+    if (currentLevel === 1) {
+        ctx.drawImage(swampSurfaceBg, 0, 0, canvasWidth, canvasHeight);
+    } else {
+        ctx.drawImage(denseSwampBg, 0, 0, canvasWidth, canvasHeight);
+    }
+    
 
     if (!isGameOver) {
         if (frog) {
@@ -250,6 +258,7 @@ window.addEventListener('keydown', (event) => {
     // requires cooldown to be ready, and is disabled while pausing
     if (event.key === 'i' && !event.repeat && frog.attackCooldown <= 0 && !pause) {
         frog.isAttacking = true;
+        playTongueAttackSound();
         frog.attackTimer = frog.attackDuration;
         frog.attackCooldown = frog.cooldownDuration;
     }

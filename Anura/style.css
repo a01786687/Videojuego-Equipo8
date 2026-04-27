@@ -130,7 +130,17 @@ Everything inside it is positioned around it, it makes .auth-form positioned ins
     gap: 16px;
 }
 
-.sidebar-panel {
+.sidebar-panel-right {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(140, 255, 155, 0.2);
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.sidebar-panel-left {
     background-color: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(140, 255, 155, 0.2);
     border-radius: 8px;
@@ -162,7 +172,7 @@ Everything inside it is positioned around it, it makes .auth-form positioned ins
 
 .control-label {
     font-family: "Pixelify Sans", sans-serif;
-    font-size: 14px;
+    font-size: 13px;
     color: #c8c4d8;
     letter-spacing: 1px;
 }

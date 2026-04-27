@@ -46,6 +46,13 @@ function stopBossMusic() {
     bossMusic.pause();
 }
 
+// SOUND EFFECT FUNCTIONS
+function playTongueAttackSound() {
+    tongueAttackSound.currentTime = 0;
+    tongueAttackSound.playbackRate = 5;
+    tongueAttackSound.play();
+}
+
 // draws the main title screen
 function drawTitleScreen() {
 
