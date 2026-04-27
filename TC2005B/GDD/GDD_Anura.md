@@ -470,7 +470,6 @@ _(example)_
     - First boss
     - Second platform section
     - Second boss
-    - Final boss (no platform section before it)
 
 2. If player dies at any point of the run a "you died" screen will appear. The player's mosquitoes are preserved.
 
@@ -483,9 +482,8 @@ _(example)_
     - First boss 
     - Second platform section 
     - Second boss 
-    - Final boss 
  
-5. If player defeats the final boss, a victory screen will appear with a button to return to the menu.
+5. If player defeats the last boss, a victory screen will appear with a button to return to the menu.
 
 
 #### Level Structure
@@ -506,15 +504,11 @@ Boss 1
 - Clear visual signal before excecuting the attack
 - Long recovery window
 
-Boss 2 
+Boss 2 (final)
 - Faster attacks
 - Shorter recovery window
 - Requires better positioning
 
-Final Boss
-- Multiple phases
-- Combined attack patterns
-- Higher tension
 
 Platform sections between bosses gradually increase in:
 
@@ -592,9 +586,8 @@ Visual feedback is our primary tool for teaching mechanics without lengthy tutor
     1. Anura Principal Character: frog
     2. Bosses
         - Snake
-        - Hawk
-    3. Final Boss
-        - Fox 
+        - Hawk (final boss)
+    
     4. Enemies
         - Slimes
         - Spiders

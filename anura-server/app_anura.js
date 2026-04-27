@@ -26,7 +26,7 @@ import cors from 'cors'
 import { createUser, getMobData, getUsers, getUsersById, startSession, 
          saveRun, countRunsPerSession, getRandomCards, getTotalMosquitoesBySession, 
          updateDeck, getAllCards, getNewSessionById, startRun, getDeck, boughtCard,
-         addCardToDeck } from './db.js'
+         addCardToDeck, getTotalRunsPerUser, getTotalMosquitoesPerUser } from './db.js'
 
 const app = express();
 const port = 8080;
@@ -224,10 +224,34 @@ app.get("/stats", async (req, res) =>{
     res.send(data);
 });
 
+// GET /stats/runsPerUser -> returns the top 10 users by total runs played
+// it's used by the stats page leaderboard
+app.get("/stats/runsPerUser", async (req, res) => {
+    try {
+        const data = await getTotalRunsPerUser();
+        res.json(data);
+    } catch (err) { 
+        console.error("Error in GET /stats/runsPerUser:", err);
+        res.status(500).json({ error: "Failed to get runs per user" })
+    }
+});
+
 app.get("/test", async (req,res) =>{
     const data = await getNewSessionById(17);
     res.send(data);
 });
+
+// GET /stats/mosquitoesPerUser -> returns top 10 users by total mosquitoes collected
+app.get("/stats/mosquitoesPerUser", async (req, res) => {
+    try {
+        const data = await getTotalMosquitoesPerUser();
+        res.json(data);
+    } catch(err) {
+        console.error("Error in GET /stats/mosquitoesPerUser:", err);
+        res.status(500).json({ error: "Failed to get mosquitoes per user" });
+    }
+});
+
 
 // --- SERVER START ---
 

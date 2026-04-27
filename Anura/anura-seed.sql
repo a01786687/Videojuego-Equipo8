@@ -2,9 +2,7 @@
 -- Seed data for Anura database
 -- Run after anura-schema.sql
 
-	DROP SCHEMA IF EXISTS anura;
-	CREATE SCHEMA anura;
-	USE anura;
+USE anura;
 
 	-- TEST USERS (for local development only) REMOVE LATER
 	INSERT IGNORE INTO users (username, email, password) VALUES
@@ -44,7 +42,7 @@
 
 	-- MOBS DATA
 
-	INSERT INTO mobs (mob_name,base_damage,base_hp,mosquito_reward)
+	INSERT IGNORE INTO mobs (mob_name,base_damage,base_hp,mosquito_reward)
 	VALUES ('mosquito',0,2,1),('spider',10,5,5);
 
 	-- use UPDATES to make game rogue-like:
@@ -86,7 +84,7 @@
 	GROUP BY run_session_id;
 
 	CREATE OR REPLACE VIEW runsPerUser as
-	SELECT X.session_user_id, Y.username, SUM(Z.totalRunPerSession)
+	SELECT X.session_user_id, Y.username, SUM(Z.totalRunPerSession) AS totalRuns
 	FROM anura.sessions AS X INNER JOIN anura.sampleView AS Z
 	USING (session_id)
 	INNER JOIN anura.users AS Y

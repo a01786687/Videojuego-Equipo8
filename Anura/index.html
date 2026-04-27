@@ -24,6 +24,7 @@ Authors: Renata Uruchurtu, Carlos Rosete, Emilio Torres
 
     <!-- Stylesheet -->
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="site.css">
 
     <script src="js/libs/Vector.js"></script>
     <script src="js/libs/GameObject.js"></script>
@@ -66,127 +67,142 @@ Authors: Renata Uruchurtu, Carlos Rosete, Emilio Torres
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0"></script>
 
 </head>
- 
-<body>
- 
-    <!-- Header -->
-    <header id="headerContainer">
-        <h1 class="header">Anura</h1>
-    </header>
- 
+
+<body class="game-page">
+
+    <!-- navigation bar -->
+    <nav class="navbar">
+        <a href="landing.html" class="nav-logo">ANURA</a>
+        <ul class="nav-links">
+            <li><a href="pages/landing.html">Home</a></li>
+            <li><a href="index.html" class="active">Play</a></li>
+            <li><a href="pages/tutorial.html">Tutorial</a></li>
+            <li><a href="pages/about.html">About</a></li>
+            <li><a href="pages/credits.html">Credits</a></li>
+            <li><a href="pages/stats.html">Stats</a></li>
+        </ul>
+    </nav>
+
     <!-- Main game area -->
-    <main>
-        <div id="game-container">
-            <canvas id="canvas"></canvas>
+    <main class="game-main">
 
-            <!-- Settings form -->
-            <div id="settings-form" class="auth-form hidden">
-                <h2>SETTINGS</h2>
-                <label for="brightness-slider">BRIGHTNESS</label>
-                <input type="range" id="brightness-slider" min="0.5" max="1.5" step="0.1" value="1" oninput="changeBrightness(this.value)">
-                <p id="brightness-value">100%</p>
+        <!-- left side: canvas -->
+        <div class="game-canvas-area">
+            <div id="game-container">
+                <canvas id="canvas"></canvas>
+
+                <!-- Settings form -->
+                <div id="settings-form" class="auth-form hidden">
+                    <h2>SETTINGS</h2>
+                    <label for="brightness-slider">BRIGHTNESS</label>
+                    <input type="range" id="brightness-slider" min="0.5" max="1.5" step="0.1" value="1"
+                        oninput="changeBrightness(this.value)">
+                    <p id="brightness-value">100%</p>
+                </div>
+
+                <!-- Login form -->
+                <div id="login-form" class="auth-form hidden">
+                    <h2>Log In</h2>
+                    <input type="text" id="login-username" placeholder="Enter username">
+                    <input type="password" id="login-password" placeholder="Enter password">
+                    <button id="login-button">Log In</button>
+                    <p id="go-register" class="auth-link">Don't have an account? Register</p>
+                    <p id="login-message"></p>
+                </div>
+
+                <!-- Register form -->
+                <div id="register-form" class="auth-form hidden">
+                    <h2>Register</h2>
+                    <input type="text" id="register-username" placeholder="Choose a username">
+                    <input type="email" id="register-email" placeholder="Enter email">
+                    <input type="password" id="register-password" placeholder="Choose a password">
+                    <button id="register-button">Create Account</button>
+                    <p id="go-login" class="auth-link">Already have an account? Log In</p>
+                    <p id="register-message"></p>
+                </div>
+
             </div>
- 
-            <!-- Login form -->
-            <div id="login-form" class="auth-form hidden">
-                <h2>Log In</h2>
-                <input type="text" id="login-username" placeholder="Enter username">
-                <input type="password" id="login-password" placeholder="Enter password">
-                <button id="login-button">Log In</button>
-                <p id="go-register" class="auth-link">Don't have an account? Register</p>
-                <p id="login-message"></p>
+        </div>
+
+
+        <div class="game-sidebar">
+
+            <div class="sidebar-panel">
+                <h3 class="sidebar-heading">CONTROLS</h3>
+                <div class="sidebar-divider"></div>
+                <div class="control-row">
+                    <span class="control-label">Move left</span>
+                    <span class="sidebar-key">A</span>
+                </div>
+                <div class="control-row">
+                    <span class="control-label">Move right</span>
+                    <span class="sidebar-key">D</span>
+                </div>
+                <div class="control-row">
+                    <span class="control-label">Aim up</span>
+                    <span class="sidebar-key">W</span>
+                </div>
+                <div class="control-row">
+                    <span class="control-label">Jump</span>
+                    <span class="sidebar-key">SPC</span>
+                </div>
+                <div class="control-row">
+                    <span class="control-label">Dash</span>
+                    <span class="sidebar-key">J</span>
+                </div>
+                <div class="control-row">
+                    <span class="control-label">Attack</span>
+                    <span class="sidebar-key">I</span>
+                </div>
+                <div class="control-row">
+                    <span class="control-label">Pause</span>
+                    <span class="sidebar-key">ESC</span>
+                </div>
             </div>
- 
-            <!-- Register form -->
-            <div id="register-form" class="auth-form hidden">
-                <h2>Register</h2>
-                <input type="text" id="register-username" placeholder="Choose a username">
-                <input type="email" id="register-email" placeholder="Enter email">
-                <input type="password" id="register-password" placeholder="Choose a password">
-                <button id="register-button">Create Account</button>
-                <p id="go-login" class="auth-link">Already have an account? Log In</p>
-                <p id="register-message"></p>
+
+            <div class="sidebar-panel">
+                <h3 class="sidebar-heading">YOUR STATS</h3>
+                <div class="sidebar-divider"></div>
+                <div class="stat-row">
+                    <span class="stat-label">Runs played</span>
+                    <span class="stat-value">-</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Total Wins</span>
+                    <span class="stat-value">-</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Total Deaths</span>
+                    <span class="stat-value">-</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Best Time</span>
+                    <span class="stat-value">-</span>
+                </div>
             </div>
 
         </div>
 
-        <div id="controls-info">
-            <h3>CONTROLS</h3>
-            <p>Move Left / Right: A / D</p>
-            <p>Aim up: W</p>
-            <p>Jump: spacebar</p>
-            <p>Dash: j</p>
-            <p>Attack: i</p>
-            <p>Pause: esc</p>
-        </div>
-    
-    <div id="Stats-section">
-    <p>Canva</p>
-
-    <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
-    <script>
-        async function testStats(){
-            const res = await fetch("http://localhost:8080/stats");
-            let data = await res.json();
-
-            if(data.length > 0){
-                return data;
-            }
-
-        }
-       
-        async function plot(){
-            const xValues = [];
-            const yValues = [];
-            const data = await testStats();
-            console.log(data);
-            for (let i = 0; i < data.length; i++){
-                
-                xValues.push(data[i].run_session_id);
-                yValues.push(data[i].totalRunPerSession);
-            }
-
-                const barColors = [
-                "#b91d47",
-                "#00aba9",
-                "#2b5797"
-            ];
-
-            ctx = document.getElementById('myChart');
-
-            new Chart(ctx, {
-                type: "pie",
-                data: {
-                    labels: xValues,
-                    datasets: [{
-                        backgroundColor: barColors,
-                        data: yValues
-                    }]
-                },
-                options: {
-                    plugins: {
-                        legend: { display: true },
-                        title: {
-                            display: true,
-                            text: "Totals runs per session",
-                            font: { size: 16 }
-                        }
-                    }
-                }
-            });
-            
-        }
-        
-        // plot();
-
-        
-        
-        
-        
-        
-    </script>
-    </div>
     </main>
+
+    <!-- this avoids the screen not scrolling down when spacebar is pressed -->
+    <script>
+        window.addEventListener("keydown", function (e) {
+            if (e.key === " ") {
+                e.preventDefault();
+            }
+        });
+    </script>
+
+    <!-- footer -->
+    <footer class="footer">
+        <div class="footer-names">
+            <span>Carlos Rosete</span>
+            <span>Emilio Torres</span>
+            <span>Renata Uruchurtu</span>
+        </div>
+        <p class="footer-copyright">© 2025 Anura. All rights reserved.</p>
+    </footer>
 
 </body>
 

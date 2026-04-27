@@ -5,31 +5,6 @@
     font-style: normal;
 }
 
-.header {
-    color: white;
-    text-align: center;
-}
-
-body {
-    margin: 0;
-    background: pink;
-    font-family: "Pixelify Sans", sans-serif;
-}
-
-#headerContainer {
-   margin-bottom: 40px; 
-}
-
-main {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: flex-start;
-    min-height: calc(100vh - 80px);
-    padding-top: 20px;
-    gap: 20px; /* Space between game and controls */
-}
-
 canvas {
     image-rendering: pixelated;
     image-rendering: crisp-edges;
@@ -44,10 +19,12 @@ canvas {
 GAME CONTAINER: reference for elements that use position: absolute
 Everything inside it is positioned around it, it makes .auth-form positioned inside the game canvas, not the html canvas
 */
+
 #game-container {
     position: relative;
     width: 960px;
-    height: 540px;
+    height: 540pxpx;
+    flex-shrink: 0;
 }
 
 /*  AUTHENTICATION FORMS: LOGIN & REGISTER */
@@ -119,26 +96,106 @@ Everything inside it is positioned around it, it makes .auth-form positioned ins
     height: 320px;
 }
 
-#controls-info {
-    width: 150px;
-    text-align: left;
-    font-family: "Pixelify Sans", sans-serif;
-    color: white;
-    background-color: rgba(0, 169, 116, 0.575); /* Optional: semi-transparent background */
-    padding: 20px;
+/* GAME PAGE */
+
+.game-page {
+    background: #12173d;
+    color: #c8c4d8;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    justify-content: flex-start;
+}
+
+.game-main { 
+    display: flex;
+    flex: 1;
+    align-items: flex-start;
+    gap: 24px;
+    padding: 30px 20px;
+    justify-content: center;
+}
+
+.game-canvas-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.game-sidebar {
+    width: 280px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.sidebar-panel {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(140, 255, 155, 0.2);
     border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
-#controls-info h3 {
-    margin-bottom: 10px;
-    font-size: 25px;
-    letter-spacing: 2px;
-    text-align: left;
+.sidebar-heading {
+    font-family: "Pixelify Sans", sans-serif;
+    font-size: 16px;
+    color:white;
+    letter-spacing: 4px;
+    margin: 0;
 }
 
-#controls-info p {
-    margin: 10px 0;
+.sidebar-divider {
+    width: 100%;
+    height: 1px;
+    background-color: rgba(140, 255, 155, 0.2);
+}
+
+.control-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.control-label {
+    font-family: "Pixelify Sans", sans-serif;
     font-size: 14px;
-    letter-spacing: .5px;
+    color: #c8c4d8;
+    letter-spacing: 1px;
 }
 
+.sidebar-key {
+    font-family: "Pixelify Sans", sans-serif;
+    font-size: 15px;
+    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 6px;
+    padding: 4px 10px;
+    min-width: 44px;
+    text-align: center;
+    box-shadow: 0 4px 0 rgba(0, 0, 0, 0.4);
+}
+
+.stat-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.stat-label {
+    font-family: "Pixelify Sans", sans-serif;
+    font-size: 14px;
+    color: #c8c4d8;
+    letter-spacing: 1px;
+}
+
+.stat-value {
+    font-family: "Pixelify Sans", sans-serif;
+    font-size: 14px;
+    color: #8cff9b;
+    letter-spacing: 1px;
+}

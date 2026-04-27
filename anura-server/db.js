@@ -233,6 +233,38 @@ export async function updateDeck(session_id, cardIds) {
     return { character_id, cardsInserted: cardIds.length };
 }
 
+// FOR STATS
+
+// getTotalRunsPerUser() returns the total runs played by each user, sorted by most active first, uses runsPerUser view
+export async function getTotalRunsPerUser() {
+    const [rows] = await pool.query(`
+        SELECT username, totalRuns 
+        FROM runsPerUser 
+        ORDER BY totalRuns DESC 
+        LIMIT 10;
+    `);
+    console.log(rows);
+    return rows;
+}
+
+// getTotalMosquitoesPerUser() returns the total mosquitoes collected by each user across all runs
+export async function getTotalMosquitoesPerUser() {
+    const [rows] = await pool.query(`
+        SELECT 
+        U.username AS username,
+        SUM(R.mosquitoes_collected) AS totalMosquitoes
+        FROM runs AS R
+        INNER JOIN sessions AS S ON R.run_session_id = S.session_id
+        INNER JOIN users AS U ON S.session_user_id = U.user_id
+        GROUP BY U.username
+        ORDER BY totalMosquitoes DESC
+        LIMIT 10;
+        `);
+        console.log(rows);
+        return rows;
+}
+
+
 /*
  FUTURE FUNCTIONS:
 
