@@ -5,6 +5,47 @@
 
 "use strict";
 
+// title screen music functions
+
+function playTitleMusic() {
+    titleMusic.loop = true;
+    titleMusic.volume = 0.5;
+    if (titleMusic.paused) {
+        titleMusic.play();
+    }
+}
+
+function stopTitleMusic() {
+    titleMusic.pause();
+}
+
+// playScene music functions
+
+function playSwampSurfaceMusic() {
+    swampSurfaceMusic.loop = true;
+    swampSurfaceMusic.volume = 0.5;
+    if (swampSurfaceMusic.paused) {
+        swampSurfaceMusic.play();
+    }
+}
+
+function stopSwampSurfaceMusic() {
+    swampSurfaceMusic.pause();
+}
+
+// bossScene1 music functions
+function playBossMusic() {
+    bossMusic.loop = true;
+    bossMusic.volume = 0.5;
+    if (bossMusic.paused) {
+        bossMusic.play();
+    }
+}
+
+function stopBossMusic() {
+    bossMusic.pause();
+}
+
 // draws the main title screen
 function drawTitleScreen() {
 
