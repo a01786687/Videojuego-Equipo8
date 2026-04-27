@@ -19,10 +19,14 @@ let ctx;
 
 let oldTime = 0;
 
-
 let backgroundImage = new Image();
 let bgReady = false;
 let logo = new Image(); // Image() constructor
+
+// audio assets
+let titleMusic;
+let swampSurfaceMusic;
+let bossMusic;
 
 // current active scene
 let currentScene = "title";
@@ -61,6 +65,20 @@ function main() {
     backgroundImage.src = "./assets/titleScreenBG.png"
     logo.src = "./assets/logoTemp2.png";
 
+    // add audio element
+
+    // title screen music
+    titleMusic = document.createElement("audio");
+    titleMusic.src = "./assets/music/titleScreenMusic.wav";
+
+    // swamp surface music
+    swampSurfaceMusic = document.createElement("audio");
+    swampSurfaceMusic.src = "./assets/music/swampSurfaceMusic.wav";
+
+    // boss fight music
+    bossMusic = document.createElement("audio");
+    bossMusic.src = "./assets/music/bossMusic.wav";
+
     // Each scene initializes its own form wiring
     initLoginScene();    // loginScene.js
     initRegisterScene(); // registerScene.js
@@ -73,7 +91,25 @@ function main() {
 function draw(newTime) { // draws the actual scene
 
     if (currentScene !== previousScene) {
-        oldTime       = newTime;
+        if (currentScene === "title" || currentScene === "login" || currentScene === "register" || currentScene === "settings") {
+            playTitleMusic();
+            stopSwampSurfaceMusic();
+            stopBossMusic();
+        } else if (currentScene === "play") {
+            stopTitleMusic();
+            playSwampSurfaceMusic();
+            stopBossMusic();
+        } else if (currentScene === "boss") {
+            stopTitleMusic();
+            stopSwampSurfaceMusic();
+            playBossMusic();
+        } else {
+            stopTitleMusic();
+            stopSwampSurfaceMusic();
+            stopBossMusic();
+        }
+
+        oldTime = newTime;
         previousScene = currentScene;
     }
 

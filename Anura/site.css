@@ -1,0 +1,860 @@
+/* 
+    site.css
+    Shared website styles, navbar, landing page, about page, etc.
+*/
+
+body {
+    margin: 0;
+    background: linear-gradient(135deg, #0a2a33, #1d1a59, #14665b, #293268);
+    font-family: "Pixelify Sans", sans-serif;
+    padding-top: 60px;
+    color: #c8c4d8; 
+}
+
+.navbar {
+    width: 100%;
+    height: 60px;
+    background-color: #895654;
+    border-bottom: 4px solid #61393b;
+    display: flex; /* lines up children in a row automatically */
+    align-items: center; /* vertically centers everything inside the navbar */
+    justify-content: center;
+    padding: 0 40px; /*  0 -> top/bottom padding, 40 -> left/right padding */
+    position: fixed; /* navbar stays on screen even when scrolling */
+    top: 0;
+    left: 0;
+    z-index: 100;
+}
+
+.nav-logo {
+    color: #ffffff;
+    font-size: 24px;
+    font-weight: 700;
+    text-decoration: none;
+    letter-spacing: 4px;
+    font-family: "Pixelify Sans", sans-serif;
+    margin-right: 120px;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 40px;
+}
+
+.nav-links a {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 16px;
+    letter-spacing: 2px;
+    font-family: "Pixelify Sans", sans-serif;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+    color: #ffdddd;
+}
+
+
+/* HERO SECTION */
+
+.hero {
+    width: 100%;
+    height: 100vh; /* vh: viewport height */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-image: url('assets/titleScreenBG.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    margin-top: -60px;
+    padding-top: 60px;
+    position: relative;
+}
+
+/*
+FADE TO THE SAME COLOR AS THE START OF THE STORY SECTION FROM THE HERO SECTION
+::after -> pseudo element, that is the last child of the selected element
+
+*/
+.hero::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 300px;
+    background: linear-gradient(to bottom, transparent 0%, #12173d 100%);
+    z-index: 1; /* below hero-content */
+}
+
+.hero-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    text-align: center;
+    position: relative; /* important for z-index to work */
+    z-index: 2; /* above the ::after overlay*/
+}
+
+.hero-title {
+    font-family: "Pixelify Sans", sans-serif;
+    font-size: 96px;
+    color: #ffffff;
+    letter-spacing: 12px;
+    margin: 0; /* h1 tags have a default top and bottom margin*/
+}
+
+.hero-text {
+    font-family: "Pixelify Sans", sans-serif;
+    font-size: 20px;
+    color: #8cff9b;
+    letter-spacing: 4px;
+}
+
+.hero-tags {
+    display: flex; /* its in row by default */
+    gap: 16px;
+}
+
+.hero-tag {
+    font-family: "Pixelify Sans", sans-serif;
+    font-size: 14px;
+    letter-spacing: 3px;
+    border: 2px solid #8cff9b;
+    padding: 8px 20px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+.tag-roguelite {
+    color: #8cff9b;
+    border-color: #8cff9b;
+    background-color: rgba(140, 255, 155, 0.33);  /* same green but very faint */
+}
+
+.tag-deckbuilder {
+    color: #ffaa6e;
+    border-color: #ffaa6e;
+    background-color: rgba(255, 170, 110, 0.33);
+}
+
+.tag-survival {
+    color: #8cdaff;
+    border-color: #8cdaff;
+    background-color: rgba(140, 218, 255, 0.33);
+}
+
+.hero-button {
+    font-family: "Pixelify Sans", sans-serif;
+    font-size: 24px;
+    color: white;
+    background-color: #895654;
+    border: 4px solid #61393b;
+    box-shadow: 2px 2px 0px black;
+    padding: 16px 48px;
+    text-decoration: none;
+    letter-spacing: 4px;
+    transition: background-color 0.2s;
+}
+
+.hero-button:hover {
+    background-color: #61393b;
+}
+
+/* BRIEF STORY SECTION BELOW HERO SECTION */
+
+.story {
+    background-color: #12173d; 
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 80px;
+    padding: 100px 120px;
+}
+
+.story-text {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    max-width: 500px;
+}
+
+.story-slogan {
+    font-family: "Pixelify Sans", sans-serif;
+    font-size: 36px;
+    color: #ffffff;
+    letter-spacing: 2px;
+    line-height: 1.4;
+    margin: 0px;
+}   
+
+.story-description {
+    font-family: "Pixelify Sans", sans-serif;
+    font-size: 16px;
+    color:#c8c4d8; 
+    letter-spacing: 1px;
+    line-height: 1.8;
+    margin: 0px;
+}
+
+.story-link {
+    font-family: "Pixelify Sans", sans-serif;
+    font-size: 16px;
+    color: #8cff9b;
+    text-decoration: none;
+    letter-spacing: 2px;
+}
+
+.story-link:hover {
+    color: #ffffff;
+}
+
+/* FIREFLIES AND LOGO */
+
+.story-decor {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.firefly-container {
+    position: relative;
+    width: 400px;
+    height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.story-logo {
+    width: 300px;
+    image-rendering: pixelated; /* we add this so it doesnt smoot out the image and mantains the pixel art style */
+}
+
+/* base firefly */
+.firefly {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background-color: #ffe091;
+    border-radius: 100px;
+    /* box-shadow: offset_x offset_y blur_radius spread color; */
+    box-shadow: 0 0 6px 3px rgb(175, 211, 112);
+    animation: float 3s infinite ease-in-out;
+}
+
+/* for this part AI was used to give me different values for the animation */
+.f1 { top: 20%; left: 10%; animation-duration: 3s; animation-delay: 0s; }
+.f2 { top: 60%; left: 8%; animation-duration: 4s; animation-delay: 0.5s; }
+.f3 { top: 10%; left: 70%; animation-duration: 3.5s; animation-delay: 1s; }
+.f4 { top: 75%; left: 80%; animation-duration: 5s; animation-delay: 0.2s; }
+.f5 { top: 40%; left: 5%; animation-duration: 4.5s; animation-delay: 1.5s; }
+.f6 { top: 85%; left: 50%; animation-duration: 3.2s; animation-delay: 0.8s; }
+.f7 { top: 30%; left: 85%; animation-duration: 4.8s; animation-delay: 0.3s; }
+.f8 { top: 55%; left: 89%; animation-duration: 3.8s; animation-delay: 1.2s; }
+
+/* animation */
+@keyframes float {
+    0% { transform: translateY(0px);   opacity: 0.2; } /* start: firefly is at normal position, no movement and is kind of invisible */
+    50% { transform: translateY(-15px); opacity: 1; } /* middle: firefly has moved 15px up, (css negative is up and positive is down) and is fully visible */
+    100% { transform: translateY(0px);   opacity: 0.2; } /* end: firefly is back to its original position, and its again kind of invisible */
+}
+
+/* FOOTER */
+
+.footer {
+    width: 100%;
+    background-color: #895654;
+    border-top: 4px solid #61393b;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 40px;
+    box-sizing: border-box; /* tells the browser to include padding inside the width instead of adding it on top, without it the footer might be wider than the page, causing the horizontal scroll bar to appear */
+}
+
+.footer-names {
+    display: flex;
+    gap: 40px;
+    font-family: "Pixelify Sans", sans-serif;
+    font-size: 14px;
+    color: #ffffff;
+    letter-spacing: 2px;
+}
+
+.footer-copyright {
+    font-family: "Pixelify Sans", sans-serif;
+    font-size: 14px;
+    color: #ffffff;
+    letter-spacing: 2px;
+    margin: 0;
+}
+
+/* about.html */
+
+.page-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    /* padding: top, right, bottom, left */
+    padding: 80px 40px 40px 40px;
+    text-align: center;
+}
+
+.page-title {
+    font-family: "Pixelify Sans", sans-serif;
+    font-size: 70px;
+    color: #ffffff;
+    letter-spacing: 12px;
+    margin: 0;
+}
+
+.page-subtitle {
+    font-family: "Pixelify Sans", sans-serif;
+    font-size: 18px;
+    color: #8cff9b;
+    letter-spacing: 4px;
+    margin: 16px 0 0 0;
+}
+
+.about-section-world, .about-section-game {
+    display: flex; /* flex-direction is row by default */
+    align-items: center;
+    justify-content: center;
+    gap: 80px;
+    padding: 20px 120px;
+}
+
+.about-text {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    max-width: 500px;
+}
+
+.about-heading {
+    font-family: "Pixelify Sans", sans-serif;
+    font-size: 36px;
+    color: #ffffff;
+    letter-spacing: 4px;
+    margin: 0; /* to avoid default html margin */
+}
+
+.about-description {
+    font-family: "Pixelify Sans", sans-serif;
+    font-size: 16px;
+    color: #c8c4d8;
+    letter-spacing: 1px;
+    line-height: 1.8;
+    margin: 0; /* to avoid default html margin */
+}
+
+.about-image img {
+    width: 350px;
+    max-width: 100%; /* never wider than the container, so on smaller screens it shrinks to fit */
+    animation: imageFloat 4s infinite ease-in-out; 
+}
+
+@keyframes imageFloat {
+    0%   { transform: translateY(0px); }
+    50%  { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+}
+
+/* credits.html */
+
+.credits-team {
+    display: flex; /* its in row by default */
+    justify-content: center;
+    gap: 60px;
+    padding: 60px 120px;
+}
+
+.credits-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    text-align: center;
+}
+
+.credits-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 8px;
+    image-rendering: pixelated;
+}
+
+.credits-name {
+    font-family: "Pixelify Sans", sans-serif;
+    font-size: 16px;
+    color: #ffffff;
+    letter-spacing: 1px;
+    margin: 0;
+}
+
+.credits-matricula {
+    font-family: "Pixelify Sans", sans-serif;
+    font-size: 14px;
+    color: #ffffff;
+    letter-spacing: 2px;
+    margin: 0;
+}
+.credits-role {
+    font-family: "Pixelify Sans", sans-serif;
+    font-size: 14px;
+    color: #8cff9b;
+    letter-spacing: 2px;
+    margin: 0;
+}
+
+.credits-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 40px 120px;
+    text-align: center;
+}
+
+.credits-tags {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+}
+
+.credits-tag {
+    font-family: "Pixelify Sans", sans-serif;
+    font-size: 14px;
+    letter-spacing: 2px;
+    color: #8cdaff;
+    border: 2px solid #8cdaff;
+    background-color: rgba(140, 218, 255, 0.15);
+    padding: 8px 20px;
+    border-radius: 4px;
+}
+
+.tag-html { 
+    color: #ffaa6e; 
+    border-color: #ffaa6e; 
+    background-color: rgba(255, 170, 110, 0.15); 
+}
+
+.tag-css { 
+    color: #8cdaff; 
+    border-color: #8cdaff; 
+    background-color: rgba(140, 218, 255, 0.15); 
+}
+
+.tag-js { 
+    color: #ffe091; 
+    border-color: #ffe091; 
+    background-color: rgba(255, 224, 145, 0.15); 
+}
+
+.tag-node { 
+    color: #8cff9b; 
+    border-color: #8cff9b; 
+    background-color: rgba(140, 255, 155, 0.15); 
+}
+
+.tag-express { 
+    color: #c8a2ff; 
+    border-color: #c8a2ff; 
+    background-color: rgba(200, 162, 255, 0.15); 
+}
+
+.tag-mysql { 
+    color: #ff8c8c; 
+    border-color: #ff8c8c; 
+    background-color: rgba(255, 140, 140, 0.15); 
+}
+
+.credits-heading {
+    font-family: "Pixelify Sans", sans-serif;
+    font-size: 32px;
+    color: #ffffff;
+    letter-spacing: 4px;
+    margin: 0;
+}
+
+.credits-text {
+    font-family: "Pixelify Sans", sans-serif;
+    font-size: 16px;
+    color: #c8c4d8;
+    letter-spacing: 1px;
+    margin: 0;
+}
+
+.credits-course {
+    font-family: "Pixelify Sans", sans-serif;
+    font-size: 14px;
+    color: #8cff9b;
+    letter-spacing: 2px;
+    margin: 0;
+    margin-top: 16px;
+}
+
+.credits-lib-name {
+    font-family: "Pixelify Sans", sans-serif;
+    font-size: 18px;
+    color: #8cff9b;
+    letter-spacing: 2px;
+    margin: 0;
+}
+
+.credits-libs-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* 2 equal columns */
+    gap: 16px;
+    width: 100%;
+    max-width: 800px;
+    margin-top: 24px;
+}
+
+.credits-lib-card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(140, 255, 155, 0.2);
+    border-radius: 8px;
+    padding: 20px;
+    text-align: left;
+}
+
+.credits-link-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 800px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(140, 255, 155, 0.2);
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 16px;
+    box-sizing: border-box; /* keeps the padding inside the box width */
+}
+
+.credits-source {
+    font-family: "Pixelify Sans", sans-serif;
+    font-size: 14px;
+    color: #c8c4d8;
+    letter-spacing: 1px;
+    margin: 0;
+}
+
+.credits-source-title {
+    font-family: "Pixelify Sans", sans-serif;
+    font-size: 14px;
+    color: #c8c4d8;
+    letter-spacing: 1px;
+    margin: 0;
+    text-align: left;
+    margin-top: 10px;
+}
+
+.credits-link {
+    font-family: "Pixelify Sans", sans-serif;
+    font-size: 18px;
+    color: #8cff9b;
+    letter-spacing: 2px;
+    text-decoration: none;
+    text-align: left;
+}
+
+.credits-link:hover {
+    color:#ffdddd;
+}
+
+.credits-link-box-centered {
+    justify-content: center;
+}
+
+.credits-link-box-centered .credits-source-left {
+    align-items: center;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.credits-source-tag {
+    font-family: "Pixelify Sans", sans-serif;
+    font-size: 14px;
+    letter-spacing: 2px;
+    color: #8cff9b;
+    border: 2px solid #8cff9b;
+    background-color: rgba(140, 255, 155, 0.15);
+    padding: 6px 16px;
+    border-radius: 4px;
+}
+
+
+/* tutorial.html */
+
+.tutorial-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+    padding: 60px 40px;
+}
+
+.tutorial-heading {
+    font-family: "Pixelify Sans", sans-serif;
+    font-size: 40px;
+    color: #ffffff;
+    letter-spacing: 6px;
+    margin: 0;
+}
+
+.tutorial-desc {
+    font-family: "Pixelify Sans", sans-serif;
+    font-size: 16px;
+    color: #c8c4d8;
+    letter-spacing: 1px;
+    line-height: 1.8;
+    max-width: 700px;
+    text-align: center;
+    margin: 0;
+}
+
+/* CONTROLS */
+
+.controls-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 32px;
+    max-width: 700px;
+    width: 100%;
+}
+
+.control-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.key-group {
+    display: flex;
+    gap: 8px;
+}
+
+.key {
+    font-family: "Pixelify Sans", sans-serif;
+    font-size: 18px;
+    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 6px;
+    padding: 10px 16px;
+    min-width: 44px;
+    text-align: center;
+    box-shadow: 0 4px 0 rgba(0, 0, 0, 0.4);
+}
+
+.key-wide {
+    padding: 10px 24px;
+    min-width: 80px;
+}
+
+.control-desc {
+    font-family: "Pixelify Sans", sans-serif;
+    font-size: 14px;
+    color: #c8c4d8;
+    letter-spacing: 1px;
+    margin: 0;
+    text-align: center;
+}
+
+/* HOW TO PLAY STEPS */
+
+.tutorial-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    max-width: 700px;
+    width: 100%;
+}
+
+.tutorial-step {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 24px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(140, 255, 155, 0.2);
+    border-radius: 8px;
+    padding: 24px;
+}
+
+.step-number {
+    font-family: "Pixelify Sans", sans-serif;
+    font-size: 36px;
+    color: #8cff9b;
+    letter-spacing: 2px;
+    flex-shrink: 0;
+}
+
+.step-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.step-title {
+    font-family: "Pixelify Sans", sans-serif;
+    font-size: 20px;
+    color: #ffffff;
+    letter-spacing: 2px;
+    margin: 0;
+}
+
+.step-desc {
+    font-family: "Pixelify Sans", sans-serif;
+    font-size: 15px;
+    color: #c8c4d8;
+    letter-spacing: 1px;
+    line-height: 1.8;
+    margin: 0;
+}
+
+/* CARD SLOTS */
+
+.card-slots {
+    display: flex;
+    flex-direction: row;
+    gap: 24px;
+}
+
+.card-slot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 24px 32px;
+    border-radius: 8px;
+    text-align: center;
+    width: 200px;
+}
+
+.slot-movement {
+    background-color: rgba(140, 218, 255, 0.1);
+    border: 2px solid #8cdaff;
+}
+
+.slot-combat {
+    background-color: rgba(255, 140, 140, 0.1);
+    border: 2px solid #ff8c8c;
+}
+
+.slot-utility {
+    background-color: rgba(140, 255, 155, 0.1);
+    border: 2px solid #8cff9b;
+}
+
+.slot-title {
+    font-family: "Pixelify Sans", sans-serif;
+    font-size: 16px;
+    color: #ffffff;
+    letter-spacing: 2px;
+    margin: 0;
+}
+
+.slot-desc {
+    font-family: "Pixelify Sans", sans-serif;
+    font-size: 13px;
+    color: #c8c4d8;
+    letter-spacing: 1px;
+    margin: 0;
+}
+
+/* CARD GALLERY */
+
+.gallery-category {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    max-width: 1000px;
+}
+
+.gallery-heading {
+    font-family: "Pixelify Sans", sans-serif;
+    font-size: 24px;
+    letter-spacing: 4px;
+    margin: 0;
+}
+
+.movement-heading { color: #8cff9b; }
+.combat-heading   { color: #ff8c8c; }
+.utility-heading  { color: #deff8c; }
+
+.gallery-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr ;
+    gap: 16px;
+    width: 100%;
+    max-width: 1000px;
+}
+
+.gallery-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 16px 12px;
+    text-align: center;
+}
+
+.gallery-card-img {
+    width: 120px;
+    height: 120px;
+    image-rendering: pixelated;
+    object-fit: contain;
+}
+
+.gallery-card-name {
+    font-family: "Pixelify Sans", sans-serif;
+    font-size: 13px;
+    color: #ffffff;
+    letter-spacing: 1px;
+    margin: 0;
+}
+
+.gallery-card-desc {
+    font-family: "Pixelify Sans", sans-serif;
+    font-size: 11px;
+    color: #c8c4d8;
+    letter-spacing: 0.5px;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.gallery-card-cost {
+    font-family: "Pixelify Sans", sans-serif;
+    font-size: 20px;
+    color: #ffe091;
+    letter-spacing: 1px;
+}
+
+.gallery-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 60px;
+    padding: 0 40px 60px 40px;
+    width: 100%;
+    box-sizing: border-box;
+}
