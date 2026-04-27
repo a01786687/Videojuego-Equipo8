@@ -91,9 +91,29 @@ class Frog extends AnimatedPlayer {
         this.invincibilityDuration = 1500;
 
         // --- COMBAT & CARD MODIFIERS ---
-        this.tongueDamage = 50;
+        this.tongueDamage = 1;
         this.tongueElement = "normal"; // Can be "fire", "poison", "ice"
         this.activeStatusEffects = []; // Store temporary card buffs here
+
+        // Fire Kiss
+        this.fireKiss = false;
+
+        // Venom Lash 
+        this.poisonDuration  = 0;   // ms poison lasts per hit
+        this.poisonDamage    = 0;   // damage per poison tick
+ 
+        // Thunder Tongue
+        this.thunderChance   = 0;
+ 
+        // Chameleon Veil
+        this.canChameleon    = false;
+        this.chameleonTimer  = 0;
+        this.chameleonDuration = 1200; // ms of invisibility after each attack
+ 
+        // Toad Shockwave 
+        this.canShockwave    = false;
+        this.shockwaveRadius = 120;  // px radius of the shockwave push
+        this.shockwaveForce  = 5;    // pixels pushed per frame unit
 
         // Required for boxOverlap compatibility
         this.halfSize = { x: width / 2, y: height / 2 };
@@ -114,6 +134,10 @@ class Frog extends AnimatedPlayer {
         }
         if (this.dashCooldownTimer > 0) this.dashCooldownTimer -= deltaTime;
         if (this.invincibilityTimer > 0) this.invincibilityTimer -= deltaTime;
+
+        if (this.chameleonTimer > 0) {
+            this.chameleonTimer -= deltaTime;
+        }
 
         // Attack cooldown management for the tongue attack
         if (this.attackTimer > 0) {
@@ -231,7 +255,7 @@ class Frog extends AnimatedPlayer {
         if (this.isDashing) {
             newAnim = "dash";
         } else if (this.isAttacking) {
-            newAnim = this.facing === 1 ? "attack" : "attackL"; // TONGUE ATTACK right / left
+            newAnim = this.facing == 1 ? "attack" : "attackL"; // TONGUE ATTACK right / left
         } else if (!this.isOnGround && this.velocityY < 0) {
             newAnim = "jump"; // JUMP up
         } else if (!this.isOnGround && this.velocityY > 0) {

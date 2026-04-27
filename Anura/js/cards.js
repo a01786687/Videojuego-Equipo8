@@ -66,6 +66,14 @@ const FROG_BASE_VALUES = {
     canGlide: false, // glide locked by default
     canDash: false, // dash locked by default
     jumpForce: -15, // must match frog.js constructor exactly
+
+    tongueElement:   "normal", // "normal" | "fire" | "poison"
+    fireKiss:        false,    // Fire Kiss — activates burn DoT on tongue hit (no splash)
+    poisonDuration:  0,        // Venom Lash — how long poison lasts in ms (0 = off)
+    poisonDamage:    0,        // Venom Lash — damage per poison tick
+    thunderChance:   0,        // Thunder Tongue — 0.0-1.0 chance to stun on hit (0 = off)
+    canChameleon:    false,    // Chameleon Veil — turns invisible after attacking
+    canShockwave:    false,
 };
 
 
@@ -172,16 +180,7 @@ let deck = {
     slot3_Utility: []  
 };
 
-// --- CARD POOL ---
-let cardPool = [
-    createCardFromDatabase({ card_id: 1, card_name: "Iron Hindlegs",  card_type: "Movement", card_cost: 15, effect_value: 1, effect_parameter: "extraJumps", card_description: "Grants the frog a double jump." }),
-    createCardFromDatabase({ card_id: 2, card_name: "Dragonfly Hop",  card_type: "Movement", card_cost: 10, effect_value: 2, effect_parameter: "extraJumps", card_description: "Replaces normal jump with three rapid micro jumps." }),
-    createCardFromDatabase({ card_id: 3, card_name: "Glide Membrane", card_type: "Movement", card_cost: 20, effect_value: 1, effect_parameter: "canGlide",   card_description: "Allows the frog to glide through the air." }),
-    createCardFromDatabase({ card_id: 4, card_name: "Bubble Dash",    card_type: "Movement", card_cost: 5,  effect_value: 1, effect_parameter: "canDash",    card_description: "A quick dash encased in a bubble." }),
-    createCardFromDatabase({ card_id: 5, card_name: "Rocket Frog",    card_type: "Movement", card_cost: 25, effect_value: 1.5, effect_parameter: "jumpForce",  card_description: "Launches the frog with rocket power." }),
-];
 
-// loadDeck() will replace this when the API is connected
-deck.slot1_Movement = [...cardPool];
+
 
 

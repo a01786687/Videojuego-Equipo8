@@ -29,11 +29,11 @@
 	('Rocket Frog', 25, 'Movement', 1.5, 'jumpForce', 'Launches the frog with rocket power.'),
 
 	-- COMBAT CARDS
-	('Chameleon Veil', 20, 'Combat', 1, 'isInvisible', 'Briefly turns the frog invisible.'),
-	('Fire Kiss', 15, 'Combat', 10, 'fireDamage', 'Coats the tongue in fire for extra damage.'),
-	('Thunder Tongue', 20, 'Combat', 15, 'thunderDamage', 'Electrifies the tongue attack.'),
-	('Toad Shockwave', 25, 'Combat', 20, 'shockwaveDamage', 'Releases a shockwave on landing.'),
-	('Venom Lash', 10, 'Combat', 5, 'venomDamage', 'Poisons enemies on hit.'),
+	('Chameleon Veil', 20, 'Combat', 1, 'canChameleon', 'Briefly turns the frog invisible.'),
+	('Fire Kiss', 15, 'Combat', 1, 'fireKiss', 'Coats the tongue in fire for extra damage.'),
+	('Thunder Tongue', 20, 'Combat', 0.4, 'thunderChance', 'Electrifies the tongue attack.'),
+	('Toad Shockwave', 25, 'Combat', 1, 'canShockwave', 'Releases a shockwave on landing.'),
+	('Venom Lash', 10, 'Combat', 3, 'poisonDamage', 'Poisons enemies on hit.'),
 
 	-- UTILITY CARDS
 	('Lucky Pond', 10, 'Utility', 1, 'extraMosquitos', 'Chance to double mosquito drops.'),
