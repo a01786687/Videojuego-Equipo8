@@ -20,6 +20,36 @@ const ENEMY_STATE = {
     STUNNED: "stunned"
 };
 
+// const playerMotion = {
+//     patrol: {
+//         status: false,
+//         axis: "x",
+//         sign: x-1,
+//         repeat: true,
+//         duration: 100,
+//         moveFrames: [0, 2],
+//         idleFrames: [1, 1],
+//     },
+//     chase: {
+//         status: false,
+//         axis: "x",
+//         sign: -1,
+//         repeat: true,
+//         duration: 100,
+//         moveFrames: [9, 11],
+//         idleFrames: [10, 10],
+//     },
+//     stunned: {
+//         status: false,
+//         axis: "x",
+//         sign: 1,
+//         repeat: true,
+//         duration: 100,
+//         moveFrames: [3, 5],
+//         idleFrames: [4, 4],
+//     },
+// };
+
 class Enemy extends AnimatedObject {
     constructor(x, y, width, height, color, type, sheetCols, range, health, damage = 0) {
         // Initialize GameObject with Vector position
@@ -85,18 +115,18 @@ class Enemy extends AnimatedObject {
             console.log("Mosquitoes collected:", runMosquitos);
         }
     }
-    updateAnimation(){
-        if (this.type === 'mosquito') {
-            // Asumiendo dimensiones similares para el mosquito
-            this.setSprite("./assets/enemies/finalMosqSprites.png", new Rect(offsetX, offsetY, cropW, cropH));
-            this.setAnimation(0, 6, true, 250); 
-        } 
-        else if (this.type === 'spider') {
-            // Rect(x, y, ancho_frame, alto_frame) -> Tomamos el primer frame de la cuadrícula
-            this.setSprite("./assets/enemies/finalSpiderSprites.png", new Rect(offsetX, offsetY, cropW, cropH));
-            this.setAnimation(2, 6, true, 250); 
-        }
-    }
+    // changeAnimation(){
+    //     if (this.type === 'mosquito') {
+    //         // Asumiendo dimensiones similares para el mosquito
+    //         this.setSprite("./assets/enemies/finalMosqSprites.png", new Rect(offsetX, offsetY, cropW, cropH));
+    //         this.setAnimation(0, 6, true, 250); 
+    //     } 
+    //     else if (this.type === 'spider') {
+    //         // Rect(x, y, ancho_frame, alto_frame) -> Tomamos el primer frame de la cuadrícula
+    //         this.setSprite("./assets/enemies/finalSpiderSprites.png", new Rect(offsetX, offsetY, cropW, cropH));
+    //         this.setAnimation(2, 6, true, 250); 
+    //     }
+    // }
 
     update(target, deltaTime) {
         // Stop movement logic if the enemy is stunned
@@ -132,7 +162,7 @@ class Enemy extends AnimatedObject {
         
         this.updateFrame(deltaTime);
         this.updateCollider();
-        this.updateAnimation();
+        // this.updateAnimation(deltaTime);
     }
 
     draw(ctx) {
