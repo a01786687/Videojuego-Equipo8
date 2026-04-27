@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anura - Tutorial</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../site.css">
+</head>
+<body>
+
+    <!-- navigation bar -->
+    <nav class="navbar">
+        <a href="landing.html" class="nav-logo">ANURA</a>
+        <ul class="nav-links">
+            <li><a href="landing.html">Home</a></li>
+            <li><a href="../index.html">Play</a></li>
+            <li><a href="tutorial.html">Tutorial</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="credits.html">Credits</a></li>
+            <li><a href="stats.html" class="active">Stats</a></li>
+        </ul>
+    </nav>
+
+
+
+
+
+
+
+<div id="Stats-section">
+                <p>Canva</p>
+
+                <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
+                <script>
+                    async function testStats(){
+                        const res = await fetch("http://localhost:8080/stats");
+                        let data = await res.json();
+
+                        if(data.length > 0){
+                            return data;
+                        }
+
+                    }
+                
+                    async function plot(){
+                        const xValues = [];
+                        const yValues = [];
+                        const data = await testStats();
+                        console.log(data);
+                        for (let i = 0; i < data.length; i++){
+                            
+                            xValues.push(data[i].run_session_id);
+                            yValues.push(data[i].totalRunPerSession);
+                        }
+
+                            const barColors = [
+                            "#b91d47",
+                            "#00aba9",
+                            "#2b5797"
+                        ];
+
+                        ctx = document.getElementById('myChart');
+
+                        new Chart(ctx, {
+                            type: "pie",
+                            data: {
+                                labels: xValues,
+                                datasets: [{
+                                    backgroundColor: barColors,
+                                    data: yValues
+                                }]
+                            },
+                            options: {
+                                plugins: {
+                                    legend: { display: true },
+                                    title: {
+                                        display: true,
+                                        text: "Totals runs per session",
+                                        font: { size: 16 }
+                                    }
+                                }
+                            }
+                        });
+                        
+                    }
+                    
+                    // plot();
+                </script>
+                </div>
+            
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- footer -->
+    <footer class="footer">
+        <div class="footer-names">
+            <span>Carlos Rosete</span>
+            <span>Emilio Torres</span>
+            <span>Renata Uruchurtu</span>
+        </div>
+        <p class="footer-copyright">© 2025 Anura. All rights reserved.</p>
+    </footer>
+    
+</body>
+</html>
