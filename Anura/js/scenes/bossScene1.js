@@ -70,7 +70,7 @@ async function initBossLevel() {
                     console.warn("Using default stats for snake_boss");
                 }
 
-                snakeBoss = new SnakeBoss(posX, posY, 120, 60, "green", mob_name, 8, 300, hp, dmg);
+                snakeBoss = new SnakeBoss(posX, posY, 120, 60, "green", mob_name, 8, 300, hp, dmg, mobsMotion, BOSS_STATE);
             }
         }
     }

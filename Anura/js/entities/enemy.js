@@ -53,16 +53,18 @@ const mobsMotion = {
 };
 
 class Enemy extends AnimatedObject {
-    constructor(x, y, width, height, color, type, sheetCols, range, health, damage = 0, motion) {
+    constructor(x, y, width, height, color, type, sheetCols, range, health, damage = 0, motion, statesObj) {
         // Initialize GameObject with Vector position
         super(new Vector(x, y), width, height, color, type, sheetCols);
        
-        this.state = ENEMY_STATE.PATROL;
+        
         this.speed = 1.5;
         this.range = range;      // Patrol range
         this.startX = x;         // Pivot point
         this.direction = 1;      // Horizontal direction
         this.detectionRadius = 150;
+        this.statesObj = statesObj;
+        this.state = this.statesObj.PATROL;
        
         // Combat and Stun properties
         this.health = health;    // Each enemy can now have different health values
@@ -86,7 +88,7 @@ class Enemy extends AnimatedObject {
 
     // Method to handle receiving damage
     takeDamage(amount) {
-        if (this.state === ENEMY_STATE.STUNNED) return; // Invulnerability frames during stun
+        if (this.state === this.statesObj.STUNNED) return; // Invulnerability frames during stun
         this.health -= amount;
         this.hitCounter = this.hitCounter + 1;
         console.log('Enemy took a hit: '+ this.hitCounter);
@@ -97,8 +99,8 @@ class Enemy extends AnimatedObject {
         }
         else {
             if(this.hitCounter > 3){
-                if(this.state != ENEMY_STATE.STUNNED){
-                    this.state = ENEMY_STATE.STUNNED;
+                if(this.state != this.statesObj.STUNNED){
+                    this.state = this.statesObj.STUNNED;
                     this.dirData = this.motion[this.state];
 
                     if(this.direction == 1){
@@ -114,8 +116,8 @@ class Enemy extends AnimatedObject {
                     
             }
             else{
-                if(this.state != ENEMY_STATE.STUNNED){
-                    this.state = ENEMY_STATE.STUNNED;
+                if(this.state != this.statesObj.STUNNED){
+                    this.state = this.statesObj.STUNNED;
                     this.dirData = this.motion[this.state];
 
                     if(this.direction == 1){
@@ -159,10 +161,10 @@ class Enemy extends AnimatedObject {
 
     update(target, deltaTime) {
         // Stop movement logic if the enemy is stunned
-        if (this.state === ENEMY_STATE.STUNNED) {
+        if (this.state === this.statesObj.STUNNED) {
             this.stunTimer -= deltaTime;
             if (this.stunTimer <= 0) {
-                this.state = ENEMY_STATE.PATROL;
+                this.state = this.statesObj.PATROL;
                 // this.dirData = this.motion[this.state];
                 // this.setAnimation(dirData.moveFrames[0],dirData.moveFrames[1], dirData.repeat, dirData.duration);
             }
@@ -176,8 +178,8 @@ class Enemy extends AnimatedObject {
 
         // State switching
         if (distance < this.detectionRadius**2) {
-            if(this.state != ENEMY_STATE.CHASE){
-                this.state = ENEMY_STATE.CHASE;
+            if(this.state != this.statesObj.CHASE){
+                this.state = this.statesObj.CHASE;
                 this.dirData = this.motion[this.state];
 
                 if(this.direction == 1){
@@ -189,8 +191,8 @@ class Enemy extends AnimatedObject {
             }
             
         } else {
-            if(this.state != ENEMY_STATE.PATROL){
-                this.state = ENEMY_STATE.PATROL;
+            if(this.state != this.statesObj.PATROL){
+                this.state = this.statesObj.PATROL;
                 this.dirData = this.motion[this.state];
 
                 if(this.direction == 1){
@@ -204,7 +206,7 @@ class Enemy extends AnimatedObject {
         }
 
         // Movement execution
-        if (this.state === ENEMY_STATE.CHASE) {
+        if (this.state === this.statesObj.CHASE) {
             let angle = Math.atan2(dy, dx);
             this.position.x += Math.cos(angle) * this.speed;
             this.position.y += Math.sin(angle) * this.speed;
@@ -222,7 +224,7 @@ class Enemy extends AnimatedObject {
 
     draw(ctx) {
         // Visual feedback when stunned
-        if (this.state === ENEMY_STATE.STUNNED) {
+        if (this.state === this.statesObj.STUNNED) {
             ctx.globalAlpha = 0.5;
             ctx.strokeStyle = "white";
             ctx.lineWidth = 2;

@@ -91,7 +91,7 @@ class Frog extends AnimatedPlayer {
         this.invincibilityDuration = 1500;
 
         // --- COMBAT & CARD MODIFIERS ---
-        this.tongueDamage = 1;
+        this.tongueDamage = 25;
         this.tongueElement = "normal"; // Can be "fire", "poison", "ice"
         this.activeStatusEffects = []; // Store temporary card buffs here
 

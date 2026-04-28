@@ -9,19 +9,50 @@
 
 // Defined outside the class so it's available immediately when the file loads
 const BOSS_STATE = {
-    IDLE:    "idle",
-    CHASE:   "chase",
-    DASH:    "dash",
+    IDLE:    "idle",  
+    CHASE:   "chase",  
+    DASH:    "dash",   
     RETREAT: "retreat",
-    ENRAGED: "enraged"
+    ENRAGED: "enraged",
+    STUNNED: "stunned"
+};
+
+const bossMotion = {
+    patrol: {
+        status: false,
+        axis: "x",
+        sign: 1,
+        repeat: true,
+        duration: 100,
+        moveFrames: [14, 20],
+        moveFrames2: [21, 27],
+    },
+    chase: {
+        status: false,
+        axis: "x",
+        sign: 1,
+        repeat: true,
+        duration: 100,
+        moveFrames: [28, 34],
+        moveFrames2: [35, 41],
+    },
+    stunned: {
+        status: false,
+        axis: "x",
+        sign: 1,
+        repeat: true,
+        duration: 100,
+        moveFrames: [0,6],
+        moveFrames2: [7, 13],
+    },
 };
 
 class SnakeBoss extends Enemy {
-    constructor(x, y, width, height, color, mob_name, speed, range, hp, dmg) {
-        super(x, y, width, height, color, mob_name, speed, range, hp, dmg);
+    constructor(x, y, width, height, color, mob_name, speed, range, hp, dmg, motion,statesObj) {
+        super(x, y, width, height, color, mob_name, speed, range, hp, dmg, motion,statesObj);
 
-        this.maxHealth = hp;
-        this.bossState = BOSS_STATE.IDLE;
+
+        this.state = this.statesObj.IDLE;
         this.isEnraged = false;
 
         // --- GRAVITY ---
@@ -57,6 +88,7 @@ class SnakeBoss extends Enemy {
         this.enragedSpeed     = speed * 1.5;
         this.enragedDashSpeed = 14;
         this.enragedCooldown  = 1100;
+
     }
 
     update(target, deltaTime) {
@@ -66,7 +98,7 @@ class SnakeBoss extends Enemy {
             this.stunTimer -= deltaTime;
             if (this.stunTimer <= 0) {
                 this.state     = ENEMY_STATE.PATROL;
-                this.bossState = BOSS_STATE.IDLE;
+                this.state = this.statesObj.IDLE;
                 this.idleTimer = 600;
             }
             this.applyGravity(deltaTime);
@@ -78,7 +110,7 @@ class SnakeBoss extends Enemy {
         // --- PHASE TRANSITION ---
         if (!this.isEnraged && this.health <= this.maxHealth * 0.25) {
             this.isEnraged       = true;
-            this.bossState       = BOSS_STATE.ENRAGED;
+            this.state       = this.statesObj.ENRAGED;
             this.chaseSpeed      = this.enragedSpeed;
             this.dashSpeed       = this.enragedDashSpeed;
             this.dashCooldown    = this.enragedCooldown;
@@ -91,13 +123,13 @@ class SnakeBoss extends Enemy {
         const now      = Date.now();
 
         // Using if-else instead of switch to avoid JS scope issues with methods
-        if (this.bossState === BOSS_STATE.IDLE) {
+        if (this.state === this.statesObj.IDLE) {
             this.idleTimer -= deltaTime;
             if (distance < this.aggroRadius || this.idleTimer <= 0) {
-                this.bossState = BOSS_STATE.CHASE;
+                this.state = this.statesObj.CHASE;
             }
 
-        } else if (this.bossState === BOSS_STATE.CHASE || this.bossState === BOSS_STATE.ENRAGED) {
+        } else if (this.state === this.statesObj.CHASE || this.state === this.statesObj.ENRAGED) {
             this.position.x += Math.sign(dx) * this.chaseSpeed * (deltaTime / 16);
 
             // Contact damage while chasing
@@ -110,11 +142,11 @@ class SnakeBoss extends Enemy {
 
             // Go idle if frog walks away (non-enraged only)
             if (!this.isEnraged && distance > this.aggroRadius) {
-                this.bossState = BOSS_STATE.IDLE;
+                this.state = this.statesObj.IDLE;
                 this.idleTimer = 1000;
             }
 
-        } else if (this.bossState === BOSS_STATE.DASH) {
+        } else if (this.state === this.statesObj.DASH) {
             this.dashTimer -= deltaTime;
             this.position.x += this.dashDirectionX * this.dashSpeed * (deltaTime / 16);
 
@@ -128,12 +160,12 @@ class SnakeBoss extends Enemy {
                 this.startRetreat(dx);
             }
 
-        } else if (this.bossState === BOSS_STATE.RETREAT) {
+        } else if (this.state === this.statesObj.RETREAT) {
             this.retreatTimer -= deltaTime;
             this.position.x += this.retreatDirectionX * this.retreatSpeed * (deltaTime / 16);
 
             if (this.retreatTimer <= 0) {
-                this.bossState = this.isEnraged ? BOSS_STATE.ENRAGED : BOSS_STATE.CHASE;
+                this.state = this.isEnraged ? this.statesObj.ENRAGED : this.statesObj.CHASE;
             }
         }
 
@@ -144,7 +176,7 @@ class SnakeBoss extends Enemy {
     }
 
     startDash(dx) {
-        this.bossState        = BOSS_STATE.DASH;
+        this.state        = this.statesObj.DASH;
         this.dashTimer        = this.dashDuration;
         this.lastDashTime     = Date.now();
         this.dashDirectionX   = dx > 0 ? 1 : -1;
@@ -152,7 +184,7 @@ class SnakeBoss extends Enemy {
     }
 
     startRetreat(dx) {
-        this.bossState         = BOSS_STATE.RETREAT;
+        this.state         = this.statesObj.RETREAT;
         this.retreatTimer      = this.retreatDuration;
         this.retreatDirectionX = dx > 0 ? -1 : 1;
     }
@@ -197,11 +229,11 @@ class SnakeBoss extends Enemy {
         if (typeof arenaLeft !== "undefined" && typeof arenaRight !== "undefined") {
             if (this.position.x - this.halfSize.x < arenaLeft) {
                 this.position.x = arenaLeft + this.halfSize.x;
-                if (this.bossState === BOSS_STATE.DASH) this.startRetreat(1);
+                if (this.state === this.statesObj.DASH) this.startRetreat(1);
             }
             if (this.position.x + this.halfSize.x > arenaRight) {
                 this.position.x = arenaRight - this.halfSize.x;
-                if (this.bossState === BOSS_STATE.DASH) this.startRetreat(-1);
+                if (this.state === this.statesObj.DASH) this.startRetreat(-1);
             }
         }
     }
