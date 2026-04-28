@@ -14,7 +14,7 @@ const offsetY = 15; // Píxeles que nos saltamos desde arriba
 const cropW = 44;   // Ancho real de la araña (88 - 15 de cada lado aprox)
 const cropH = 34;
 
-let dirData;
+
 
 const ENEMY_STATE = {
     PATROL: "patrol",
@@ -29,8 +29,8 @@ const mobsMotion = {
         sign: 1,
         repeat: true,
         duration: 100,
-        moveFrames: [14,20],
-        idleFrames: [1, 1],
+        moveFrames: [14, 20],
+        moveFrames2: [21, 27],
     },
     chase: {
         status: false,
@@ -39,7 +39,7 @@ const mobsMotion = {
         repeat: true,
         duration: 100,
         moveFrames: [28, 34],
-        idleFrames: [10, 10],
+        moveFrames2: [35, 41],
     },
     stunned: {
         status: false,
@@ -47,8 +47,8 @@ const mobsMotion = {
         sign: 1,
         repeat: true,
         duration: 100,
-        moveFrames: [0,7],
-        idleFrames: [4, 4],
+        moveFrames: [0,6],
+        moveFrames2: [7, 13],
     },
 };
 
@@ -74,6 +74,7 @@ class Enemy extends AnimatedObject {
         this.hitCounter = 0;
 
         this.motion = motion;
+        this.dirData;
 
 
 
@@ -96,17 +97,37 @@ class Enemy extends AnimatedObject {
         }
         else {
             if(this.hitCounter > 3){
-                this.state = ENEMY_STATE.STUNNED;
-                // dirData = this.motion[this.state];
-                // this.setAnimation(dirData.moveFrames[0],dirData.moveFrames[1], dirData.repeat, dirData.duration);
-                this.stunTimer = this.stunDuration * 4;
-                this.hitCounter = 0;
+                if(this.state != ENEMY_STATE.STUNNED){
+                    this.state = ENEMY_STATE.STUNNED;
+                    this.dirData = this.motion[this.state];
+
+                    if(this.direction == 1){
+                        this.setAnimation(this.dirData.moveFrames[0],this.dirData.moveFrames[1], this.dirData.repeat, this.dirData.duration);
+                    }
+                    else{
+                        this.setAnimation(this.dirData.moveFrames2[0],this.dirData.moveFrames2[1], this.dirData.repeat, this.dirData.duration);
+                    }
+                    
+                    this.stunTimer = this.stunDuration * 4;
+                    this.hitCounter = 0;
+                }
+                    
             }
             else{
-                this.state = ENEMY_STATE.STUNNED;
-                // dirData = this.motion[this.state];
-                // this.setAnimation(dirData.moveFrames[0],dirData.moveFrames[1], dirData.repeat, dirData.duration);
-                this.stunTimer = this.stunDuration;
+                if(this.state != ENEMY_STATE.STUNNED){
+                    this.state = ENEMY_STATE.STUNNED;
+                    this.dirData = this.motion[this.state];
+
+                    if(this.direction == 1){
+                        this.setAnimation(this.dirData.moveFrames[0],this.dirData.moveFrames[1], this.dirData.repeat, this.dirData.duration);
+                    }
+                    else{
+                        this.setAnimation(this.dirData.moveFrames2[0],this.dirData.moveFrames2[1], this.dirData.repeat, this.dirData.duration);
+                    }
+
+                    this.stunTimer = this.stunDuration;
+                    this.hitCounter = 0;
+                }
             }
         }
         console.log(`${this.type} hit! Remaining health: ${this.health}`);
@@ -142,7 +163,7 @@ class Enemy extends AnimatedObject {
             this.stunTimer -= deltaTime;
             if (this.stunTimer <= 0) {
                 this.state = ENEMY_STATE.PATROL;
-                // dirData = this.motion[this.state];
+                // this.dirData = this.motion[this.state];
                 // this.setAnimation(dirData.moveFrames[0],dirData.moveFrames[1], dirData.repeat, dirData.duration);
             }
             return;
@@ -155,13 +176,31 @@ class Enemy extends AnimatedObject {
 
         // State switching
         if (distance < this.detectionRadius**2) {
-            this.state = ENEMY_STATE.CHASE;
-            // dirData = this.motion[this.state];
-            // this.setAnimation(dirData.moveFrames[0],dirData.moveFrames[1], dirData.repeat, dirData.duration);
+            if(this.state != ENEMY_STATE.CHASE){
+                this.state = ENEMY_STATE.CHASE;
+                this.dirData = this.motion[this.state];
+
+                if(this.direction == 1){
+                    this.setAnimation(this.dirData.moveFrames[0],this.dirData.moveFrames[1], this.dirData.repeat, this.dirData.duration);
+                    }
+                else{
+                    this.setAnimation(this.dirData.moveFrames2[0],this.dirData.moveFrames2[1], this.dirData.repeat, this.dirData.duration);
+                }
+            }
+            
         } else {
-            this.state = ENEMY_STATE.PATROL;
-            // dirData = this.motion[this.state];
-            // this.setAnimation(dirData.moveFrames[0],dirData.moveFrames[1], dirData.repeat, dirData.duration);
+            if(this.state != ENEMY_STATE.PATROL){
+                this.state = ENEMY_STATE.PATROL;
+                this.dirData = this.motion[this.state];
+
+                if(this.direction == 1){
+                    this.setAnimation(this.dirData.moveFrames[0],this.dirData.moveFrames[1], this.dirData.repeat, this.dirData.duration);
+                    }
+                else{
+                    this.setAnimation(this.dirData.moveFrames2[0],this.dirData.moveFrames2[1], this.dirData.repeat, this.dirData.duration);
+                }
+            }
+                
         }
 
         // Movement execution

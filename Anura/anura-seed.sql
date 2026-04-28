@@ -40,6 +40,8 @@ USE anura;
 	('Tadpole Heart', 20, 'Utility', 25, 'bonusHealth', 'Grants bonus health at run start.'),
 	('Thorn Skin', 15, 'Utility', 5, 'thornDamage', 'Reflects damage back to attackers.');
 
+
+	-- UPDATE COMBAT CARDS
 	-- MOBS DATA
 
 	INSERT IGNORE INTO mobs (mob_name,base_damage,base_hp,mosquito_reward)
