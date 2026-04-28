@@ -96,6 +96,10 @@ Everything inside it is positioned around it, it makes .auth-form positioned ins
     height: 320px;
 }
 
+#settings-form {
+    gap: 1px;  /* Reduced from default 12px to fit both sliders */
+}
+
 /* GAME PAGE */
 
 .game-page {

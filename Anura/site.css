@@ -858,3 +858,34 @@ FADE TO THE SAME COLOR AS THE START OF THE STORY SECTION FROM THE HERO SECTION
     width: 100%;
     box-sizing: border-box;
 }
+
+/* STATS SECTION */
+
+.stats-section {
+    max-width: 1000px;
+    margin: 60px auto;
+    padding: 0 40px 60px 40px;
+}
+
+.stats-chart-section {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(140, 255, 155, 0.2);
+    border-radius: 8px;
+    padding: 32px;
+    margin-bottom: 40px;
+}
+
+.stats-heading {
+    font-family: "Pixelify Sans", sans-serif;
+    font-size: 24px;
+    color: #8cff9b;
+    letter-spacing: 4px;
+    margin: 0 0 24px 0;
+    text-align: center;
+}
+
+.stats-pie-chart {
+    max-width: 500px;
+    margin: 0 auto;
+    display: block;
+}

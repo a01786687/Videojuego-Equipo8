@@ -9,7 +9,7 @@
 
 function playTitleMusic() {
     titleMusic.loop = true;
-    titleMusic.volume = 0.5;
+    titleMusic.volume = currentVolume;
     if (titleMusic.paused) {
         titleMusic.play();
     }
@@ -23,7 +23,7 @@ function stopTitleMusic() {
 
 function playSwampSurfaceMusic() {
     swampSurfaceMusic.loop = true;
-    swampSurfaceMusic.volume = 0.5;
+    swampSurfaceMusic.volume = currentVolume;
     if (swampSurfaceMusic.paused) {
         swampSurfaceMusic.play();
     }
@@ -36,7 +36,7 @@ function stopSwampSurfaceMusic() {
 // bossScene1 music functions
 function playBossMusic() {
     bossMusic.loop = true;
-    bossMusic.volume = 0.5;
+    bossMusic.volume = currentVolume;
     if (bossMusic.paused) {
         bossMusic.play();
     }
@@ -50,6 +50,7 @@ function stopBossMusic() {
 function playTongueAttackSound() {
     tongueAttackSound.currentTime = 0;
     tongueAttackSound.playbackRate = 5;
+    tongueAttackSound.volume = currentVolume;
     tongueAttackSound.play();
 }
 
@@ -74,16 +75,15 @@ function drawTitleScreen() {
 
     // draw buttons
     if (activeUser !== null && activeUser !== undefined) {
+        // If the user is logged in: show play, continue run, logout, settings
         drawPlayButton();
-    }
-    drawLogInButton();
-    drawSettingsButton();
-
-    // continue run only shows if the player is logged in
-    // real saved progress check will connect to API when RF-49 expands
-
-    if (activeUser !== null && activeUser !== undefined) {
         drawContinueRunButton();
+        drawLogOutButton();
+        drawSettingsButton();
+    } else {
+        // user is logged out, it only shows login and settings
+        drawLogInButton();
+        drawSettingsButton();
     }
 }
 
@@ -170,6 +170,33 @@ function drawLogInButton() {
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.fillText("Log In", buttonX + buttonWidth / 2, buttonY + buttonHeight / 2);
+}
+
+// LOG OUT button
+function drawLogOutButton() {
+    const buttonWidth = 200;
+    const buttonHeight = 60;
+
+    const buttonX = 270; 
+    const buttonY = 420;
+
+    ctx.fillStyle = "#000000";
+    ctx.fillRect(buttonX + 4, buttonY + 4, buttonWidth, buttonHeight);
+
+    ctx.fillStyle = "#895654";
+    ctx.fillRect(buttonX, buttonY, buttonWidth, buttonHeight);
+
+    // border
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = "#61393b";
+    ctx.strokeRect(buttonX, buttonY, buttonWidth, buttonHeight);
+
+    // text
+    ctx.fillStyle = "white";
+    ctx.font = "24px 'Pixelify Sans'";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("Log Out", buttonX + buttonWidth / 2, buttonY + buttonHeight / 2);
 }
 
 // SETTINGS button

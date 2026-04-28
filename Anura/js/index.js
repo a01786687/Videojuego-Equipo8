@@ -30,6 +30,9 @@ let titleMusic;
 let swampSurfaceMusic;
 let bossMusic;
 
+// global volume control
+let currentVolume = 0.5;
+
 // sound effect assets
 let tongueAttackSound;
 
@@ -37,6 +40,10 @@ let tongueAttackSound;
 let currentScene = "title";
 
 let previousScene = "title"; 
+
+// this is for tracking where we came from when going to settings
+let sceneBeforeSettings = null;
+
 // main(), runs once when the page loads
 
 function main() {
@@ -191,6 +198,37 @@ function handleClick(event) {
 
     console.log(mouseX, mouseY);
 
+    // handle pause menu clicks
+    if (currentScene === "play" && pause) {
+        const buttonWidth = 280;
+        const buttonHeight = 60;
+        const buttonX = (canvasWidth - buttonWidth) / 2;
+
+        // resume button y = 240
+        if (mouseX >= buttonX && mouseX <= buttonX + buttonWidth && 
+            mouseY >= 240 && mouseY <= 240 + buttonHeight) {
+            pause = false;  // unpause the game
+            return;
+        }
+
+        // Settings button y = 330
+        if (mouseX >= buttonX && mouseX <= buttonX + buttonWidth && 
+            mouseY >= 330 && mouseY <= 330 + buttonHeight) {
+            sceneBeforeSettings = "play";
+            pause = false;  // unpause first
+            currentScene = "settings";  // go to settings
+            return;
+        }
+
+        // back to menu button y = 420
+        if (mouseX >= buttonX && mouseX <= buttonX + buttonWidth && 
+            mouseY >= 420 && mouseY <= 420 + buttonHeight) {
+            pause = false;
+            currentScene = "title";  // go to title screen
+            return;
+        }
+    }
+
     if (currentScene === "cardSelection") {
 
         const startX = 235; // x position where the first card starts
@@ -238,6 +276,9 @@ function handleClick(event) {
     // Handle clicks depending on the current scene
     if (currentScene == "title") {
         if (activeUser !== null && activeUser !== undefined) {
+
+            // user IS logged in, so we show the game buttons and logout
+
             // NEW GAME button
             if (mouseX >= 270 && mouseX <= 470 && mouseY >= 350 && mouseY <= 410) {
                 beginRun(); // if the player clicks on the button, beginRun() is called from playScene.js
@@ -247,16 +288,28 @@ function handleClick(event) {
             if (mouseX >= 490 && mouseX <= 690 && mouseY >= 350 && mouseY <= 410) {
                 continueRun(); // if the player clicks on the button, continueRun() is called from playScene.js
             }
-        }
-        // LOG IN button 
-        if (mouseX >= 270 && mouseX <= 470 && mouseY >= 420 && mouseY <= 480) {
-            currentScene = "login";
+
+            // LOG OUT button its the same position as login button
+            if (mouseX >= 270 && mouseX <= 470 && mouseY >= 420 && mouseY <= 480) {
+                if (confirm("Are you sure you want to log out?")) {
+                    logoutUser();
+                }
+            }
+        } else {
+            
+            // user is NOT logged in, we only show login button
+
+            // LOG IN button 
+            if (mouseX >= 270 && mouseX <= 470 && mouseY >= 420 && mouseY <= 480) {
+                currentScene = "login";
+            }
         }
 
-        // SETTINGS button
+        // SETTINGS button ALWAYS AVAILABLE
         if (mouseX >= 490 && mouseX <= 690 && mouseY >= 420 && mouseY <= 480) {
             currentScene = "settings";
         }
+        
     // this block handles navigation buttons (back buttons, etc) in other scenes
     } else {
 
@@ -267,6 +320,11 @@ function handleClick(event) {
                 currentScene = "title";
             } else if (currentScene === "register") {
                 currentScene = "login";
+            } else if (currentScene === "settings" && sceneBeforeSettings === "play") {
+                // if we came from pause menu, go back to paused game
+                currentScene = "play";
+                pause = true;  // pause the game
+                sceneBeforeSettings = null;  // clear the memory of sceneBefore settings
             } else {
                 currentScene = "title";
             }

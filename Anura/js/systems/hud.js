@@ -108,6 +108,106 @@ function drawGameOver() {
     ctx.fillText("GAME OVER", canvasWidth / 2, canvasHeight / 2 - 40);
 }
 
+function drawPauseMenu() {
+
+    // semi transparent overlay
+    ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
+    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+    // title
+    ctx.fillStyle = "white";
+    ctx.font = "48px 'Pixelify Sans'";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("PAUSED", canvasWidth / 2, 150);
+
+    drawResumeButton();
+    drawPauseSettingsButton();
+    drawPauseBackToMenuButton();
+}
+
+function drawResumeButton() {
+    const buttonWidth = 280;
+    const buttonHeight = 60;
+    const buttonX = (canvasWidth - buttonWidth) / 2; // centered
+    const buttonY = 240;
+
+    // shadow
+    ctx.fillStyle = "#000000";
+    ctx.fillRect(buttonX + 4, buttonY + 4, buttonWidth, buttonHeight);
+
+    // bg
+    ctx.fillStyle = "#895654";
+    ctx.fillRect(buttonX, buttonY, buttonWidth, buttonHeight);
+
+    // border
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = "#61393b";
+    ctx.strokeRect(buttonX, buttonY, buttonWidth, buttonHeight);
+
+    // text
+    ctx.fillStyle = "white";
+    ctx.font = "24px 'Pixelify Sans'";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("Resume", buttonX + buttonWidth / 2, buttonY + buttonHeight / 2);
+}
+
+function drawPauseSettingsButton() {
+    const buttonWidth = 280;
+    const buttonHeight = 60;
+    const buttonX = (canvasWidth - buttonWidth) / 2; // centered 
+    const buttonY = 330;
+
+    // shadow
+    ctx.fillStyle = "#000000";
+    ctx.fillRect(buttonX + 4, buttonY + 4, buttonWidth, buttonHeight);
+
+    // bg
+    ctx.fillStyle = "#895654";
+    ctx.fillRect(buttonX, buttonY, buttonWidth, buttonHeight);
+
+    // border
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = "#61393b";
+    ctx.strokeRect(buttonX, buttonY, buttonWidth, buttonHeight);
+
+    // text
+    ctx.fillStyle = "white";
+    ctx.font = "24px 'Pixelify Sans'";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("Settings", buttonX + buttonWidth / 2, buttonY + buttonHeight / 2);
+
+}
+
+function drawPauseBackToMenuButton() {
+    const buttonWidth = 280;
+    const buttonHeight = 60;
+    const buttonX = (canvasWidth - buttonWidth) / 2; // centered 
+    const buttonY = 420;
+
+    // shadow
+    ctx.fillStyle = "#000000";
+    ctx.fillRect(buttonX + 4, buttonY + 4, buttonWidth, buttonHeight);
+
+    // bg
+    ctx.fillStyle = "#895654";
+    ctx.fillRect(buttonX, buttonY, buttonWidth, buttonHeight);
+
+    // border
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = "#61393b";
+    ctx.strokeRect(buttonX, buttonY, buttonWidth, buttonHeight);
+
+    // text
+    ctx.fillStyle = "white";
+    ctx.font = "24px 'Pixelify Sans'";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("Back to Menu", buttonX + buttonWidth / 2, buttonY + buttonHeight / 2);
+}
+
 
 function drawCardHUD(deck) {
     const cardHeight = 83.48;

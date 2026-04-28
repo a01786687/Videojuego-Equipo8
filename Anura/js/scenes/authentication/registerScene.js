@@ -73,7 +73,7 @@ function drawRegisterScene() {
     ctx.font = "32px 'Pixelify Sans'";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.fillText("Register", canvasWidth / 2, 80);
+    //ctx.fillText("Register", canvasWidth / 2, 80);
 
     backButton();
 };

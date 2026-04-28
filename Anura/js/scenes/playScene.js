@@ -92,7 +92,9 @@ async function gameOver() {
 // --- PLAY SCENE RENDERING ---
 
 function drawPlayScene(deltaTime) {
-    if (pause) return; // when pause is true, it exits the drawPlayScene(), nothing gets drawn, when pause is false, it continues drawing normally
+    // draw the game whether it's paused or not, but only update if it's not paused
+
+    // if (pause) return; // when pause is true, it exits the drawPlayScene(), nothing gets drawn, when pause is false, it continues drawing normally
 
     // clear previous frame and draw background
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
@@ -103,7 +105,7 @@ function drawPlayScene(deltaTime) {
     }
     
 
-    if (!isGameOver) {
+    if (!isGameOver && !pause) {
         if (frog) {
             // World left bound = 0 (left edge of the level), right = Infinity (no hard right wall in play)
             frog.update(deltaTime, keys, platforms, canvasHeight, cameraX, 0, Infinity);
@@ -132,7 +134,7 @@ function drawPlayScene(deltaTime) {
         
         // Update and Draw all enemies
         enemies.forEach(enemy => {
-            enemy.update(frog, deltaTime);
+            if (!pause) enemy.update(frog, deltaTime); // only update enemies if the game is not
             enemy.draw(ctx);
         });
 
@@ -167,7 +169,7 @@ function drawPlayScene(deltaTime) {
         ctx.restore();
 
         damageNumbers.forEach(dn => {
-            dn.update();
+            if (!pause) dn.update(); // only update if not paused
             dn.draw(ctx);
         });
 
@@ -180,17 +182,18 @@ function drawPlayScene(deltaTime) {
         drawCardHUD(deck);
 
         // flash effect timer for cards
+        if (!pause) {
+            if (slot1FlashTimer > 0) {
+                slot1FlashTimer -= deltaTime;
+            }
 
-        if (slot1FlashTimer > 0) {
-            slot1FlashTimer -= deltaTime;
-        }
+            if (slot2FlashTimer > 0) {
+                slot2FlashTimer -= deltaTime;
+            }
 
-        if (slot2FlashTimer > 0) {
-            slot2FlashTimer -= deltaTime;
-        }
-
-        if (slot3FlashTimer > 0) {
-            slot3FlashTimer -= deltaTime;
+            if (slot3FlashTimer > 0) {
+                slot3FlashTimer -= deltaTime;
+            }
         }
         
     }
@@ -200,7 +203,12 @@ function drawPlayScene(deltaTime) {
         drawGameOver();
     }
 
-    backButton();
+    // pause menu 
+    if (pause && !isGameOver) {
+        drawPauseMenu();
+    }
+
+    // backButton();
 };
 
 // --- PAUSE CONTROL ---
