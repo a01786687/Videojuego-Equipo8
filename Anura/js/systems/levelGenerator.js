@@ -109,7 +109,7 @@ function createLevel() {
                     const values = await receiveMobData(mob_name);
                     
                     console.log(values);
-                    let enemy = new Enemy(posX, posY, 70, 70, "black", mob_name, 7, 100, values[0], values[1]);
+                    let enemy = new Enemy(posX, posY, 70, 70, "black", mob_name, 7, 100, values[0], values[1], mobsMotion);
                     enemies.push(enemy);
                     enemy.setSprite("./assets/enemies/finalMosqSprites.png", new Rect(0, 0, 613/7, 384/6));
                     enemy.setAnimation(14, 20, true, 100); 
@@ -119,7 +119,7 @@ function createLevel() {
                     const values = await receiveMobData(mob_name);
                     
                     console.log(values);
-                    let enemy = new Enemy(posX, posY, 100, 100, "red", mob_name, 7, 100, values[0], values[1]);
+                    let enemy = new Enemy(posX, posY, 100, 100, "red", mob_name, 7, 100, values[0], values[1], mobsMotion);
                     enemies.push(enemy);
                     enemy.setSprite("./assets/enemies/finalSpiderSprites.png", new Rect(0, 0, 613/7, 384/6));
                     enemy.setAnimation(14, 20, true, 100); 
@@ -170,7 +170,10 @@ function createLevel2() {
                 const mob_name = "spider";
                 const values = await receiveMobData(mob_name);
                 console.log(values);
-                enemies.push(new Enemy(posX, posY, 60, 60, "red", mob_name, 4, 100, values[0], values[1]));
+                let enemy = new Enemy(posX, posY, 100, 100, "red", mob_name, 7, 100, values[0], values[1], mobsMotion);
+                    enemies.push(enemy);
+                    enemy.setSprite("./assets/enemies/finalSpiderSprites.png", new Rect(0, 0, 613/7, 384/6));
+                    enemy.setAnimation(14, 20, true, 100); 
             }
             else if (char === ">") {
                 // > = exit door — triggers transition to next level (or victory)

@@ -14,44 +14,46 @@ const offsetY = 15; // Píxeles que nos saltamos desde arriba
 const cropW = 44;   // Ancho real de la araña (88 - 15 de cada lado aprox)
 const cropH = 34;
 
+
+
 const ENEMY_STATE = {
     PATROL: "patrol",
     CHASE: "chase",
     STUNNED: "stunned"
 };
 
-// const playerMotion = {
-//     patrol: {
-//         status: false,
-//         axis: "x",
-//         sign: x-1,
-//         repeat: true,
-//         duration: 100,
-//         moveFrames: [0, 2],
-//         idleFrames: [1, 1],
-//     },
-//     chase: {
-//         status: false,
-//         axis: "x",
-//         sign: -1,
-//         repeat: true,
-//         duration: 100,
-//         moveFrames: [9, 11],
-//         idleFrames: [10, 10],
-//     },
-//     stunned: {
-//         status: false,
-//         axis: "x",
-//         sign: 1,
-//         repeat: true,
-//         duration: 100,
-//         moveFrames: [3, 5],
-//         idleFrames: [4, 4],
-//     },
-// };
+const mobsMotion = {
+    patrol: {
+        status: false,
+        axis: "x",
+        sign: 1,
+        repeat: true,
+        duration: 100,
+        moveFrames: [14, 20],
+        moveFrames2: [21, 27],
+    },
+    chase: {
+        status: false,
+        axis: "x",
+        sign: 1,
+        repeat: true,
+        duration: 100,
+        moveFrames: [28, 34],
+        moveFrames2: [35, 41],
+    },
+    stunned: {
+        status: false,
+        axis: "x",
+        sign: 1,
+        repeat: true,
+        duration: 100,
+        moveFrames: [0,6],
+        moveFrames2: [7, 13],
+    },
+};
 
 class Enemy extends AnimatedObject {
-    constructor(x, y, width, height, color, type, sheetCols, range, health, damage = 0) {
+    constructor(x, y, width, height, color, type, sheetCols, range, health, damage = 0, motion) {
         // Initialize GameObject with Vector position
         super(new Vector(x, y), width, height, color, type, sheetCols);
        
@@ -70,6 +72,9 @@ class Enemy extends AnimatedObject {
         this.damage = damage;
         //hit counter to set a longer stun duration in enemies
         this.hitCounter = 0;
+
+        this.motion = motion;
+        this.dirData;
 
 
 
@@ -92,13 +97,37 @@ class Enemy extends AnimatedObject {
         }
         else {
             if(this.hitCounter > 3){
-                this.state = ENEMY_STATE.STUNNED;
-                this.stunTimer = this.stunDuration * 4;
-                this.hitCounter = 0;
+                if(this.state != ENEMY_STATE.STUNNED){
+                    this.state = ENEMY_STATE.STUNNED;
+                    this.dirData = this.motion[this.state];
+
+                    if(this.direction == 1){
+                        this.setAnimation(this.dirData.moveFrames[0],this.dirData.moveFrames[1], this.dirData.repeat, this.dirData.duration);
+                    }
+                    else{
+                        this.setAnimation(this.dirData.moveFrames2[0],this.dirData.moveFrames2[1], this.dirData.repeat, this.dirData.duration);
+                    }
+                    
+                    this.stunTimer = this.stunDuration * 4;
+                    this.hitCounter = 0;
+                }
+                    
             }
             else{
-                this.state = ENEMY_STATE.STUNNED;
-                this.stunTimer = this.stunDuration;
+                if(this.state != ENEMY_STATE.STUNNED){
+                    this.state = ENEMY_STATE.STUNNED;
+                    this.dirData = this.motion[this.state];
+
+                    if(this.direction == 1){
+                        this.setAnimation(this.dirData.moveFrames[0],this.dirData.moveFrames[1], this.dirData.repeat, this.dirData.duration);
+                    }
+                    else{
+                        this.setAnimation(this.dirData.moveFrames2[0],this.dirData.moveFrames2[1], this.dirData.repeat, this.dirData.duration);
+                    }
+
+                    this.stunTimer = this.stunDuration;
+                    this.hitCounter = 0;
+                }
             }
         }
         console.log(`${this.type} hit! Remaining health: ${this.health}`);
@@ -132,7 +161,11 @@ class Enemy extends AnimatedObject {
         // Stop movement logic if the enemy is stunned
         if (this.state === ENEMY_STATE.STUNNED) {
             this.stunTimer -= deltaTime;
-            if (this.stunTimer <= 0) this.state = ENEMY_STATE.PATROL;
+            if (this.stunTimer <= 0) {
+                this.state = ENEMY_STATE.PATROL;
+                // this.dirData = this.motion[this.state];
+                // this.setAnimation(dirData.moveFrames[0],dirData.moveFrames[1], dirData.repeat, dirData.duration);
+            }
             return;
         }
 
@@ -143,9 +176,31 @@ class Enemy extends AnimatedObject {
 
         // State switching
         if (distance < this.detectionRadius**2) {
-            this.state = ENEMY_STATE.CHASE;
+            if(this.state != ENEMY_STATE.CHASE){
+                this.state = ENEMY_STATE.CHASE;
+                this.dirData = this.motion[this.state];
+
+                if(this.direction == 1){
+                    this.setAnimation(this.dirData.moveFrames[0],this.dirData.moveFrames[1], this.dirData.repeat, this.dirData.duration);
+                    }
+                else{
+                    this.setAnimation(this.dirData.moveFrames2[0],this.dirData.moveFrames2[1], this.dirData.repeat, this.dirData.duration);
+                }
+            }
+            
         } else {
-            this.state = ENEMY_STATE.PATROL;
+            if(this.state != ENEMY_STATE.PATROL){
+                this.state = ENEMY_STATE.PATROL;
+                this.dirData = this.motion[this.state];
+
+                if(this.direction == 1){
+                    this.setAnimation(this.dirData.moveFrames[0],this.dirData.moveFrames[1], this.dirData.repeat, this.dirData.duration);
+                    }
+                else{
+                    this.setAnimation(this.dirData.moveFrames2[0],this.dirData.moveFrames2[1], this.dirData.repeat, this.dirData.duration);
+                }
+            }
+                
         }
 
         // Movement execution
