@@ -320,6 +320,9 @@ class Frog extends AnimatedPlayer {
 
         // Reset alpha for other elements
         ctx.globalAlpha = 1.0;
+
+        if (showBBox) this.drawBoundingBox(ctx);
+
     }
 
     drawAttack(ctx) {
