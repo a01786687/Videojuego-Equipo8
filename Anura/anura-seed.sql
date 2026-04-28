@@ -59,7 +59,16 @@ USE anura;
 	CREATE OR REPLACE VIEW mosquitoesPerSessionView AS
 	SELECT run_session_id AS session_id, SUM(mosquitoes_collected) AS mosquitoesPerSession
 	FROM anura.runs
-	GROUP BY run_session_id;
+	GROUP BY session_id;
+
+	CREATE OR REPLACE VIEW usersMosquitoes AS
+		SELECT X.session_user_id AS user_id, Y.username AS username, SUM(Z.mosquitoesPerSession) AS mosquitoes_total
+        FROM anura.sessions AS X INNER JOIN mosquitoesPerSessionView AS Z
+        USING (session_id)
+        INNER JOIN anura.users AS Y
+        ON session_user_id = user_id
+        GROUP BY user_id;
+	
 
 	-- deckBySession: returns the full deck of cards for a session_id
 	-- it is used by GET /deck/session_id to load the player's saved deck when the run starts
