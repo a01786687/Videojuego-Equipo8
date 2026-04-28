@@ -100,7 +100,7 @@ class Frog extends AnimatedPlayer {
 
         // Venom Lash 
         this.poisonDuration  = 0;   // ms poison lasts per hit
-        this.poisonDamage    = 0;   // damage per poison tick
+        this.poisonDamage    = 1;   // damage per poison tick
  
         // Thunder Tongue
         this.thunderChance   = 0;
@@ -323,7 +323,16 @@ class Frog extends AnimatedPlayer {
     }
 
     drawAttack(ctx) {
-        ctx.fillStyle = "#ff7eb6"; // Tongue pink
+        // Tongue color changes based on active combat card
+        if (this.fireKiss) {
+            ctx.fillStyle = "#ff4400"; // orange-red for fire
+        } else if (this.poisonDuration > 0) {
+            ctx.fillStyle = "#ee00ff"; // magenta for poison
+        } else if (this.thunderChance > 0) {
+            ctx.fillStyle = "#ffff00"; // yellow for thunder
+        } else {
+            ctx.fillStyle = "#ff7eb6"; // default tongue pink
+        }
 
         let tonguePosX = this.position.x + (this.lastDirection.x * this.tongueRange / 2);
         let tonguePosY = this.position.y + (this.lastDirection.y * this.tongueRange / 2);
@@ -342,6 +351,16 @@ class Frog extends AnimatedPlayer {
             tongueRect.halfSize.x * 2,
             tongueRect.halfSize.y * 2
         );
+    }
+
+    // Returns a label for the active combat card — shown in the HUD
+    getActiveCombatCardLabel() {
+        if (this.fireKiss)          return "Fire Kiss";
+        if (this.poisonDuration > 0) return "Venom Lash";
+        if (this.thunderChance > 0)  return "Thunder Tongue";
+        if (this.canChameleon)       return "Chameleon Veil";
+        if (this.canShockwave)       return "Toad Shockwave";
+        return null;
     }
 
     /**

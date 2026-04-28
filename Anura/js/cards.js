@@ -141,6 +141,14 @@ function createCardFromDatabase(dbCard) {
                 frog.isDashing = false;
                 frog.dashTimer = 0;
             }
+
+            
+            // reset Venom Lash side effects
+            if (param === "poisonDuration") frog.poisonDamage = 0;
+ 
+            // reset Fire Kiss
+            if (param === "fireKiss") frog.tongueElement = "normal";
+            
         }
     }
 }

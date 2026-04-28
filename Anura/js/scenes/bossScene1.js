@@ -2,19 +2,6 @@
  * bossScene1.js
  * Snake Boss arena: initialization, camera, rendering, HUD.
  *
- * FROG SPEED FIX:
- *   frog.update() receives worldBoundsLeft and worldBoundsRight as fixed arena
- *   walls (30 and arenaPixelWidth-30). The old code was passing cameraX as the
- *   left bound — since cameraX moves every frame with lerp, the frog was being
- *   pushed forward constantly, making it feel like x5 speed.
- *
- * CAMERA:
- *   Uses lerp (factor 0.12) clamped to arena bounds.
- *   bossTargetCameraX is kept separate from the play-scene camera.
- *
- * DRAW ORDER:
- *   ctx.save() → ctx.translate(-cameraX, 0) → draw world objects → ctx.restore()
- *   HUD is drawn after restore() so it stays in screen space.
  */
 "use strict";
 
@@ -133,6 +120,30 @@ function drawBossScene1(deltaTime) {
         if (snakeBoss) {
             snakeBoss.update(frog, deltaTime);
 
+            // --- BOSS BURN TICK (Fire Kiss) ---
+            if (snakeBoss.burnTimer > 0) {
+                snakeBoss.burnTimer -= deltaTime;
+                snakeBoss.burnTickTimer = (snakeBoss.burnTickTimer || 0) - deltaTime;
+                if (snakeBoss.burnTickTimer <= 0) {
+                    snakeBoss.burnTickTimer = 1000;
+                    const dmg = snakeBoss.burnDamage || 0;
+                    snakeBoss.health -= dmg;
+                    damageNumbers.push(new DamageNumber(snakeBoss.position.x, snakeBoss.position.y - 50, dmg));
+                }
+            }
+
+            // --- BOSS POISON TICK (Venom Lash) ---
+            if (snakeBoss.poisonTimer > 0) {
+                snakeBoss.poisonTimer -= deltaTime;
+                snakeBoss.poisonTickTimer = (snakeBoss.poisonTickTimer || 0) - deltaTime;
+                if (snakeBoss.poisonTickTimer <= 0) {
+                    snakeBoss.poisonTickTimer = 1000;
+                    const dmg = frog.poisonDamage || 0;
+                    snakeBoss.health -= dmg;
+                    damageNumbers.push(new DamageNumber(snakeBoss.position.x, snakeBoss.position.y - 30, dmg));
+                }
+            }
+
             // Tongue collision — snakeBoss is not in the enemies array so
             // checkFrogEnemyCollisions() never reaches it; we check here instead
             if (frog && frog.isAttacking) {
@@ -144,6 +155,9 @@ function drawBossScene1(deltaTime) {
                         snakeBoss.position.y - snakeBoss.halfSize.y,
                         frog.tongueDamage
                     ));
+                    // Apply all active combat card effects to the boss
+                    // pass [snakeBoss] as targetList so shockwave can push the boss too
+                    applyTongueCardEffects(snakeBoss, [snakeBoss]);
                 }
             }
 
