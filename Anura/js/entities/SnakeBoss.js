@@ -88,8 +88,13 @@ class SnakeBoss extends Enemy {
         this.dashTimer        = 0;
         this.lastDashTime     = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
         this.dashDirectionX   = -1;
         this.hitDealtThisDash = false;
+=======
+        this.dashDirectionX   = 0;    // -1 or 1, locked when dash starts
+        this.hitDealtThisDash = false; // prevents hitting the frog more than once per dash
+>>>>>>> main
 =======
         this.dashDirectionX   = 0;    // -1 or 1, locked when dash starts
         this.hitDealtThisDash = false; // prevents hitting the frog more than once per dash
@@ -269,8 +274,13 @@ class SnakeBoss extends Enemy {
             this.dashTimer        = this.dashDuration;
             this.lastDashTime     = Date.now();
 <<<<<<< HEAD
+<<<<<<< HEAD
             this.direction   = dx > 0 ? 1 : -1;
             this.hitDealtThisDash = false;
+=======
+            this.dashDirectionX   = dx > 0 ? 1 : -1; // lock direction toward frog
+            this.hitDealtThisDash = false;             // reset so this dash can deal damage
+>>>>>>> main
 =======
             this.dashDirectionX   = dx > 0 ? 1 : -1; // lock direction toward frog
             this.hitDealtThisDash = false;             // reset so this dash can deal damage
