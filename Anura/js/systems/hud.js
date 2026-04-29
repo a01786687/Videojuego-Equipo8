@@ -148,6 +148,9 @@ function drawGameOver() {
     ctx.fillStyle = "white";
     ctx.font = "18px Pixelify Sans";
     ctx.fillText("Card Selection Screen in 3 seconds... ", canvasWidth / 2, canvasHeight / 2 + 70);
+}
+
+function drawVictory() {
 
 }
 
@@ -295,7 +298,7 @@ function drawCardHUD(deck) {
         }
 
         // card name
-        ctx.font = "12px Pixelify Sans"; 
+        ctx.font = "10px Pixelify Sans"; 
         
         if (card) {
             ctx.fillText(card.name, x + cardWidth / 2, y + cardHeight + 12);

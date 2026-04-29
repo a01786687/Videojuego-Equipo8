@@ -27,10 +27,10 @@ USE anura;
 	('Rocket Frog', 25, 'Movement', 1.5, 'jumpForce', 'Launches the frog with rocket power.'),
 
 	-- COMBAT CARDS
-	('Chameleon Veil', 20, 'Combat', 1, 'isInvisible', 'Briefly turns the frog invisible.'),
+	('Chameleon Veil', 20, 'Combat', 1, 'isInvisible', 'Briefly turns the frog invincible.'),
 	('Fire Kiss', 15, 'Combat', 10, 'fireDamage', 'Coats the tongue in fire for extra damage.'),
 	('Thunder Tongue', 20, 'Combat', 15, 'thunderDamage', 'Electrifies the tongue attack.'),
-	('Toad Shockwave', 25, 'Combat', 20, 'shockwaveDamage', 'Releases a shockwave on landing.'),
+	('Toad Shockwave', 25, 'Combat', 20, 'shockwaveDamage', 'Tongue shockwave that pushes enemies'),
 	('Venom Lash', 10, 'Combat', 5, 'venomDamage', 'Poisons enemies on hit.'),
 
 	-- UTILITY CARDS
@@ -209,3 +209,9 @@ USE anura;
 	END$$
 	DELIMITER ;
 
+-- UPDATE COMBAT CARDS
+UPDATE cards SET effect_value = 1.00, effect_parameter = 'canChameleon' WHERE card_id = 6;
+UPDATE cards SET effect_value = 1.00, effect_parameter = 'fireKiss' WHERE card_id = 7;
+UPDATE cards SET effect_value = 0.40, effect_parameter = 'thunderChance' WHERE card_id = 8;
+UPDATE cards SET effect_value = 1.00, effect_parameter = 'canShockwave' WHERE card_id = 9;
+UPDATE cards SET effect_value = 999.99, effect_parameter = 'poisonDuration' WHERE card_id = 10;

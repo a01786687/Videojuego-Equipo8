@@ -11,8 +11,7 @@ let platforms = []; // Array to hold platform objects, to be implemented in the 
 
 class Platform extends GameObject {
     constructor(x, y, width, height) {
-        super(new Vector(x, y), width, height, "#4b3621", "platform");
+        super(new Vector(x, y), width, height, "#959595", "platform");
         this.spriteRect = new Rect(0, 0, width, height);
     }
 }
-

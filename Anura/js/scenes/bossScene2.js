@@ -36,8 +36,10 @@ async function initEagleBossLevel() {
             const posY = y * TILE_SIZE + yOffset;
 
             if (char === "#") {
-                platforms.push(new Platform(posX + TILE_SIZE / 2, posY + TILE_SIZE / 2, TILE_SIZE, TILE_SIZE));
-
+                let platform = new Platform(posX + TILE_SIZE / 2, posY + TILE_SIZE / 2, TILE_SIZE, TILE_SIZE);
+                platform.setSprite("../Anura/assets/tileset/Tile_61.png");
+                platforms.push(platform);
+                
             } else if (char === "@") {
                 if (!frog) {
                     frog = new Frog({ x: posX + TILE_SIZE / 2, y: posY - 50 }, 50, 50, 4);
@@ -200,4 +202,3 @@ function drawBossScene2(deltaTime) {
 
     backButton();
 }
-
