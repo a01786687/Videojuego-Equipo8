@@ -10,6 +10,10 @@ let snakeBoss = null;
 let predatorArenaBg = new Image();
 predatorArenaBg.src = "../Anura/assets/predator_arena/predator_arena_background.png";
 
+// cave exit
+let caveExitImg = new Image();
+caveExitImg.src = "../Anura/assets/caveExit.png";
+
 let arenaPixelWidth   = 0;
 let bossTargetCameraX = 0;
 let bossExitDoor      = null; // spawns after boss is defeated, leads to level 2
@@ -108,8 +112,8 @@ function drawBossScene1(deltaTime) {
             if (typeof plat.draw === "function") {
                 plat.draw(ctx);
             } else {
-                ctx.fillStyle = "#4b3621";
-                ctx.fillRect(
+                ctx.drawImage(
+                    Tile_61,
                     plat.position.x - plat.halfSize.x,
                     plat.position.y - plat.halfSize.y,
                     plat.size.x,
@@ -179,12 +183,13 @@ function drawBossScene1(deltaTime) {
 
         // Draw exit door and handle level 2 transition
         if (bossExitDoor) {
-            ctx.fillStyle = "#00cc44";
-            ctx.fillRect(
-                bossExitDoor.position.x - bossExitDoor.halfSize.x,
-                bossExitDoor.position.y - bossExitDoor.halfSize.y,
-                bossExitDoor.halfSize.x * 2,
-                bossExitDoor.halfSize.y * 2
+            const size = 96
+            ctx.drawImage(
+                caveExitImg,
+                bossExitDoor.position.x - size / 2,
+                bossExitDoor.position.y - (size / 2) - 15,
+                size,
+                size
             );
             ctx.fillStyle = "#ffffff";
             ctx.font = "10px Pixelify Sans";

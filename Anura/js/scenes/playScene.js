@@ -34,7 +34,9 @@ let activeRunId = null; // stores the current run's ID from the database
 //This variable is used to store the last active scene before a game over, so when the player continues, they return to the correct scene (play or boss)
 let lastActiveScene = "play";
 
-
+// cave entrance
+let caveEntranceImg = new Image();
+caveEntranceImg.src = "../Anura/assets/caveEntrance.png";
 
 // --- GLOBAL ASSETS ---
 let swampSurfaceBg = new Image();
@@ -142,7 +144,8 @@ function drawPlayScene(deltaTime) {
         ctx.fillStyle = "#4b3621"; 
         
         for (let plat of platforms) {
-            ctx.fillRect(
+            ctx.drawImage(
+                Tile_02,
                 plat.position.x - plat.halfSize.x, 
                 plat.position.y - plat.halfSize.y, 
                 plat.size.x, 
@@ -150,14 +153,15 @@ function drawPlayScene(deltaTime) {
             );
         }
 
-        // placeholder cave entrance
+        // cave entrance, natural size (96x96 px)
         if (caveEntrance) {
-            ctx.fillStyle = "#1a0a00";
-            ctx.fillRect(
-                caveEntrance.position.x - caveEntrance.halfSize.x,
-                caveEntrance.position.y - caveEntrance.halfSize.y,
-                caveEntrance.halfSize.x * 2,
-                caveEntrance.halfSize.y * 2
+            
+            ctx.drawImage(
+                caveEntranceImg,
+                caveEntrance.position.x - caveEntranceImg.width / 2,
+                caveEntrance.position.y - caveEntranceImg.height / 2 - 40,
+                caveEntranceImg.width,
+                caveEntranceImg.height
             );
         }
 

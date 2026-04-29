@@ -36,6 +36,17 @@ let currentVolume = 0.5;
 // sound effect assets
 let tongueAttackSound;
 
+// tile set images
+// platform tileset
+let Tile_02 = new Image();
+Tile_02.src = "../Anura/assets/tileset/Tile_02.png";
+
+let Tile_12 = new Image();
+Tile_12.src = "../Anura/assets/tileset/Tile_12.png";
+
+let Tile_61 = new Image();
+Tile_61.src = "../Anura/assets/tileset/Tile_61.png";
+
 // current active scene
 let currentScene = "title";
 
