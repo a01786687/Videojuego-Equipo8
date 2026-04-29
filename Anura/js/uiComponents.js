@@ -33,5 +33,5 @@ function backButton() {
     ctx.font = "15px 'Pixelify Sans'";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.fillText("Back to Title", buttonX + buttonWidth / 2, buttonY + buttonHeight / 2);
+    ctx.fillText("Back", buttonX + buttonWidth / 2, buttonY + buttonHeight / 2);
 }

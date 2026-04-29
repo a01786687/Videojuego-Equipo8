@@ -26,7 +26,7 @@ import cors from 'cors'
 import { createUser, getMobData, getUsers, getUsersById, startSession, 
          saveRun, countRunsPerSession, getRandomCards, getTotalMosquitoesBySession, 
          updateDeck, getAllCards, getNewSessionById, startRun, getDeck, boughtCard,
-         addCardToDeck, getTotalRunsPerUser, getTotalMosquitoesPerUser } from './db.js'
+         addCardToDeck, getTotalRunsPerUser, getTotalMosquitoesPerUser, getTotalMosquitoesByUser } from './db.js'
 
 const app = express();
 const port = 8080;
@@ -136,10 +136,17 @@ app.post("/boughtCard", async (req, res) =>{
     }
 });
 
-app.get("/updateAfterPurchase/:session_id", async (req,res) => {
+app.get("/updateAfterPurchase/:session_id", async (req, res) => {
     const session_id = req.params.session_id;
-    const updated = await getTotalMosquitoesBySession(session_id);
-    res.send(updated.mosquitoesPerSession);
+    
+    try {
+        const updated = await getTotalMosquitoesByUser(session_id); // ← NEW NAME
+        const mosquitoes = updated?.mosquitoes_total ?? 0;
+        res.json({ mosquitoes: mosquitoes });
+    } catch (err) {
+        console.error("Error in /updateAfterPurchase:", err);
+        res.status(500).json({ mosquitoes: 0 });
+    }
 });
 
 // POST /run/death endpoint -> game sends "player died" data to the backend 
@@ -159,7 +166,7 @@ app.post("/run/death", async (req, res) => {
         const runId = await saveRun(run_id, mosquitoes, bosses_defeated, victory);
 
         // get the updated lifetime mosquito total
-        const mosquitoData = await getTotalMosquitoesBySession(session_id);
+        const mosquitoData = await getTotalMosquitoesByUser(session_id);
 
         // save the deck
         const cardIds = deck ? deck.flat() : [];
@@ -170,7 +177,7 @@ app.post("/run/death", async (req, res) => {
             savedData: {
                 runId,
                 mosquitoes_this_run: mosquitoes,
-                mosquitoes_total: mosquitoData.mosquitoesPerSession,
+                mosquitoes_total: mosquitoData.mosquitoes_total,
                 deck_cards_saved: deckResult.cardsInserted
             }
         });
