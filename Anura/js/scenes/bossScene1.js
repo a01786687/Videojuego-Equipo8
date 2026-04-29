@@ -90,11 +90,11 @@ async function initBossLevel() {
 function drawBossScene1(deltaTime) {
     if (!deltaTime || isNaN(deltaTime) || deltaTime > 50) deltaTime = 16.6;
 
-    if (pause) return;
+    //if (pause) return;
 
     ctx.drawImage(predatorArenaBg, 0, 0, canvasWidth, canvasHeight);
 
-    if (!isGameOver && frog) {
+    if (!isGameOver && !pause && frog) {
 
         // --- CAMERA LERP ---
         bossTargetCameraX = frog.position.x - canvasWidth / 2;
@@ -234,5 +234,14 @@ function drawBossScene1(deltaTime) {
         drawGameOver();
     }
 
+    // pause menu
+    if (pause && !isGameOver) {
+        drawPauseMenu();
+    }
+
     // backButton();
 }
+
+
+
+

@@ -55,6 +55,8 @@ let previousScene = "title";
 // this is for tracking where we came from when going to settings
 let sceneBeforeSettings = null;
 
+let isVictory = false;
+
 // main(), runs once when the page loads
 
 function main() {
@@ -215,8 +217,27 @@ function handleClick(event) {
 
     console.log(mouseX, mouseY);
 
+
+    // --- VICTORY SCREEN CLICK ---
+    if (isVictory) {
+        // back to Title button bounds
+        const buttonWidth = 200;
+        const buttonHeight = 60;
+        const buttonX = (canvasWidth - buttonWidth) / 2;
+        const buttonY = 400;
+
+        if (mouseX >= buttonX && mouseX <= buttonX + buttonWidth &&
+            mouseY >= buttonY && mouseY <= buttonY + buttonHeight) {
+            // click on button
+            isVictory = false;
+            currentScene = "title";
+            return;  // important to stop processing clicks
+        }
+        return;  // if we're on victory, we don't process other clicks
+    }
+
     // handle pause menu clicks
-    if (currentScene === "play" && pause) {
+    if ((currentScene === "play" || currentScene === "boss" || currentScene === "eagle_boss") && pause) {
         const buttonWidth = 280;
         const buttonHeight = 60;
         const buttonX = (canvasWidth - buttonWidth) / 2;
