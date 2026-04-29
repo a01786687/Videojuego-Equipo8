@@ -137,13 +137,23 @@ class Enemy extends AnimatedObject {
 
 
     // enemy death method
-    die() {
+    async die() {
         this.health = 0;
         console.log(this.type, " has died");
         if (this.type === "mosquito") { // mosquito counter incremented
             runMosquitos++;
             updateMosquitoHUD();
             console.log("Mosquitoes collected:", runMosquitos);
+        }
+        else{
+            const res = await fetch(`http://localhost:8080/mob/reward/${this.type}`);
+            const reward = await res.json();
+            if(reward > 0){
+                runMosquitos = runMosquitos + reward;
+                updateMosquitoHUD();
+                console.log("Mosquito reward from ", this.type,":", reward);
+                console.log("Mosquitoes collected: ", runMosquitos);
+            }
         }
     }
     // changeAnimation(){

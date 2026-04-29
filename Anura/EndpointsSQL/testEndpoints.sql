@@ -88,6 +88,10 @@ SELECT * FROM usersMosquitoes;
 
 -- Día 2 probando mamadas
 
+SELECT * FROM mobs;
+SELECT * FROM boss;
+SELECT * FROM playable_character;
+
 
         
         

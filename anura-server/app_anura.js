@@ -26,7 +26,8 @@ import cors from 'cors'
 import { createUser, getMobData, getUsers, getUsersById, startSession, 
          saveRun, countRunsPerSession, getRandomCards, getTotalMosquitoesBySession, 
          updateDeck, getAllCards, getNewSessionById, startRun, getDeck, boughtCard,
-         addCardToDeck, getTotalRunsPerUser, getTotalMosquitoesPerUser, getTotalMosquitoesByUser } from './db.js'
+         addCardToDeck, getTotalRunsPerUser, getTotalMosquitoesPerUser, getTotalMosquitoesByUser, 
+         getMosquitoeReward} from './db.js'
 
 const app = express();
 const port = 8080;
@@ -257,6 +258,12 @@ app.get("/stats/mosquitoesPerUser", async (req, res) => {
         console.error("Error in GET /stats/mosquitoesPerUser:", err);
         res.status(500).json({ error: "Failed to get mosquitoes per user" });
     }
+});
+
+app.get("/mob/reward/:mob_name", async (req, res) =>{
+    const mob_name = req.params.mob_name;
+    const reward = await getMosquitoeReward(mob_name);
+    res.send(reward);
 });
 
 

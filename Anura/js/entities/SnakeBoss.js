@@ -112,7 +112,7 @@ class SnakeBoss extends Enemy {
         this.dashCooldown     = 2200;
         this.dashTimer        = 0;
         this.lastDashTime     = 0;
-        this.dashDirectionX   = 0;
+        this.dashDirectionX   = -1;
         this.hitDealtThisDash = false;
 
         // --- RETREAT ---
@@ -287,7 +287,7 @@ class SnakeBoss extends Enemy {
             }
             this.dashTimer        = this.dashDuration;
             this.lastDashTime     = Date.now();
-            this.dashDirectionX   = dx > 0 ? 1 : -1;
+            this.direction   = dx > 0 ? 1 : -1;
             this.hitDealtThisDash = false;
         }
     }
