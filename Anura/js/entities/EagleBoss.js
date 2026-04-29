@@ -1,23 +1,5 @@
 /*
  * EagleBoss — Final boss of Anura.
- * Extends Enemy following the same pattern as the updated enemy.js:
- *   - motion and statesObj passed as constructor params
- *   - setSprite() called from bossScene2.js after instantiation
- *   - No gravity — eagle flies freely in X and Y
- *
- * SPRITESHEET (4 cols x 5 rows, each frame 448x479px):
- *   Row 0: IDLE perched     frames 0-3
- *   Row 1: ENRAGED idle     frames 4-7
- *   Row 2: TAKEOFF          frames 8-11
- *   Row 3: FLY              frames 12-15
- *   Row 4: ATTACK / dive    frames 16-19
- *
- * STATE MACHINE:
- *   HOVER   → floats, drifts slowly toward frog, sinusoidal bob
- *   SWOOP   → fast horizontal dash across the arena
- *   DIVE    → charges straight down at frog's X position
- *   RECOVER → rises back up after a dive
- *   ENRAGED → phase 2 at 40% HP: faster everything
  */
 "use strict";
 
@@ -201,7 +183,7 @@ class EagleBoss extends Enemy {
             // Hit floor or timer expired → recover
             const floorY = canvasHeight - this.halfSize.y - TILE_SIZE;
             if (this.diveTimer <= 0 || this.position.y >= floorY) {
-                this.position.y = Math.min(this.position.y, floorY);
+                if (this.position.y > floorY) this.position.y = floorY;
                 this.startRecover();
             }
 
@@ -218,6 +200,26 @@ class EagleBoss extends Enemy {
                 this.setAnim(this.state);
             }
         }
+
+        // Arena wall clamp — prevents eagle from flying outside bounds
+        // eagleArenaLeft and eagleArenaRight are defined in bossScene2.js
+        if (typeof eagleArenaLeft !== "undefined" && typeof eagleArenaRight !== "undefined") {
+            if (this.position.x - this.halfSize.x < eagleArenaLeft) {
+                this.position.x = eagleArenaLeft + this.halfSize.x;
+                // Reverse swoop direction if hitting a wall mid-swoop
+                if (this.state === this.statesObj.SWOOP) this.swoopDirectionX *= -1;
+            }
+            if (this.position.x + this.halfSize.x > eagleArenaRight) {
+                this.position.x = eagleArenaRight - this.halfSize.x;
+                if (this.state === this.statesObj.SWOOP) this.swoopDirectionX *= -1;
+            }
+        }
+
+        // Ceiling and floor clamp — eagle stays within vertical arena bounds
+        const ceilY  = this.halfSize.y + TILE_SIZE;
+        const floorY = canvasHeight - this.halfSize.y - TILE_SIZE;
+        if (this.position.y < ceilY)  this.position.y = ceilY;
+        if (this.position.y > floorY) this.position.y = floorY;
 
         this.updateFrame(deltaTime);
         this.updateCollider();
@@ -337,12 +339,6 @@ class EagleBoss extends Enemy {
         ctx.lineWidth   = 1;
         ctx.strokeRect(barX, barY, barW, barH);
 
-        // State label — comment out when done debugging
-        ctx.fillStyle = "#fff";
-        ctx.font      = "11px monospace";
-        ctx.textAlign = "center";
-        ctx.fillText(this.state.toUpperCase(), this.position.x, barY - 4);
-        ctx.restore();
 
         if (showBBox) this.drawBoundingBox(ctx);
     }

@@ -80,6 +80,7 @@ function createLevel() {
     platforms = []; // clean platforms array to avoid duplicates when creating a new level
     enemies = [];   // Clean enemies array to avoid duplicates when creating a new level
     caveEntrance = null; // reset on every new level
+    exitDoor = null; // reset on every new level
 
     let fullPlan = generateLevelPlan();
     let rows = fullPlan.split('\n');
