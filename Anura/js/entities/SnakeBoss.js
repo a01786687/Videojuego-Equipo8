@@ -87,8 +87,19 @@ class SnakeBoss extends Enemy {
         this.dashCooldown     = 2200; // ms between dashes
         this.dashTimer        = 0;
         this.lastDashTime     = 0;
-        this.dashDirectionX   = 0;    // -1 or 1, locked when dash starts
-        this.hitDealtThisDash = false; // prevents hitting the frog more than once per dash
+
+        this.dashDirectionX   = -1;
+        this.hitDealtThisDash = false;
+
+        // this.dashDirectionX   = 0;    // -1 or 1, locked when dash starts
+        // this.hitDealtThisDash = false; // prevents hitting the frog more than once per dash
+
+        // this.dashDirectionX   = 0;    // -1 or 1, locked when dash starts
+        // this.hitDealtThisDash = false; // prevents hitting the frog more than once per dash
+
+        // this.dashDirectionX   = 0;    // -1 or 1, locked when dash starts
+        // this.hitDealtThisDash = false; // prevents hitting the frog more than once per dash
+
 
         // --- RETREAT ---
         // After a dash the boss briefly retreats in the opposite direction
@@ -394,4 +405,5 @@ class SnakeBoss extends Enemy {
         super.die();
         // Additional death logic like particles or sound effects can go here
     }
+
 }
