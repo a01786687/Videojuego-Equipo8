@@ -5,8 +5,10 @@
 
 "use strict";
 
-// title screen music functions
 
+// ---- MUSIC FUNCTIONS ----
+
+// title screen music 
 function playTitleMusic() {
     titleMusic.loop = true;
     titleMusic.volume = currentVolume;
@@ -19,8 +21,8 @@ function stopTitleMusic() {
     titleMusic.pause();
 }
 
-// playScene music functions
 
+// play scene music (swamp surface)
 function playSwampSurfaceMusic() {
     swampSurfaceMusic.loop = true;
     swampSurfaceMusic.volume = currentVolume;
@@ -33,7 +35,7 @@ function stopSwampSurfaceMusic() {
     swampSurfaceMusic.pause();
 }
 
-// bossScene1 music functions
+// boss scene music
 function playBossMusic() {
     bossMusic.loop = true;
     bossMusic.volume = currentVolume;
@@ -54,6 +56,8 @@ function playTongueAttackSound() {
     tongueAttackSound.play();
 }
 
+// ---- TITLE SCREEN DRAW ----
+
 // draws the main title screen
 function drawTitleScreen() {
 
@@ -65,7 +69,7 @@ function drawTitleScreen() {
         ctx.fillRect(0, 0, canvasWidth, canvasHeight);
     }
 
-    // logo size
+    // logo size and position
     const logoWidth = 400;
     const logoHeight = 400;
 
@@ -73,22 +77,24 @@ function drawTitleScreen() {
     let centerX = canvasWidth / 2 - logoWidth / 2
     ctx.drawImage(logo, centerX, 0, 400, 400)
 
-    // draw buttons
+    // draw buttons based on login status
     if (activeUser !== null && activeUser !== undefined) {
-        // If the user is logged in: show play, continue run, logout, settings
-        drawPlayButton();
-        drawContinueRunButton();
-        drawLogOutButton();
-        drawSettingsButton();
+        // user IS logged in -> show game buttons and logout
+        drawStartRunButton(); // top left
+        drawLogOutButton(); // bottom left
+        drawSettingsButton(); // bottom right
     } else {
-        // user is logged out, it only shows login and settings
+        // user is NOT logged in -> only show login and settings
         drawLogInButton();
         drawSettingsButton();
     }
 }
 
-// NEW GAME button
-function drawPlayButton() {
+// ---- BUTTON DRAWING FUNCTIONS ----
+
+// START RUN BUTTON (was New Game)
+// starts a fresh run with the player's saved deck and accumulated mosquitoes
+function drawStartRunButton() {
 
     const buttonWidth = 200;
     const buttonHeight = 60;
@@ -112,40 +118,13 @@ function drawPlayButton() {
     ctx.font = "24px 'Pixelify Sans'";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.fillText("New Game", buttonX + buttonWidth / 2, buttonY + buttonHeight / 2);
+    ctx.fillText("Start Run", buttonX + buttonWidth / 2, buttonY + buttonHeight / 2);
 
 }
 
-// CONTINUE RUN button
-function drawContinueRunButton() {
+// removed CONTINUE RUN button
 
-    const buttonWidth = 200;
-    const buttonHeight = 60;
-
-    const buttonX = 490;
-    const buttonY = 350;
-
-    ctx.fillStyle = "#000000";
-    ctx.fillRect(buttonX + 4, buttonY + 4, buttonWidth, buttonHeight);
-
-    ctx.fillStyle = "#895654";
-    ctx.fillRect(buttonX, buttonY, buttonWidth, buttonHeight);
-
-    // border
-    ctx.lineWidth = 4;
-    ctx.strokeStyle = "#61393b";
-    ctx.strokeRect(buttonX, buttonY, buttonWidth, buttonHeight);
-
-    // text
-    ctx.fillStyle = "white";
-    ctx.font = "24px 'Pixelify Sans'";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText("Continue Run", buttonX + buttonWidth / 2, buttonY + buttonHeight / 2);
-
-}
-
-// LOG IN button
+// LOG IN button (shown when logged out)
 function drawLogInButton() {
     const buttonWidth = 200;
     const buttonHeight = 60;

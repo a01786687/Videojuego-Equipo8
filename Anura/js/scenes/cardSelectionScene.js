@@ -143,11 +143,13 @@ async function purchaseCard(card) {
             cost: card.cost, session_id: activeSessionId
         })
     });
+
     const verifyData = await res.json();
     console.log("Did procedure work...",verifyData);
 
     res = await fetch(`http://localhost:8080/updateAfterPurchase/${activeSessionId}`);
-    sessionMosquitos = await res.json();
+    const data = await res.json();
+    sessionMosquitos = data.mosquitoes; // extract mosquitoes property
 
     // add card to the correct deck slot 
     if (card.category === "Movement") {

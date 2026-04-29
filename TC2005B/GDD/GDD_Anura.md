@@ -455,77 +455,104 @@ _(example)_
 
 ### **Game Flow**
 
+**Main Menu**
+
+The title screen presents different options depending on the login status:
+
+**When Logged Out:**
+- **Log In:** Allows the user to login with their credentials so their data is saved in the database.
+-**Settings:** Adjust volume and brightness.
+
+**When Logged In:**
+- **Start Run:** Begins a fresh run attempt. The player's saved deck and accumulated mosquitoes are loaded from the database. Health, level, and position reset for each new run attempt.
+
+- **Log Out:** Logs out the current user and returns to the logged-out title screen.
+
+- **Settings:** Adjust game preferences.
+
+**Roguelite Structure**
+ 
+Anura follows a roguelite meta-progression system:
+-**Each run is one full attempt:** It starts at the beginning and ends when you win or die.
+-**Progress carries over:** Mosquito currency and unlocked cards are persistent across all runs. These are never lost.
+-**No mid-run saves:** The game does not support resuming from the middle of a run. You must finish or restart.
+
 **Run Flow**
-1. Title screen: has up to 4 buttons (New Game, Continue Run, Log In, Settings).
 
-    - **New Game:** resets all progress (`currentHealth`, `currentLevel`, `runMosquitos`, `deck`). This is the only option for first time players.
-    - **Continue Run:** resumes from the last saved level with the health the player had at the start of that level. `runMosquitos` and `deck` are preserved. Only available if the player has saved progress.
-    - **Log In:** allows the user to log in with credentials so their data is saved in the database.
-    - **Settings:** turn on/off sounds, brightness, reset progress. (MAY CHANGE)
+1. **First Run:** The player begins with an empty deck and 0 mosquitoes. During this run, the player collects mosquitoes and may encounter bosses. Death is expected and part of the learning process.
 
-2. First normal run: player has no cards and no mosquito currency, in this first run the player starts to obtain their first mosquitoes. Player may get to the first boss or die in the platform section.
+2. **Death:** Upon dying, the game saves the run data (mosquitoes collected, bosses defeated) and transitions to the Card Selection Screen. Mosquitoes collected during the run are added to the player's lifetime total.
+
+
+3. **Card Selection Screen (post-death only):**
+   - Three random cards appear on screen.
+   - The player may purchase **at most 1 card** using their accumulated mosquitoes, or skip the selection.
+   - Cards vary in cost depending on their power.
+   - After purchasing (or skipping), the player chooses to start a new run or return to the main menu.
+
+4. **Subsequent Runs:** Each new run starts fresh (full health, level 1, no active card effects), but the player keeps their purchased deck and accumulated mosquitoes. As runs progress, the deck grows stronger, enabling deeper progression.
+
+5. **Victory:** If the player defeats the final boss, a victory screen appears with a button to return to the menu. The run is marked as complete, mosquitoes are saved, and the deck persists.
+
+**The run structure is always the same:**
+- Platform Section 1
+- Boss 1
+- Platform Section 2
+- Boss 2 (Final)
+
+**Card Persistence**
+
+- **Cards persist across runs:** Purchased cards are saved to the database in `character_deck` and loaded at the start of each run.
+- **Cards are consumed on activation:** When a player activates a card (presses 1, 2, or 3), the active card is "burned" and replaced by a random card from that slot's reserve.
+- **Unburned cards survive death:** If a card is not activated during a run, it remains in the deck for the next run.
+- **Starting a run doesn't reset anything:** There is no "reset" on death. To fully reset progress (delete deck and mosquitoes), the player must create a new account.
+
+**Mosquito Currency**
  
-    The run follows this fixed structure:
-    - First platform section
-    - First boss
-    - Second platform section
-    - Second boss
+- **Mosquitoes are persistent:** Collected mosquitoes are saved to the database per run in `runs.mosquitoes_collected`. The total is summed across **all sessions** for the user via the `usersMosquitoes` database view, providing account-level persistence (not session-scoped).
+- **Never lost on death:** Dying adds the mosquitoes from that run to the lifetime total.
+- **Never lost on logout/page refresh:** Mosquitoes persist across login sessions. When the player logs in again, their total mosquitoes are loaded from the database via the `usersMosquitoes` view.
+- **Used for card purchases:** Mosquitoes are spent at the Card Selection Screen. The cost is deducted via the `boughtCard` stored procedure, which updates `runs.mosquitoes_collected` for the current run.
 
-2. If player dies at any point of the run a "you died" screen will appear. The player's mosquitoes are preserved.
+---
 
-3. Card Selection Screen (post-death only):
-    - Three random cards appear on screen. The player may purchase at most 1 card using their accumulated mosquitoes, or skip the selection. Cards vary in cost depending on their power. The player then chooses to start a new run or return to the main menu.
-
-4. New run: the same run structure is repeated but now the player may or may not have cards depending on their previous runs.
+### **Level Structure**
  
-    - First platform section 
-    - First boss 
-    - Second platform section 
-    - Second boss 
- 
-5. If player defeats the last boss, a victory screen will appear with a button to return to the menu.
-
-
-#### Level Structure
-
-The game uses environmental teaching instead of explicit tutorials
-
 Mechanics are introduced naturally:
-- Early mosquito placement encourages tongue usage
-- Small gaps teach jumping
-- Moving platforms teach timing
-- Boss teaches pattern recognition
+- Early mosquito placement encourages tongue usage.
+- Small gaps teach jumping.
+- Bosses teach pattern recognition.
 
+---
 
-#### Difficulty progression
-
-Boss 1
-- Simple attack pattern
-- Clear visual signal before excecuting the attack
-- Long recovery window
-
-Boss 2 (final)
-- Faster attacks
-- Shorter recovery window
-- Requires better positioning
-
-
-Platform sections between bosses gradually increase in:
-
-- Obstacle density
-- Precision requirements
-- Environmental hazards
-
-The difficulty escalates without introducing entirely new mechanics late in the run. Instead it demands mastery of the existing systems.
-
-#### Post-Death Screen
-After dying, the player is taken directly to the Card Selection Screen. This screen shows 3 randomly selected cards with their mosquito cost. The player may:
-- Purchase 1 card (if they have enough mosquitoes)
-- Skip the selection and keep their current deck unchanged
-- Start a new run
-- Return to the main menu
+### **Difficulty Progression**
  
-There is no persistent hub area. Mosquito currency is preserved across all runs regardless of death.
+**Boss 1**
+- Simple attack pattern.
+- Clear visual signal before executing the attack.
+- Long recovery window.
+**Boss 2 (Final)**
+- Faster attacks.
+- Shorter recovery window.
+- Requires better positioning.
+Platform sections between bosses gradually increase in:
+- Obstacle density.
+- Precision requirements.
+- Environmental hazards.
+The difficulty escalates without introducing entirely new mechanics late in the run. Instead, it demands mastery of the existing systems.
+ 
+---
+ 
+### **Post-Death Screen**
+ 
+After dying, the player is taken directly to the **Card Selection Screen**. This screen shows 3 randomly selected cards with their mosquito cost. The player may:
+- Purchase 1 card (if they have enough mosquitoes).
+- Skip the selection and keep their current deck unchanged.
+- Start a new run immediately.
+- Return to the main menu.
+
+There is no persistent hub area. Mosquito currency and the card deck persist across all runs regardless of death.
+
 
 ## _Development_
 

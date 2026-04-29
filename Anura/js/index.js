@@ -273,21 +273,20 @@ function handleClick(event) {
         return; // return so it doesnt trigger title buttons, back button logic
     }
 
+    // ---- TITLE SCENE CLICK HANDLERS ----
+
     // Handle clicks depending on the current scene
     if (currentScene == "title") {
         if (activeUser !== null && activeUser !== undefined) {
 
-            // user IS logged in, so we show the game buttons and logout
+            // user IS logged in -> show game buttons and logout
 
-            // NEW GAME button
+            // START RUN button (was New Game)
             if (mouseX >= 270 && mouseX <= 470 && mouseY >= 350 && mouseY <= 410) {
-                beginRun(); // if the player clicks on the button, beginRun() is called from playScene.js
+                beginRun(); //  starts a fresh run with saved deck and mosquitoes, if the player clicks on the button, beginRun() is called from playScene.js
             }
 
-            // CONTINUE RUN button
-            if (mouseX >= 490 && mouseX <= 690 && mouseY >= 350 && mouseY <= 410) {
-                continueRun(); // if the player clicks on the button, continueRun() is called from playScene.js
-            }
+            // removed CONTINUE RUN button
 
             // LOG OUT button its the same position as login button
             if (mouseX >= 270 && mouseX <= 470 && mouseY >= 420 && mouseY <= 480) {
@@ -295,9 +294,10 @@ function handleClick(event) {
                     logoutUser();
                 }
             }
+
         } else {
             
-            // user is NOT logged in, we only show login button
+            // user is NOT logged in -> only show login button
 
             // LOG IN button 
             if (mouseX >= 270 && mouseX <= 470 && mouseY >= 420 && mouseY <= 480) {
@@ -305,7 +305,7 @@ function handleClick(event) {
             }
         }
 
-        // SETTINGS button ALWAYS AVAILABLE
+        // SETTINGS button ALWAYS AVAILABLE 
         if (mouseX >= 490 && mouseX <= 690 && mouseY >= 420 && mouseY <= 480) {
             currentScene = "settings";
         }

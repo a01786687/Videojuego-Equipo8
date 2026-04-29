@@ -398,6 +398,30 @@ async function loadDeck() {
     }
 }
 
+
+// loadMosquitoes() get's the player's saved mosquito count from the API at the beginning of every run
+
+async function loadMosquitoes() {
+    // error handling if activeSessionId not found
+    if (!activeSessionId) {
+        console.warn("loadMosquitoes: no activeSessionId found, mosquitoes not loaded.")
+        sessionMosquitos = 0;
+        return;
+    }
+
+    try {
+        // call the api
+        const res = await fetch(`http://localhost:8080/updateAfterPurchase/${activeSessionId}`);
+        const data = await res.json();
+        sessionMosquitos = data.mosquitoes; // extract mosquitoes
+
+        console.log("Mosquitoes loaded from API:", sessionMosquitos);
+    } catch (err) {
+        console.error("loadMosquitoes failed:", err);
+        sessionMosquitos = 0; 
+    }
+}
+
 // --- BEGIN AND CONTINUE RUN ---
 
 async function beginRun() {
@@ -425,6 +449,8 @@ async function beginRun() {
 
         // load the player's saved deck from the api
         await loadDeck();
+
+        await loadMosquitoes();
 
     } // resetting the timer for every new run
 
