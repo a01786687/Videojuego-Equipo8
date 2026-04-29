@@ -178,18 +178,23 @@ function drawPlayScene(deltaTime) {
         }
 
         // Exit door — drawn inside ctx.translate so it moves with the world
+        // Exit door — drawn inside ctx.translate so it moves with the world
         if (exitDoor) {
-            ctx.fillStyle = "#00cc44";
-            ctx.fillRect(
-                exitDoor.position.x - exitDoor.halfSize.x,
-                exitDoor.position.y - exitDoor.halfSize.y,
-                exitDoor.halfSize.x * 2,
-                exitDoor.halfSize.y * 2
+            const size = 96;
+            
+            // Dibujar la imagen de la cueva
+            ctx.drawImage(
+                caveEntranceImg,
+                exitDoor.position.x - size / 2,
+                exitDoor.position.y - (size / 2) - 27,
+                size,
+                size
             );
+            
             ctx.fillStyle = "#ffffff";
             ctx.font = "10px Pixelify Sans";
             ctx.textAlign = "center";
-            ctx.fillText(">", exitDoor.position.x, exitDoor.position.y + 4);
+            ctx.fillText("EXIT", exitDoor.position.x, exitDoor.position.y + 4);
         }
 
         // draw player and restore camera transform

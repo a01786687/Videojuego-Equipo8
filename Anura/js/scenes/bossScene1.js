@@ -45,7 +45,10 @@ async function initBossLevel() {
             const posY = y * TILE_SIZE + yOffset;
 
             if (char === "#") {
-                platforms.push(new Platform(posX + TILE_SIZE / 2, posY + TILE_SIZE / 2, TILE_SIZE, TILE_SIZE));
+                let platform = new Platform(posX + TILE_SIZE / 2, posY + TILE_SIZE / 2, TILE_SIZE, TILE_SIZE);
+                platform.setSprite("../Anura/assets/tileset/Tile_61.png");
+                platforms.push(platform);
+
 
             } else if (char === "@") {
                 if (!frog) {
@@ -113,8 +116,8 @@ function drawBossScene1(deltaTime) {
             if (typeof plat.draw === "function") {
                 plat.draw(ctx);
             } else {
-                ctx.drawImage(
-                    Tile_61,
+                ctx.fillStyle = "#4b3621";
+                ctx.fillRect(
                     plat.position.x - plat.halfSize.x,
                     plat.position.y - plat.halfSize.y,
                     plat.size.x,
@@ -184,7 +187,9 @@ function drawBossScene1(deltaTime) {
 
         // Draw exit door and handle level 2 transition
         if (bossExitDoor) {
-            const size = 96
+            const size = 96;
+
+            // draw exit door image
             ctx.drawImage(
                 caveExitImg,
                 bossExitDoor.position.x - size / 2,
@@ -192,6 +197,7 @@ function drawBossScene1(deltaTime) {
                 size,
                 size
             );
+
             ctx.fillStyle = "#ffffff";
             ctx.font = "10px Pixelify Sans";
             ctx.textAlign = "center";

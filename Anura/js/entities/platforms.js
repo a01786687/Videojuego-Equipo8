@@ -4,25 +4,14 @@
  */
 "use strict";
 
-const TILE_SIZE = 32; // size of the tiles for level design
+const TILE_SIZE = 30; // size of the tiles for level design
 let platforms = []; // Array to hold platform objects, to be implemented in the future for jumping and level design
 
 // --- PLATFORM CLASS  ---
 
 class Platform extends GameObject {
     constructor(x, y, width, height) {
-        super(new Vector(x, y), width, height, "#4b3621", "platform");
+        super(new Vector(x, y), width, height, "#959595", "platform");
         this.spriteRect = new Rect(0, 0, width, height);
     }
-
-    draw(ctx) {
-        ctx.drawImage(
-            Tile_61,
-            this.position.x - this.halfSize.x,
-            this.position.y - this.halfSize.y,
-            this.size.x,
-            this.size.y
-        );
-    }
-}   
-
+}
