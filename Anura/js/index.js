@@ -183,6 +183,12 @@ function draw(newTime) { // draws the actual scene
             drawBossScene1(deltaTime);
             break; 
 
+    // bossScene2.js — eagle boss (final boss)
+        case "eagle_boss":
+            drawBossScene2(deltaTime);
+            break;
+
+
     // cardSelectionScene.js
         case "cardSelection":
             drawCardSelectionScene();
@@ -354,7 +360,6 @@ function updateSettingsForm() {
 }
 
 window.addEventListener("load", main); // initialize the app when the page finishes loading
-
 
 
 

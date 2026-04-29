@@ -120,8 +120,20 @@ function drawPlayScene(deltaTime) {
         if (caveEntrance && frog && boxOverlap(frog, caveEntrance) && currentScene === "play") {
             caveEntrance    = null;
             lastActiveScene = "boss";
+            currentScene    = "loading_boss";
             initBossLevel().then(() => {
                 currentScene = "boss";
+            });
+            return;
+        }
+
+        // Exit door — end of level 2, leads to the eagle boss arena
+        if (exitDoor && frog && boxOverlap(frog, exitDoor) && currentScene === "play") {
+            exitDoor        = null;
+            lastActiveScene = "eagle_boss";
+            currentScene    = "loading_boss";
+            initEagleBossLevel().then(() => {
+                currentScene = "eagle_boss";
             });
             return;
         }
@@ -163,6 +175,21 @@ function drawPlayScene(deltaTime) {
                 caveEntranceImg.width,
                 caveEntranceImg.height
             );
+        }
+
+        // Exit door — drawn inside ctx.translate so it moves with the world
+        if (exitDoor) {
+            ctx.fillStyle = "#00cc44";
+            ctx.fillRect(
+                exitDoor.position.x - exitDoor.halfSize.x,
+                exitDoor.position.y - exitDoor.halfSize.y,
+                exitDoor.halfSize.x * 2,
+                exitDoor.halfSize.y * 2
+            );
+            ctx.fillStyle = "#ffffff";
+            ctx.font = "10px Pixelify Sans";
+            ctx.textAlign = "center";
+            ctx.fillText(">", exitDoor.position.x, exitDoor.position.y + 4);
         }
 
         // draw player and restore camera transform

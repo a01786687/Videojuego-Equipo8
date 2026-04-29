@@ -385,19 +385,5 @@ class Frog extends AnimatedPlayer {
         };
     }
 
-    /**
-     * Applies a modifier from a drawn card (loaded from Database)
-     */
-    /*applyCardEffect(cardData) {
-
-        if (cardData.modifies === "tongue_element") {
-            this.tongueElement = cardData.value; // e.g., "fire"
-            this.tongueDamage += cardData.damageBonus || 0;
-        }
-
-        if (cardData.modifies === "speed") {
-            this.speed += cardData.value;
-        }
-
-    }*/
+    
 }

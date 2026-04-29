@@ -60,7 +60,8 @@ async function initBossLevel() {
                 }
 
                 // Pre-sync camera to avoid a jump on the first frame
-                cameraX           = Math.max(0, frog.position.x - canvasWidth / 2);
+                cameraX           = frog.position.x - canvasWidth / 2;
+                if (cameraX < 0) cameraX = 0;
                 bossTargetCameraX = cameraX;
 
             } else if (char === "S") {
