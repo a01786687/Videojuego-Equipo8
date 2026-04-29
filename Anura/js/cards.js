@@ -66,6 +66,14 @@ const FROG_BASE_VALUES = {
     canGlide: false, // glide locked by default
     canDash: false, // dash locked by default
     jumpForce: -15, // must match frog.js constructor exactly
+
+    tongueElement:   "normal", // "normal" | "fire" | "poison"
+    fireKiss:        false,    // Fire Kiss — activates burn DoT on tongue hit (no splash)
+    poisonDuration:  0,        // Venom Lash — how long poison lasts in ms (0 = off)
+    poisonDamage:    0,        // Venom Lash — damage per poison tick
+    thunderChance:   0,        // Thunder Tongue — 0.0-1.0 chance to stun on hit (0 = off)
+    canChameleon:    false,    // Chameleon Veil — turns invisible after attacking
+    canShockwave:    false,
 };
 
 
@@ -133,6 +141,14 @@ function createCardFromDatabase(dbCard) {
                 frog.isDashing = false;
                 frog.dashTimer = 0;
             }
+
+            
+            // reset Venom Lash side effects
+            if (param === "poisonDuration") frog.poisonDamage = 0;
+ 
+            // reset Fire Kiss
+            if (param === "fireKiss") frog.tongueElement = "normal";
+            
         }
     }
 }
@@ -172,7 +188,7 @@ let deck = {
     slot3_Utility: []  
 };
 
-// loadDeck() will replace this when the API is connected
-deck.slot1_Movement = [...cardPool];
+
+
 
 
