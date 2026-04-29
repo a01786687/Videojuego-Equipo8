@@ -9,23 +9,24 @@
 
 // Defined outside the class so it's available immediately when the file loads
 const BOSS_STATE = {
-    IDLE:    "idle",  
-    CHASE:   "chase",  
+    IDLE:    "idle",   
+    CHASE:   "chase",   
     DASH:    "dash",   
-    RETREAT: "retreat",
-    ENRAGED: "enraged",
-    STUNNED: "stunned"
+    RETREAT: "retreat", 
+    ENRAGED: "enraged", //paint snake red
+    STUNNED: "stunned", 
+    PATROL: "patrol"
 };
 
 const bossMotion = {
-    patrol: {
+    idle: {
         status: false,
         axis: "x",
         sign: 1,
         repeat: true,
         duration: 100,
-        moveFrames: [14, 20],
-        moveFrames2: [21, 27],
+        moveFrames: [4, 7],
+        moveFrames2: [8, 11],
     },
     chase: {
         status: false,
@@ -33,8 +34,35 @@ const bossMotion = {
         sign: 1,
         repeat: true,
         duration: 100,
-        moveFrames: [28, 34],
-        moveFrames2: [35, 41],
+        moveFrames: [12, 13],
+        moveFrames2: [14, 15],
+    },
+    dash: {
+        status: false,
+        axis: "x",
+        sign: 1,
+        repeat: true,
+        duration: 100,
+        moveFrames: [16,17],
+        moveFrames2: [18, 19],
+    },
+    retreat: {
+        status: false,
+        axis: "x",
+        sign: 1,
+        repeat: true,
+        duration: 100,
+        moveFrames: [4, 7],
+        moveFrames2: [8, 11],
+    },
+    enraged: {
+        status: false,
+        axis: "x",
+        sign: 1,
+        repeat: true,
+        duration: 100,
+        moveFrames: [20,21],
+        moveFrames2: [22, 23],
     },
     stunned: {
         status: false,
@@ -42,14 +70,23 @@ const bossMotion = {
         sign: 1,
         repeat: true,
         duration: 100,
-        moveFrames: [0,6],
-        moveFrames2: [7, 13],
+        moveFrames: [24,27],
+        moveFrames2: [0, 3],
+    },
+    patrol: {
+        status: false,
+        axis: "x",
+        sign: 1,
+        repeat: true,
+        duration: 100,
+        moveFrames: [4, 7],
+        moveFrames2: [8, 11],
     },
 };
 
 class SnakeBoss extends Enemy {
-    constructor(x, y, width, height, color, mob_name, speed, range, hp, dmg, motion,statesObj) {
-        super(x, y, width, height, color, mob_name, speed, range, hp, dmg, motion,statesObj);
+    constructor(x, y, width, height, color, mob_name, sheetCols, range, hp, dmg, motion,statesObj, speed) {
+        super(x, y, width, height, color, mob_name, sheetCols, range, hp, dmg, motion,statesObj);
 
 
         this.state = this.statesObj.IDLE;
@@ -67,7 +104,7 @@ class SnakeBoss extends Enemy {
         this.idleTimer = 800;
 
         // --- CHASE ---
-        this.chaseSpeed = speed;
+        this.chaseSpeed = speed; 
 
         // --- DASH ---
         this.dashSpeed        = 10;
@@ -79,13 +116,13 @@ class SnakeBoss extends Enemy {
         this.hitDealtThisDash = false;
 
         // --- RETREAT ---
-        this.retreatSpeed      = speed * 0.7;
+        this.retreatSpeed      = this.chaseSpeed * 0.7;
         this.retreatDuration   = 600;
         this.retreatTimer      = 0;
         this.retreatDirectionX = 0;
 
         // --- ENRAGED ---
-        this.enragedSpeed     = speed * 1.5;
+        this.enragedSpeed     = this.chaseSpeed * 1.5;
         this.enragedDashSpeed = 14;
         this.enragedCooldown  = 1100;
 
@@ -94,12 +131,22 @@ class SnakeBoss extends Enemy {
     update(target, deltaTime) {
 
         // --- STUN ---
-        if (this.state === ENEMY_STATE.STUNNED) {
+        if (this.state === this.statesObj.STUNNED) {
             this.stunTimer -= deltaTime;
             if (this.stunTimer <= 0) {
-                this.state     = ENEMY_STATE.PATROL;
-                this.state = this.statesObj.IDLE;
-                this.idleTimer = 600;
+                // this.state     = ENEMY_STATE.PATROL;
+                if(this.state != this.statesObj.IDLE){
+                    this.state = this.statesObj.IDLE;
+                    this.dirData = this.motion[this.state];
+                    if(this.direction == 1){
+                        this.setAnimation(this.dirData.moveFrames[0],this.dirData.moveFrames[1], this.dirData.repeat, this.dirData.duration);
+                    }
+                    else{
+                        this.setAnimation(this.dirData.moveFrames2[0],this.dirData.moveFrames2[1], this.dirData.repeat, this.dirData.duration);
+                    }
+                    this.idleTimer = 600;
+                }
+                
             }
             this.applyGravity(deltaTime);
             this.updateFrame(deltaTime);
@@ -110,7 +157,16 @@ class SnakeBoss extends Enemy {
         // --- PHASE TRANSITION ---
         if (!this.isEnraged && this.health <= this.maxHealth * 0.25) {
             this.isEnraged       = true;
-            this.state       = this.statesObj.ENRAGED;
+            if(this.state != this.statesObj.ENRAGED){
+                this.state  = this.statesObj.ENRAGED;
+                this.dirData = this.motion[this.state];
+                if(this.direction == 1){
+                    this.setAnimation(this.dirData.moveFrames[0],this.dirData.moveFrames[1], this.dirData.repeat, this.dirData.duration);
+                }
+                else{
+                    this.setAnimation(this.dirData.moveFrames2[0],this.dirData.moveFrames2[1], this.dirData.repeat, this.dirData.duration);
+                }
+            }
             this.chaseSpeed      = this.enragedSpeed;
             this.dashSpeed       = this.enragedDashSpeed;
             this.dashCooldown    = this.enragedCooldown;
@@ -126,7 +182,18 @@ class SnakeBoss extends Enemy {
         if (this.state === this.statesObj.IDLE) {
             this.idleTimer -= deltaTime;
             if (distance < this.aggroRadius || this.idleTimer <= 0) {
-                this.state = this.statesObj.CHASE;
+                if(this.state != this.statesObj.CHASE){
+                    this.state = this.statesObj.CHASE;
+                    this.dirData = this.motion[this.state];
+                    if(this.direction == 1){
+                        this.setAnimation(this.dirData.moveFrames[0],this.dirData.moveFrames[1], this.dirData.repeat, this.dirData.duration);
+                    }
+                    else{
+                        this.setAnimation(this.dirData.moveFrames2[0],this.dirData.moveFrames2[1], this.dirData.repeat, this.dirData.duration);
+                    }
+                    
+                }
+                    
             }
 
         } else if (this.state === this.statesObj.CHASE || this.state === this.statesObj.ENRAGED) {
@@ -142,8 +209,18 @@ class SnakeBoss extends Enemy {
 
             // Go idle if frog walks away (non-enraged only)
             if (!this.isEnraged && distance > this.aggroRadius) {
-                this.state = this.statesObj.IDLE;
-                this.idleTimer = 1000;
+                if(this.state != this.statesObj.IDLE){
+                    this.state = this.statesObj.IDLE;
+                    this.dirData = this.motion[this.state];
+                    if(this.direction == 1){
+                        this.setAnimation(this.dirData.moveFrames[0],this.dirData.moveFrames[1], this.dirData.repeat, this.dirData.duration);
+                    }
+                    else{
+                        this.setAnimation(this.dirData.moveFrames2[0],this.dirData.moveFrames2[1], this.dirData.repeat, this.dirData.duration);
+                    }
+                    this.idleTimer = 1000;
+                }
+                    
             }
 
         } else if (this.state === this.statesObj.DASH) {
@@ -165,7 +242,30 @@ class SnakeBoss extends Enemy {
             this.position.x += this.retreatDirectionX * this.retreatSpeed * (deltaTime / 16);
 
             if (this.retreatTimer <= 0) {
-                this.state = this.isEnraged ? this.statesObj.ENRAGED : this.statesObj.CHASE;
+                if (this.isEnraged) {
+                    if(this.state != this.statesObj.ENRAGED){
+                        this.state = this.statesObj.ENRAGED;
+                        this.dirData = this.motion[this.state];
+                        if(this.direction == 1){
+                            this.setAnimation(this.dirData.moveFrames[0],this.dirData.moveFrames[1], this.dirData.repeat, this.dirData.duration);
+                        }
+                        else{
+                            this.setAnimation(this.dirData.moveFrames2[0],this.dirData.moveFrames2[1], this.dirData.repeat, this.dirData.duration);
+                        }
+                    } 
+                } 
+                else {
+                    if(this.state != this.statesObj.CHASE){
+                        this.state = this.statesObj.CHASE;
+                        this.dirData = this.motion[this.state];
+                        if(this.direction == 1){
+                            this.setAnimation(this.dirData.moveFrames[0],this.dirData.moveFrames[1], this.dirData.repeat, this.dirData.duration);
+                        }
+                        else{
+                            this.setAnimation(this.dirData.moveFrames2[0],this.dirData.moveFrames2[1], this.dirData.repeat, this.dirData.duration);
+                        }
+                    }     
+                }
             }
         }
 
@@ -176,17 +276,36 @@ class SnakeBoss extends Enemy {
     }
 
     startDash(dx) {
-        this.state        = this.statesObj.DASH;
-        this.dashTimer        = this.dashDuration;
-        this.lastDashTime     = Date.now();
-        this.dashDirectionX   = dx > 0 ? 1 : -1;
-        this.hitDealtThisDash = false;
+        if(this.state != this.statesObj.DASH){
+            this.state = this.statesObj.DASH;
+            this.dirData = this.motion[this.state];
+            if(this.direction == 1){
+                this.setAnimation(this.dirData.moveFrames[0],this.dirData.moveFrames[1], this.dirData.repeat, this.dirData.duration);
+            }
+            else{
+                this.setAnimation(this.dirData.moveFrames2[0],this.dirData.moveFrames2[1], this.dirData.repeat, this.dirData.duration);
+            }
+            this.dashTimer        = this.dashDuration;
+            this.lastDashTime     = Date.now();
+            this.dashDirectionX   = dx > 0 ? 1 : -1;
+            this.hitDealtThisDash = false;
+        }
     }
 
     startRetreat(dx) {
-        this.state         = this.statesObj.RETREAT;
-        this.retreatTimer      = this.retreatDuration;
-        this.retreatDirectionX = dx > 0 ? -1 : 1;
+        if(this.state != this.statesObj.RETREAT){
+            this.state         = this.statesObj.RETREAT;
+            this.dirData = this.motion[this.state];
+            if(this.direction == 1){
+                this.setAnimation(this.dirData.moveFrames[0],this.dirData.moveFrames[1], this.dirData.repeat, this.dirData.duration);
+            }
+            else{
+                this.setAnimation(this.dirData.moveFrames2[0],this.dirData.moveFrames2[1], this.dirData.repeat, this.dirData.duration);
+            }
+            this.retreatTimer      = this.retreatDuration;
+            this.retreatDirectionX = dx > 0 ? -1 : 1;
+        }
+            
     }
 
     applyGravity(deltaTime) {
