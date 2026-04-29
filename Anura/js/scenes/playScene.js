@@ -457,8 +457,8 @@ async function beginRun() {
     activeRunId = await getActiveRunID(activeSessionId);
     await createLevel(); // generates a new level layout with platforms and enemies
     
-    currentHealth = 200;
-    maxHealth = 200;
+    currentHealth = 100;
+    maxHealth = 100;
     runMosquitos = 0;
     currentLevel = 1;
     // deck = [];
