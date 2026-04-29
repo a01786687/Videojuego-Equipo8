@@ -87,23 +87,19 @@ class SnakeBoss extends Enemy {
         this.dashCooldown     = 2200; // ms between dashes
         this.dashTimer        = 0;
         this.lastDashTime     = 0;
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
+
         this.dashDirectionX   = -1;
         this.hitDealtThisDash = false;
-=======
-        this.dashDirectionX   = 0;    // -1 or 1, locked when dash starts
-        this.hitDealtThisDash = false; // prevents hitting the frog more than once per dash
->>>>>>> main
-=======
-        this.dashDirectionX   = 0;    // -1 or 1, locked when dash starts
-        this.hitDealtThisDash = false; // prevents hitting the frog more than once per dash
->>>>>>> main
-=======
-        this.dashDirectionX   = 0;    // -1 or 1, locked when dash starts
-        this.hitDealtThisDash = false; // prevents hitting the frog more than once per dash
->>>>>>> main
+
+        // this.dashDirectionX   = 0;    // -1 or 1, locked when dash starts
+        // this.hitDealtThisDash = false; // prevents hitting the frog more than once per dash
+
+        // this.dashDirectionX   = 0;    // -1 or 1, locked when dash starts
+        // this.hitDealtThisDash = false; // prevents hitting the frog more than once per dash
+
+        // this.dashDirectionX   = 0;    // -1 or 1, locked when dash starts
+        // this.hitDealtThisDash = false; // prevents hitting the frog more than once per dash
+
 
         // --- RETREAT ---
         // After a dash the boss briefly retreats in the opposite direction
@@ -278,23 +274,19 @@ class SnakeBoss extends Enemy {
             }
             this.dashTimer        = this.dashDuration;
             this.lastDashTime     = Date.now();
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
+
             this.direction   = dx > 0 ? 1 : -1;
             this.hitDealtThisDash = false;
-=======
-            this.dashDirectionX   = dx > 0 ? 1 : -1; // lock direction toward frog
-            this.hitDealtThisDash = false;             // reset so this dash can deal damage
->>>>>>> main
-=======
-            this.dashDirectionX   = dx > 0 ? 1 : -1; // lock direction toward frog
-            this.hitDealtThisDash = false;             // reset so this dash can deal damage
->>>>>>> main
-=======
-            this.dashDirectionX   = dx > 0 ? 1 : -1; // lock direction toward frog
-            this.hitDealtThisDash = false;             // reset so this dash can deal damage
->>>>>>> main
+
+            // this.dashDirectionX   = dx > 0 ? 1 : -1; // lock direction toward frog
+            // this.hitDealtThisDash = false;             // reset so this dash can deal damage
+
+            // this.dashDirectionX   = dx > 0 ? 1 : -1; // lock direction toward frog
+            // this.hitDealtThisDash = false;             // reset so this dash can deal damage
+
+            // this.dashDirectionX   = dx > 0 ? 1 : -1; // lock direction toward frog
+            // this.hitDealtThisDash = false;             // reset so this dash can deal damage
+
         }
     }
 
@@ -424,4 +416,5 @@ class SnakeBoss extends Enemy {
         super.die();
         // Additional death logic like particles or sound effects can go here
     }
+
 }
