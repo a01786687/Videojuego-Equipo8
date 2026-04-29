@@ -265,8 +265,9 @@ window.addEventListener("keyup", handleKeyUp);
 window.addEventListener('keydown', (event) => {
     keys[event.key] = true; // if a key is pressed -> sets to true
     
-    // toggle pause (esc)
-    if (event.key === 'Escape') {
+    // toggle pause (esc) 
+    if (event.key === 'Escape' && (currentScene === "play" || currentScene === "boss" || currentScene === "eagle_boss") // only allow pausing if the player is actually in gameplay (suggested by AI since we were having bugs for the pause menu)
+    ) {
         pressPause();
     }
 
@@ -466,8 +467,8 @@ async function beginRun() {
     activeRunId = await getActiveRunID(activeSessionId);
     await createLevel(); // generates a new level layout with platforms and enemies
     
-    currentHealth = 200;
-    maxHealth = 200;
+    currentHealth = 100;
+    maxHealth = 100;
     runMosquitos = 0;
     currentLevel = 1;
     // deck = [];

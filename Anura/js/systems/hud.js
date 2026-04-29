@@ -150,8 +150,55 @@ function drawGameOver() {
     ctx.fillText("Card Selection Screen in 3 seconds... ", canvasWidth / 2, canvasHeight / 2 + 70);
 }
 
+// --- VICTORY SCREEN ---
 function drawVictory() {
 
+    // background
+    //ctx.fillStyle = "rgba(0, 0, 0, 0.85)";
+    ctx.drawImage(cardSelectionSceneBg, 0, 0, canvasWidth, canvasHeight);
+
+    // title
+    ctx.fillStyle = "#8cff9b";
+    ctx.font = "72px Pixelify Sans";
+    ctx.textAlign = "center";
+    ctx.fillText("SWAMP CLEARED!", canvasWidth / 2, 150);
+
+    // message
+    ctx.fillStyle = "white";
+    ctx.font = "24px Pixelify Sans";
+    ctx.fillText("You've conquered the food chain!", canvasWidth / 2, 250);
+    ctx.fillText("All predators defeated.", canvasWidth / 2, 285);
+
+    // run stats
+    ctx.font = "18px Pixelify Sans";
+    ctx.fillStyle = "#FFD700"; 
+    ctx.fillText("🦟 Mosquitoes this run: " + runMosquitos, canvasWidth / 2, 340);
+
+    // back to title button
+    const buttonWidth = 200;
+    const buttonHeight = 60;
+    const buttonX = (canvasWidth - buttonWidth) / 2;
+    const buttonY = 400;
+
+    // shadow
+    ctx.fillStyle = "#000000";
+    ctx.fillRect(buttonX + 4, buttonY + 4, buttonWidth, buttonHeight);
+
+    // bg
+    ctx.fillStyle = "#895654";
+    ctx.fillRect(buttonX, buttonY, buttonWidth, buttonHeight);
+
+    // border
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = "#61393b";
+    ctx.strokeRect(buttonX, buttonY, buttonWidth, buttonHeight);
+
+    // text
+    ctx.fillStyle = "white";
+    ctx.font = "24px Pixelify Sans";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("Back to Title", buttonX + buttonWidth / 2, buttonY + buttonHeight / 2);
 }
 
 function drawPauseMenu() {

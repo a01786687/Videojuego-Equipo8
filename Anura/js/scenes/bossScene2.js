@@ -88,7 +88,7 @@ function drawBossScene2(deltaTime) {
 
     if (!deltaTime || isNaN(deltaTime) || deltaTime > 50) deltaTime = 16.6;
 
-    if (pause) return;
+    //if (pause) return;
 
     // Clear canvas first — prevents black screen if background image hasn't loaded yet
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
@@ -101,7 +101,13 @@ function drawBossScene2(deltaTime) {
         ctx.fillRect(0, 0, canvasWidth, canvasHeight);
     }
 
-    if (!isGameOver && frog) {
+    // if VICTORY
+    if (isVictory) {
+        drawVictory();
+        return;  // stop drawing the game
+    }
+
+    if (!isGameOver && !pause && frog) {
 
         // --- CAMERA LERP ---
         eagleTargetCameraX = frog.position.x - canvasWidth / 2;
@@ -175,9 +181,7 @@ function drawBossScene2(deltaTime) {
             // Eagle defeated — show victory screen
             if (eagleBoss.health <= 0) {
                 eagleBoss = null;
-                ctx.restore();
-                drawVictory();
-                return;
+                isVictory = true; // activate state
             } else {
                 eagleBoss.draw(ctx);
             }
@@ -200,5 +204,10 @@ function drawBossScene2(deltaTime) {
         drawGameOver();
     }
 
-    backButton();
+    // pause menu
+    if (pause && !isGameOver) {
+        drawPauseMenu();
+    }
+
+    // backButton();
 }
