@@ -222,5 +222,5 @@ function drawBossScene1(deltaTime) {
         drawGameOver();
     }
 
-    backButton();
+    // backButton();
 }

@@ -160,10 +160,23 @@ function createCardFromDatabase(dbCard) {
 function clearAllMovementEffects() {
 
     // first try to use the last burned card's own reset function
+
+    // reset all burned cards
+
     if (lastBurnedSlot1 && lastBurnedSlot1.reset) {
         lastBurnedSlot1.reset();
     }
     lastBurnedSlot1 = null;
+
+    if (lastBurnedSlot2 && lastBurnedSlot2.reset) {
+        lastBurnedSlot2.reset();
+    }
+    lastBurnedSlot2 = null;
+
+    if (lastBurnedSlot3 && lastBurnedSlot3.reset) {
+        lastBurnedSlot3.reset();
+    }
+    lastBurnedSlot3 = null;
 
     // for safety issues, manually restore every frog property to its base value, handling cases like player dying before burning a card
     if (frog) {

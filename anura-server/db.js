@@ -33,7 +33,7 @@ We use a connection pool instead of a single connection.
 const pool = mysql.createPool({
     host: '127.0.0.1', // localhost
     user: 'root',
-    password: '#Clifjumper4406',
+    password: '',
     database: 'anura'
 }).promise() // promise -> enables async/await
 
@@ -197,6 +197,32 @@ export async function getTotalMosquitoesBySession(session_id) {
         return rows[0] ?? null; // returns { session_user_id, username, mosquitoes_total }
 }
 
+// getTotalMosquitoesByUser(session_id) -> gets the total mosquitoes for the USER who owns this session
+// sums mosquitoes across ALL sessions for that user (account-level persistence)
+export async function getTotalMosquitoesByUser(session_id) {
+    // First, get the user_id from the session
+    const [sessionRows] = await pool.query(
+        "SELECT session_user_id FROM sessions WHERE session_id = ?",
+        [session_id]
+    );
+    
+    if (!sessionRows.length) {
+        console.log("No session found for session_id:", session_id);
+        return null;
+    }
+    
+    const user_id = sessionRows[0].session_user_id;
+    
+    // get the TOTAL mosquitoes across ALL sessions for this user
+    const [rows] = await pool.query(
+        "SELECT * FROM usersMosquitoes WHERE user_id = ?",
+        [user_id]
+    );
+
+    console.log("Total mosquitoes for user", user_id, ":", rows[0]);
+    return rows[0] ?? null; // returns { user_id, username, mosquitoes_total }
+}
+
 // updateDeck(session_id, cardIds) -> replaces the player's saved deck in character_deck
 // cards already come with their IDs from the database via GET /cards/all
 // get user_id from session_id -> get user_character_id from user_character -> delete old deck -> insert new deck
@@ -247,7 +273,7 @@ export async function getTotalRunsPerUser() {
     return rows;
 }
 
-// getTotalMosquitoesPerUser() returns the total mosquitoes collected by each user across all runs
+// getTotalMosquitoesPerUser() returns the total mosquitoes collected by each user across all runs USED FOR STATS
 export async function getTotalMosquitoesPerUser() {
     const [rows] = await pool.query(`
         SELECT 

@@ -40,6 +40,9 @@ let lastActiveScene = "play";
 let swampSurfaceBg = new Image();
 swampSurfaceBg.src = "../Anura/assets/swamp_surface/swamp_surface_background.png";
 
+let denseSwampBg = new Image();
+denseSwampBg.src = "../Anura/assets/dense_swamp/dense_swamp_background.png";
+
 // --- INPUT HANDLERS ---
 
 function handleKeyUp(event) {
@@ -89,13 +92,20 @@ async function gameOver() {
 // --- PLAY SCENE RENDERING ---
 
 function drawPlayScene(deltaTime) {
-    if (pause) return; // when pause is true, it exits the drawPlayScene(), nothing gets drawn, when pause is false, it continues drawing normally
+    // draw the game whether it's paused or not, but only update if it's not paused
+
+    // if (pause) return; // when pause is true, it exits the drawPlayScene(), nothing gets drawn, when pause is false, it continues drawing normally
 
     // clear previous frame and draw background
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-    ctx.drawImage(swampSurfaceBg, 0, 0, canvasWidth, canvasHeight);
+    if (currentLevel === 1) {
+        ctx.drawImage(swampSurfaceBg, 0, 0, canvasWidth, canvasHeight);
+    } else {
+        ctx.drawImage(denseSwampBg, 0, 0, canvasWidth, canvasHeight);
+    }
+    
 
-    if (!isGameOver) {
+    if (!isGameOver && !pause) {
         if (frog) {
             // World left bound = 0 (left edge of the level), right = Infinity (no hard right wall in play)
             frog.update(deltaTime, keys, platforms, canvasHeight, cameraX, 0, Infinity);
@@ -124,7 +134,7 @@ function drawPlayScene(deltaTime) {
         
         // Update and Draw all enemies
         enemies.forEach(enemy => {
-            enemy.update(frog, deltaTime);
+            if (!pause) enemy.update(frog, deltaTime); // only update enemies if the game is not
             enemy.draw(ctx);
         });
 
@@ -159,7 +169,7 @@ function drawPlayScene(deltaTime) {
         ctx.restore();
 
         damageNumbers.forEach(dn => {
-            dn.update();
+            if (!pause) dn.update(); // only update if not paused
             dn.draw(ctx);
         });
 
@@ -172,17 +182,18 @@ function drawPlayScene(deltaTime) {
         drawCardHUD(deck);
 
         // flash effect timer for cards
+        if (!pause) {
+            if (slot1FlashTimer > 0) {
+                slot1FlashTimer -= deltaTime;
+            }
 
-        if (slot1FlashTimer > 0) {
-            slot1FlashTimer -= deltaTime;
-        }
+            if (slot2FlashTimer > 0) {
+                slot2FlashTimer -= deltaTime;
+            }
 
-        if (slot2FlashTimer > 0) {
-            slot2FlashTimer -= deltaTime;
-        }
-
-        if (slot3FlashTimer > 0) {
-            slot3FlashTimer -= deltaTime;
+            if (slot3FlashTimer > 0) {
+                slot3FlashTimer -= deltaTime;
+            }
         }
         
     }
@@ -192,7 +203,12 @@ function drawPlayScene(deltaTime) {
         drawGameOver();
     }
 
-    backButton();
+    // pause menu 
+    if (pause && !isGameOver) {
+        drawPauseMenu();
+    }
+
+    // backButton();
 };
 
 // --- PAUSE CONTROL ---
@@ -250,6 +266,7 @@ window.addEventListener('keydown', (event) => {
     // requires cooldown to be ready, and is disabled while pausing
     if (event.key === 'i' && !event.repeat && frog.attackCooldown <= 0 && !pause) {
         frog.isAttacking = true;
+        playTongueAttackSound();
         frog.attackTimer = frog.attackDuration;
         frog.attackCooldown = frog.cooldownDuration;
     }
@@ -381,6 +398,30 @@ async function loadDeck() {
     }
 }
 
+
+// loadMosquitoes() get's the player's saved mosquito count from the API at the beginning of every run
+
+async function loadMosquitoes() {
+    // error handling if activeSessionId not found
+    if (!activeSessionId) {
+        console.warn("loadMosquitoes: no activeSessionId found, mosquitoes not loaded.")
+        sessionMosquitos = 0;
+        return;
+    }
+
+    try {
+        // call the api
+        const res = await fetch(`http://localhost:8080/updateAfterPurchase/${activeSessionId}`);
+        const data = await res.json();
+        sessionMosquitos = data.mosquitoes; // extract mosquitoes
+
+        console.log("Mosquitoes loaded from API:", sessionMosquitos);
+    } catch (err) {
+        console.error("loadMosquitoes failed:", err);
+        sessionMosquitos = 0; 
+    }
+}
+
 // --- BEGIN AND CONTINUE RUN ---
 
 async function beginRun() {
@@ -408,6 +449,8 @@ async function beginRun() {
 
         // load the player's saved deck from the api
         await loadDeck();
+
+        await loadMosquitoes();
 
     } // resetting the timer for every new run
 

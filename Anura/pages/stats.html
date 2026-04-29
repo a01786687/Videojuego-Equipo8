@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anura - Tutorial</title>
+    <title>Anura - Stats</title>
     <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../site.css">
 </head>
@@ -22,84 +22,34 @@
         </ul>
     </nav>
 
+    <!-- page header -->
+    <header class="page-header">
+        <h1 class="page-title">ANURA STATS</h1>
+        <p class="page-subtitle">Track your progress and compete with other players</p>
+    </header>
 
+    <div id="stats-section" class="stats-section">
 
+        <!-- top players by runs -->
 
-
-
-
-<div id="Stats-section">
-                <p>Canva</p>
-
-                <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
-                <script>
-                    async function testStats(){
-                        const res = await fetch("http://localhost:8080/stats");
-                        let data = await res.json();
-
-                        if(data.length > 0){
-                            return data;
-                        }
-
-                    }
-                
-                    async function plot(){
-                        const xValues = [];
-                        const yValues = [];
-                        const data = await testStats();
-                        console.log(data);
-                        for (let i = 0; i < data.length; i++){
-                            
-                            xValues.push(data[i].run_session_id);
-                            yValues.push(data[i].totalRunPerSession);
-                        }
-
-                            const barColors = [
-                            "#b91d47",
-                            "#00aba9",
-                            "#2b5797"
-                        ];
-
-                        ctx = document.getElementById('myChart');
-
-                        new Chart(ctx, {
-                            type: "pie",
-                            data: {
-                                labels: xValues,
-                                datasets: [{
-                                    backgroundColor: barColors,
-                                    data: yValues
-                                }]
-                            },
-                            options: {
-                                plugins: {
-                                    legend: { display: true },
-                                    title: {
-                                        display: true,
-                                        text: "Totals runs per session",
-                                        font: { size: 16 }
-                                    }
-                                }
-                            }
-                        });
-                        
-                    }
-                    
-                    // plot();
-                </script>
-                </div>
-            
+        <div class="stats-chart-section">
+            <h2 class="stats-heading">Top Players by Runs</h2>
+            <canvas id="runsChart"></canvas>
         </div>
 
+        <!-- top players by mosquitoes -->
+        <div class="stats-chart-section">
+            <h2 class="stats-heading">Top Players by Mosquitoes</h2>
+            <canvas id="mosquitoesChart"></canvas>
+        </div>
 
+        <!-- session activity pie chart -->
+        <div class="stats-chart-section">
+            <h2 class="stats-heading">Session Activity</h2>
+            <canvas id="myChart" class="stats-pie-chart"></canvas>
+        </div>
 
-
-
-
-
-
-
-
+    </div>
 
 
 
@@ -115,6 +65,230 @@
         </div>
         <p class="footer-copyright">© 2025 Anura. All rights reserved.</p>
     </footer>
+
+    <!-- chart.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- stats page js -->
+
+    <script>
+        
+        async function renderRunsChart() {
+
+            // fetch data from the backend
+            const res = await fetch('http://localhost:8080/stats/runsPerUser');
+            const data = await res.json();
+
+            console.log('Data from server:', data);
+
+            // transform data for chart.js since it can´t use json format directly, we extract with .map()
+            // .map() -> array method that transforms each element, it goes through each object, grabs the username field and puts it in a new array
+            // parseInt() converts strings to a real number, the result of the endpoint we're using is an string
+            const labels = data.map(row => row.username);
+            const values = data.map(row => parseInt(row.totalRuns));
+
+            console.log('Labels:', labels);
+            console.log('Values:', values);
+
+            // canvas ref to draw
+            const canvas = document.getElementById('runsChart');
+            const ctx = canvas.getContext('2d');
+
+            // chart creation
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Total Runs',
+                        data: values,
+                        backgroundColor: '#8cff9b',
+                        borderColor: '#42bc7f',
+                        borderWidth: 2,
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true, // makes the chart resizable when the window resizes
+                    mantainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            display: false, // to hide the legend
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1,
+                                color: '#c8c4d8',
+                                font: {
+                                    family: 'Pixelify Sans',
+                                    size: 14
+                                }
+                            },
+                            grid: {
+                                display: false
+                            }
+                        },
+                        y: {
+                            ticks: {
+                                color: '#c8c4d8',
+                                font: {
+                                    family: 'Pixelify Sans',
+                                    size: 14
+                                }
+                            },
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+                
+        }
+
+
+        async function renderMosquitoesChart() {
+
+            // fetch data from the backend
+            const res = await fetch('http://localhost:8080/stats/mosquitoesPerUser');
+            const data = await res.json();
+
+            console.log('Data from server:', data);
+
+            // transform data for chart.js since it can´t use json format directly, we extract with .map()
+            // .map() -> array method that transforms each element, it goes through each object, grabs the username field and puts it in a new array
+            // parseInt() converts strings to a real number, the result of the endpoint we're using is an string
+            const labels = data.map(row => row.username);
+            const values = data.map(row => parseInt(row.totalMosquitoes));
+
+            console.log('Labels:', labels);
+            console.log('Values:', values);
+
+            // canvas ref to draw
+            const canvas = document.getElementById('mosquitoesChart');
+            const ctx = canvas.getContext('2d');
+
+            // chart creation
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Lifetime Mosquitoes Collected',
+                        data: values,
+                        backgroundColor: '#8cff9b',
+                        borderColor: '#42bc7f',
+                        borderWidth: 2,
+                    }]
+                },
+                options: { // modifies the chart's look and behaviour
+                    indexAxis: 'y', // horizontal bars
+                    responsive: true, // makes the chart resizable when the window resizes
+                    mantainAspectRatio: true, //keeps the chart's width to height ratio consistent when resizing (true is locked, false can squeeze in out etc)
+                    plugins: { 
+                        legend: {
+                            display: false, // to hide the legend
+                        }
+                    },
+
+                    // scales (Axes)
+                    scales: {
+                        x: { // numbers axis
+                            beginAtZero: true, // start axis at 0
+                            ticks: {
+                                stepSize: 1, // how far apart numbers on the axis should be, this case is every whole number
+                                color: '#c8c4d8', //
+                                font: {
+                                    family: 'Pixelify Sans',
+                                    size: 14
+                                }
+                            },
+                            grid: {
+                                display: false // hide vertical grid lines
+                            }
+                        },
+                        y: { // categories axis (usernames)
+                            ticks: {
+                                color: '#c8c4d8',
+                                font: {
+                                    family: 'Pixelify Sans',
+                                    size: 14
+                                }
+                            },
+                            grid: {
+                                display: false // hide horizontal grid lines
+                            }
+                        }
+                    }
+                }
+            });
+                
+        }
+
+        async function testStats(){
+            const res = await fetch("http://localhost:8080/stats");
+            let data = await res.json();
+            if(data.length > 0){
+                return data;
+            }
+        }
+
+        async function plot(){
+            const xValues = [];
+            const yValues = [];
+            const data = await testStats();
+            console.log(data);
+            
+            for (let i = 0; i < data.length; i++){
+                xValues.push(data[i].session_id);
+                yValues.push(data[i].totalRunPerSession);
+            }
+
+            const barColors = [
+                "#b91d47",
+                "#00aba9",
+                "#2b5797"
+            ];
+
+            const ctx = document.getElementById('myChart');
+
+            new Chart(ctx, {
+                type: "pie",
+                data: {
+                    labels: xValues,
+                    datasets: [{
+                        backgroundColor: barColors,
+                        data: yValues
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: { display: true },
+                        title: {
+                            display: true,
+                            text: "Totals runs per session",
+                            font: { size: 16 }
+                        }
+                    }
+                }
+            });
+        }
+
+        // function call when the page loads
+        window.addEventListener('DOMContentLoaded', () => {
+            renderRunsChart();
+            renderMosquitoesChart();
+            plot();
+        });
+
+
+
+    </script>
+
+
     
 </body>
 </html>

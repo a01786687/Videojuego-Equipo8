@@ -86,7 +86,31 @@ Authors: Renata Uruchurtu, Carlos Rosete, Emilio Torres
     <!-- Main game area -->
     <main class="game-main">
 
-        <!-- left side: canvas -->
+        <!-- LEFT SIDEBAR: Stats -->
+        <div class="game-sidebar">
+            <div class="sidebar-panel-left">
+                <h3 class="sidebar-heading">YOUR STATS</h3>
+                <div class="sidebar-divider"></div>
+                <div class="stat-row">
+                    <span class="stat-label">Runs played</span>
+                    <span class="stat-value">-</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Total Wins</span>
+                    <span class="stat-value">-</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Total Deaths</span>
+                    <span class="stat-value">-</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Best Time</span>
+                    <span class="stat-value">-</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CENTER: Canvas -->
         <div class="game-canvas-area">
             <div id="game-container">
                 <canvas id="canvas"></canvas>
@@ -94,10 +118,19 @@ Authors: Renata Uruchurtu, Carlos Rosete, Emilio Torres
                 <!-- Settings form -->
                 <div id="settings-form" class="auth-form hidden">
                     <h2>SETTINGS</h2>
+
+                    <!-- brightness slider -->
                     <label for="brightness-slider">BRIGHTNESS</label>
                     <input type="range" id="brightness-slider" min="0.5" max="1.5" step="0.1" value="1"
                         oninput="changeBrightness(this.value)">
                     <p id="brightness-value">100%</p>
+
+                    <!-- volume slider -->
+                    <label for="volume-slider">VOLUME</label>
+                    <input type="range" id="volume-slider" min="0" max="1" step="0.1" value="0.5"
+                        oninput="changeVolume(this.value)">
+                    <p id="volume-value">50%</p>
+
                 </div>
 
                 <!-- Login form -->
@@ -124,10 +157,9 @@ Authors: Renata Uruchurtu, Carlos Rosete, Emilio Torres
             </div>
         </div>
 
-
+        <!-- RIGHT SIDEBAR: Controls -->
         <div class="game-sidebar">
-
-            <div class="sidebar-panel">
+            <div class="sidebar-panel-right">
                 <h3 class="sidebar-heading">CONTROLS</h3>
                 <div class="sidebar-divider"></div>
                 <div class="control-row">
@@ -147,8 +179,12 @@ Authors: Renata Uruchurtu, Carlos Rosete, Emilio Torres
                     <span class="sidebar-key">SPC</span>
                 </div>
                 <div class="control-row">
-                    <span class="control-label">Dash</span>
+                    <span class="control-label">Dash: only with Bubble Dash card</span>
                     <span class="sidebar-key">J</span>
+                </div>
+                <div class="control-row">
+                    <span class="control-label">Glide: only with Glide Membrane card</span>
+                    <span class="sidebar-key">S</span>
                 </div>
                 <div class="control-row">
                     <span class="control-label">Attack</span>
@@ -159,28 +195,6 @@ Authors: Renata Uruchurtu, Carlos Rosete, Emilio Torres
                     <span class="sidebar-key">ESC</span>
                 </div>
             </div>
-
-            <div class="sidebar-panel">
-                <h3 class="sidebar-heading">YOUR STATS</h3>
-                <div class="sidebar-divider"></div>
-                <div class="stat-row">
-                    <span class="stat-label">Runs played</span>
-                    <span class="stat-value">-</span>
-                </div>
-                <div class="stat-row">
-                    <span class="stat-label">Total Wins</span>
-                    <span class="stat-value">-</span>
-                </div>
-                <div class="stat-row">
-                    <span class="stat-label">Total Deaths</span>
-                    <span class="stat-value">-</span>
-                </div>
-                <div class="stat-row">
-                    <span class="stat-label">Best Time</span>
-                    <span class="stat-value">-</span>
-                </div>
-            </div>
-
         </div>
 
     </main>

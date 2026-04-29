@@ -91,15 +91,29 @@ function updateLoginForm() {
 };
 
 function drawLoginScene() {
-    ctx.fillStyle = "#2c3e50";
-    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+    ctx.drawImage(loginRegisterBg, 0, 0, canvasWidth, canvasHeight);
 
     ctx.fillStyle = "white";
     ctx.font = "32px 'Pixelify Sans'";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.fillText("Log In", canvasWidth / 2, 80);
+    //ctx.fillText("Log In", canvasWidth / 2, 80);
 
     backButton();
 };
+
+
+// function for closing the active user's session, it logs out the current user
+// since the progress is saved in the db, we just clear the frontend variables
+
+function logoutUser() {
+    // it only clears session variables
+    // doesnt delete progress since it's saved on the db
+    activeUser = null;
+    activeUserId = null;
+
+    console.log("User logged out");
+
+    currentScene = "title";
+}
 
