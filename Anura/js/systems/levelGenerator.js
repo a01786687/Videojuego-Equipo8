@@ -93,7 +93,9 @@ function createLevel() {
 
             if (char === "#") {
                 // create a platform
-                platforms.push(new Platform(posX + TILE_SIZE/2, posY + TILE_SIZE/2, TILE_SIZE, TILE_SIZE));
+                let platform = new Platform(posX + TILE_SIZE/2, posY + TILE_SIZE/2, TILE_SIZE, TILE_SIZE);
+                //platform.setSprite
+                platforms.push(platform);
             } 
             else if (char === "@") {
                 frog = new Frog(
