@@ -73,7 +73,14 @@ const FROG_BASE_VALUES = {
     poisonDamage:    0,        // Venom Lash — damage per poison tick
     thunderChance:   0,        // Thunder Tongue — 0.0-1.0 chance to stun on hit (0 = off)
     canChameleon:    false,    // Chameleon Veil — turns invisible after attacking
-    canShockwave:    false,
+    canShockwave:    false,    // Toad Shockwave — pushes hit enemy away
+
+    // utility cards
+    luckyPond:            false, // Lucky Pond — enemy kills drop double mosquitos
+    metamorphosisActive:  false, // Metamorphosis — regenerates 1 HP every 2 seconds
+    tongueRangeBonus:     0,     // Spiked Whip — added to tongueRange (0 = off)
+    tadpoleHeart:         false, // Tadpole Heart — grants +50 max HP while active
+    thornSkin:            false, // Thorn Skin — reflects 2 damage to attacker on hit
 };
 
 
@@ -125,6 +132,29 @@ function createCardFromDatabase(dbCard) {
                 // extra jumps needs jumpsRemaining updated asap so the player can use them without landing
                 if (param === "extraJumps") frog.jumpsRemaining = effectValue;
             }
+
+            // --- UTILITY CARD SIDE EFFECTS ---
+
+            // Venom Lash: set poisonDamage as % of tongueDamage
+            if (param === "poisonDuration") {
+                frog.poisonDamage = Math.floor(frog.tongueDamage * 0.25);
+            }
+
+            // Spiked Whip: increase tongueRange by bonus amount
+            if (param === "tongueRangeBonus") {
+                frog.tongueRange += effectValue;
+            }
+
+            // Tadpole Heart: grant +50 HP immediately
+            if (param === "tadpoleHeart") {
+                currentHealth += 50;
+                maxHealth     += 50;
+            }
+
+            // Fire Kiss: set tongue element
+            if (param === "fireKiss") {
+                frog.tongueElement = "fire";
+            }
         },
 
         // reset() runs when the player burns a new card replacing this one or when the run ends
@@ -132,23 +162,33 @@ function createCardFromDatabase(dbCard) {
             frog[param] = FROG_BASE_VALUES[param];
 
             // if we reset extraJumps, also clear jumpsRemaining
-            // so no leftover jumps stay after the card is gone
             if (param === "extraJumps") frog.jumpsRemaining = 0;
 
             // if we reset canDash also stop any dash happening right now
-            // this prevents the frog from dashing forever if the card is replaced mid-dash
             if (param === "canDash") {
                 frog.isDashing = false;
                 frog.dashTimer = 0;
             }
 
-            
             // reset Venom Lash side effects
             if (param === "poisonDuration") frog.poisonDamage = 0;
- 
+
             // reset Fire Kiss
             if (param === "fireKiss") frog.tongueElement = "normal";
-            
+
+            // Spiked Whip: remove the range bonus
+            if (param === "tongueRangeBonus") {
+                frog.tongueRange -= effectValue;
+            }
+
+            // Tadpole Heart: remove the +50 HP bonus
+            if (param === "tadpoleHeart") {
+                currentHealth -= 50;
+                maxHealth     -= 50;
+                // clamp so health doesn't go negative on removal
+                if (currentHealth < 1) currentHealth = 1;
+                if (maxHealth < 1)     maxHealth     = 1;
+            }
         }
     }
 }
@@ -200,7 +240,6 @@ let deck = {
     slot2_Combat: [],
     slot3_Utility: []  
 };
-
 
 
 
