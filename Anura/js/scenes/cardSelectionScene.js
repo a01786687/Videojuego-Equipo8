@@ -54,15 +54,6 @@ function drawCardOffer(card, x, y) {
     const imageHeight = Math.round(cardWidth * 1.67); // 250 - maintains correct ratio
     const cardHeight = imageHeight + 45; // image + space for cost and description below
 
-    // card background
-    ctx.fillStyle = "#333";
-    ctx.fillRect(x , y , cardWidth, cardHeight);
-
-    // card border
-    // ctx.strokeStyle = "white";
-    // ctx.lineWidth = 2;
-    // ctx.strokeRect(x , y , cardWidth, cardHeight);
-
     // card image
     if (card.image && card.image.complete && card.image.naturalWidth !== 0) {
         ctx.drawImage(card.image, x, y, cardWidth, imageHeight);
@@ -75,8 +66,8 @@ function drawCardOffer(card, x, y) {
     ctx.fillText("Cost: " + card.cost, x + cardWidth / 2, y + imageHeight + 15);
 
     // card description
-    ctx.fillStyle = "#aaaaaa";
-    ctx.font = "10px Pixelify Sans";
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "12px Pixelify Sans";
     ctx.fillText(card.description, x + cardWidth / 2, y + imageHeight + 32);
 
     // disabled card visual effect if player can't afford the card
@@ -121,9 +112,9 @@ function drawCardSelectionScene() {
         drawCardOffer(cardOptions[2], startX + (cardWidth + spacing) * 2, cardY);
 
         // skip button
-        ctx.fillStyle = "#444";
+        ctx.fillStyle = "#895654";
         ctx.fillRect(410, 475, 140, 30);
-        ctx.strokeStyle = "white";
+        ctx.strokeStyle = "#61393b";
         ctx.lineWidth = 2;
         ctx.strokeRect(410, 475, 140, 30);
         ctx.fillStyle = "white";
