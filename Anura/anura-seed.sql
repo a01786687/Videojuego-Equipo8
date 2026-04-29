@@ -41,15 +41,22 @@ USE anura;
 	('Thorn Skin', 15, 'Utility', 5, 'thornDamage', 'Reflects damage back to attackers.');
 
 
-	-- UPDATE COMBAT CARDS
+	-- BOSS DATA
+    
+    INSERT INTO boss (boss_name,base_hp,base_damage, mosquito_reward)
+    VALUES ('snake',50,20,20);
+    
 	-- MOBS DATA
 
 	INSERT IGNORE INTO mobs (mob_name,base_damage,base_hp,mosquito_reward)
 	VALUES ('mosquito',0,2,1),('spider',10,5,5);
 
 	-- use UPDATES to make game rogue-like:
-	UPDATE anura.mobs SET base_damage = 17 -- make mosquitoes have damage
+	UPDATE anura.mobs SET base_damage = 12 -- make mosquitoes have damage
 	WHERE mob_name = 'spider';
+    
+    UPDATE anura.mobs SET mosquito_reward = 3  -- Final changes to damage values and mosquitoe reward from spiders
+    WHERE mob_name = 'spider';
 
 	UPDATE mobs SET base_damage = 3 -- make spiders stronger
 	WHERE mob_name = 'mosquito';
