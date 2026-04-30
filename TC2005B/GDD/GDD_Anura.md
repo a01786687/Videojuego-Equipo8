@@ -367,12 +367,12 @@ State transitions are controlled using conditional logic an timers.
 2. CHASE -> If player is within range (300 pixels), moves toward them
 3. DASH -> Lunges at the player with increased speed
 4. RETREAT -> Backs away after attacking (recovery window)
-5. ENRAGED -> If health drops below 50%, enters permanent aggressive mode (faster, more dangerous)
+5. ENRAGED -> If health drops below 25%, enters permanent aggressive mode (faster, more dangerous)
 6. STUNNED -> Temporarily disabled after taking massive damage
 
 **Triggers:**
 - Distance-based: Player within 300-pixel range -> switch from IDLE to CHASE
-- Health-based: HP < 50% -> enter ENRAGED state (permanent until defeated)
+- Health-based: HP < 25% -> enter ENRAGED state (permanent until defeated)
 - Damage-based: Taking high damage -> temporarily STUNNED
 - Timer-based: After DASH completes -> transition to RETREAT (cooldown period)
 
@@ -381,12 +381,12 @@ State transitions are controlled using conditional logic an timers.
 1. HOVER -> Flies above the arena, circling the player
 2. DIVE -> Swoops down aggressively toward the player's position
 3. RETREAT -> Flies back up after a dive attack (recovery phase)
-4. ENRAGED -> When health drops below a threshold, becomes faster and more aggressive
+4. ENRAGED -> When health drops below a 40 percent of the hp, becomes faster and more aggressive
 
 **Triggers:**
 - Timer-based: After hovering for X seconds -> execute DIVE attack
 - Position-based: After dive completes -> RETREAT back to the air
-- Health-based: HP drops below threshold -> enter ENRAGED mode (permanent)
+- Health-based: HP drops below 40 percent -> enter ENRAGED mode (permanent)
 - Distance-based: Stays out of melee range while hovering, only vulnerable during dive
 
 **Key Difference from Snake Boss:**
@@ -426,10 +426,10 @@ Levels are not fully random. They use pre-made chunks that are randomly selected
 5. The game reads an ASCII map to spawn objects:
    - `#` = Platform (static 60x60 tile)
    - `@` = Frog spawn point
-   - `M` = Mosquito enemy
-   - `%` = Spider enemy
-   - `C` = Cave entrance (leads to boss)
-   - `>` = Exit door (leads to next section or victory)
+   - `$` = Mosquito and spider enemy in first level (25% of the time it spawns a spider)
+   - `%` = Spider enemy in second level for icrease the difficulty
+   - `!` = Cave entrance for first boss
+   - `>` = Cave entrance for second and final boss
 
 **Elements in Levels:**
  
@@ -441,11 +441,10 @@ Levels are not fully random. They use pre-made chunks that are randomly selected
 
 **Enemies:**
 - Mosquitoes: Flying enemies that drop currency on death and deal a a bit of damage
-- Spiders: Ground enemies that patrol on an horizontal MRU movement, deal damage on contact
+- Spiders: Enemies that patrol on an horizontal MRU movement, deal damage on contact
 
 **Transitions:**
 - Cave Entrance: Triggers transition to boss arena when frog collides with it
-- Exit Door: Triggers transition to next platforming section (or victory screen after final boss)
 
 **Variation:**  
 Each run feels different because chunk order is randomized, creating different platform layouts and enemy placements without requiring the player to memorize fixed level designs.

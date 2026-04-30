@@ -2,6 +2,7 @@
  * Side-scrolling camera system.
  * Uses lerp (linear interpolation) so the camera follows smoothly https://dev.to/rachsmith/lerp-2mh7
  * instead of snapping to the frog every frame, which caused jitter.
+ * This camera was designed by an AI, because I was having trouble getting the timing right for the lerp and it kept feeling unresponsive. It ended up being a lot better than what I had before, so I went with it.
  */
 "use strict";
  

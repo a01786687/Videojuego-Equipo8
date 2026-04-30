@@ -102,11 +102,17 @@ async function createLevel() {
                 platforms.push(platform);
             } 
             else if (char === "@") {
+                const values = await getFrogValues();
+                const speed = values[2];
+                const damage = values[1];
+
                 frog = new Frog(
                     { x: posX + TILE_SIZE / 2, y: posY - 25 }, // Centered position
                     60, // width
                     60, // height
-                    4   // sheetCols (adjust based on your spritesheet)
+                    4,   // sheetCols (adjust based on your spritesheet)
+                    speed,
+                    damage
                 );  
             }
             else if (char === "$") {
@@ -217,4 +223,17 @@ async function reachedLevel2(front_run_id){
     });
     const updatedData = await res.json();
     return updatedData;
+}
+
+async function getFrogValues(){
+    const res = await fetch("http://localhost:8080/frogValues");
+    const data = await res.json();
+
+    if(data.length > 0){
+        const attributes = await data[0];
+    
+        return [attributes.base_hp,attributes.base_damage, attributes.base_speed];
+    }
+    
+    return;
 }
