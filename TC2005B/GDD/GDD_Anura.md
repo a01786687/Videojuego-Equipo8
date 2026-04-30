@@ -4,7 +4,7 @@
 
 ---
 
-##### **Copyright notice / author information / boring legal stuff nobody likes**
+##### **Copyright notice / author information**
 
 ## _Authors_
 * Carlos Enrique Rosete Pascual
@@ -26,79 +26,88 @@
     3. [Mechanics](#mechanics)
 4. [Level Design](#level-design)
     1. [Themes](#themes)
-        1. Ambience
-        2. Objects
-            1. Ambient
-            2. Interactive
-        3. Challenges
     2. [Game Flow](#game-flow)
 5. [Development](#development)
-    1. [Abstract Classes](#abstract-classes--components)
-    2. [Derived Classes](#derived-classes--component-compositions)
+    1. [Core Classes](#core-classes)
 6. [Graphics](#graphics)
     1. [Style Attributes](#style-attributes)
-    2. [Graphics Needed](#graphics-needed)
-7. [Sounds/Music](#soundsmusic)
-    1. [Style Attributes](#style-attributes-1)
-    2. [Sounds Needed](#sounds-needed)
-    3. [Music Needed](#music-needed)
-8. [Schedule](#schedule)
+    2. [Graphics Implemented](#graphics-implemented)
+7. [Card System](#card-system)
+
+
+---
 
 ## _Game Design_
 
 ---
 
+
 ### **Summary**
 
-Anura is a 2D roguelite fighting game set in a dangerous swamp. The player controls a small frog fighting its way up the food chain, collecting mosquitoes as persistent currency, building a strategic 3 card deck across runs, and defeating increasingly threatening predator bosses to complete a run.
+Anura is a **2D roguelite platformer** set in a dangerous swamp. The player controls a small frog fighting its way up the food chain, collecting mosquitoes as persistent currency, building a strategic 3 card deck across runs, and defeating increasingly threatening predator bosses to complete a run.
 
 The game is built in **HTML/JavaScript** using a canvas-based game loop.
 
+**What we used:**
+- **Frontend:** HTML/JavaScript
+- **Backend:** Node.js/Express API
+- **Database:** MySQL
+- **Architecture:** Database driven design for future expansion
+
+
+---
+
 ### **Gameplay**
 
-The player controls a small frog moving through swamp areas filled with mosquitoes, obstacles, and boss encounters. Mosquitoes act as a currency and are collected using the frog's tongue while navigating platforming sections and preparing for fights.
+The player controls a small frog moving through swamp areas filled with mosquitoes (currency) and spider enemies (obstacles). Mosquitoes are collected using the frog's tongue attack while navigating platforms and avoiding damage.
  
-Combat happens in 1v1 boss battles against animals higher in the food chain. Each boss has a unique attack pattern and weakness, encouraging players to experiment with different card combinations and strategies.
- 
-The player begins their first run with 0 cards and no mosquito currency. Upon dying, a Card Selection Screen appears showing 3 random cards. The player may purchase at most 1 card per death using their accumulated mosquitoes, or skip the selection entirely to keep their current deck unchanged. Cards accumulate across runs in the deck until all the cards are burn. 
+**Combat Structure:**  
+After completing a platforming section, the player enters a boss arena for a 1v1 battle against a predator with unique attack patterns. Each boss uses a Finite State Machine with distinct phases and attack patterns, requiring pattern recognition and strategic card use.
 
+**Roguelite Loop:**  
+The player begins their first run with 0 cards and no mosquito currency. Upon dying, a **Card Selection Screen** appears showing 3 random cards from the full pool of 15. The player may purchase at most **1 card per death** using their accumulated mosquitoes, or skip the selection to save currency. Cards accumulate in the deck across runs until activated and burned.
 
-Roguelite Structure:
+**Run Structure:**  
+Each run follows a fixed sequence:
+1. Platform Section 1
+2. Snake Boss
+3. Platform Section 2
+4. Eagle Boss (Final)
+5. Victory
 
-Anura follows a run-based progression system. Each run is self contained, and death resets the current attempt. Mosquitoes function as persistent currency, they are never lost upon death and carry over indefinitely across all runs. Upon dying, the player reaches the Card Selection Screen where they can spend their accumulated mosquitoes to purchase one new card, then start a fresh run.
+Death at any point saves progress (mosquitoes + unburned cards) and returns to the Card Selection Screen.
 
-This creates a classic roguelite loop:
-
-- Attempt run
-- Defeat bosses or die
-- Earn persistent mosquito currency
-- Unlock stronger or more complex cards (max 1 per death)
-- Start a new run with improved strategic options
+---
 
 ### **Mindset**
  
 Anura is built around a strong emotional contrast between calmness and tension.
  
-The main mindset can be summarized as:
+The main player experience can be summarized as:
 “Small creature, big world, smart survival.”
+
+**Vulnerability and Caution:**
+At the beginning of each run, the player should feel small and vulnerable. The frog is visually cute and appears fragile compared to the intimidating predators it must face. This creates tension and a sense of danger.
  
-At the beginning of each run, the player should feel vulnerable and cautious. The frog is small, visually cute and at a first glance quite fragile. When encountering the enemies they seem intimidating in size and presence to the player. This creates tension and a sense of danger.
+**Peaceful Explorations**
+Between boss encounters, platforming sections are designed to feel calm and atmospheric. The swamp environment is soft, cozy, and non-threatening during exploration, reinforcing a feeling of safety before the next boss fight.
  
-Between boss encounters, platforming sections are designed to feel calm and cozy. The swamp environment is soft and atmospheric even though it still has some obstacles for the player. This peaceful exploration and obstacle course phase reinforces the feeling of safety.
- 
-However, this calm state is disrupted during boss fights and shifts the player's mentality from relaxed exploration and casual game to tension and alertness. 
+**Combat Intensity:**
+Boss fights disrupt the calm state and shift the player's mentality from relaxed exploration and casual game to tension and alertness.
+
+**
  
 As the player progresses, learns boss patterns, experiments with card combinations and purchases permanent upgrades, the mindset changes from trying to survive to dominating the game. 
  
-The game aims to provoke:
+**Main Game Emotions:**
  
-- Strategic thinking (not just randomly smashing buttons)
-- Tension during boss fights
+- Strategic thinking (deck building, resource management)
+- Tension during boss fights (pattern recognition, precise timing)
 - Experimentation through card combinations
 - Satisfaction from defeating more dangerous bosses
-- Resilience through the roguelite loop which would be "failure is progress"
+- Resilience through the roguelite loop which would be ("failure is progress")
  
-Visually, the game supports this whole mindset through a blend of cute, cozy aesthetics and dangerous bosses. The intended emotional experience is for the player to think:
+The intended emotional experience is for the player to think:
  
 "I'm just a cute little frog in a peaceful swamp" right before facing a 1v1 boss fight that forces them to adapt and survive.
 
@@ -110,490 +119,755 @@ Visually, the game supports this whole mindset through a blend of cute, cozy aes
 
 ### **Screens**
 
-1. Title Screen
+#### 1. **Title Screen**
 
-    The title screen sets the identity and tone of Anura
+The title screen sets the identity and tone of Anura. It presents different options depending on login status:
 
-    Visually there's:
-    The frog sitting peacefully on a lily pad
-    Soft swamp ambience in the background
-    The game title ANURA in big letters centered
+**When Logged Out:**
+- Log In: Allows the user to log in with their credentials so their data is saved in the database
+- Settings: Adjust brightness and volume
 
-    This screen transmits calmness and charm before the tension of the gameplay
+**When Logged In:**
+- Start Run: Begins a new run attempt. Loads player's saved deck and mosquito count from database
+- Log Out: Logs out and returns to the logged-out title screen
+- Settings: Adjust brightness and volume
 
-    ![alt text](<Open Drawing 5.png>)
+Visually there's:
+The frog sitting peacefully on a lily pad
+Soft swamp ambience in the background
+The game title ANURA in big letters centered
 
-    1. Options
-    
-        Accessible from the Title screen
-        Includes:
-        
-        New game
+This screen transmits calmness and charm before the tension of the gameplay
 
-        Continue Run (if available)
-        
-        Settings: audio, volume, music on/off (NOTA: SIENTO QUE NO ES TAN ESENCIAL PARA PROPOSITOS DEL PROYECTO POR LO TANTO UNICAMENTE SE DESARROLLARÁ SI HAY TIEMPO SUFICIENTE)
-        
-        Quit
+![Title Screen Sketch](GDD_Images/TitleScreenSketch.png)
 
-        
+![Screen Sketches](GDD_Images/ScreenSketches.png)
 
-2. Card Selection & Run Prep Screen
+**Note:** There is no "New Game" button. To fully reset progress (wipe deck and mosquitoes), a player must create a new account. 
+ 
+---
 
-This screen appears exclusively after a run ends (death or completion). It manages the initial building of the deck and the transition to the next attempt:
+#### 2. **Card Selection Screen**
+ 
+This screen appears **exclusively after death**. It manages deck building and the transition to the next run attempt.
 
-**Step 1: Card Selection & Deck Building**
- **Starting State:** Every new run begins with an empty deck.
- **Selection Process:** Three random cards are displayed along with their mosquito cost. 
- **Acquisition:** The player may purchase a card to add it to their deck pool. Because the new mechanic allows for an unlimited deck size, players are encouraged to accumulate cards of different categories (Combat, Movement, Utility) to ensure their slots remain populated during the run.
- **Skip Option:** The player can choose to skip the selection if they wish to save currency, though they will start the run without that specific advantage.
+**Visual Layout:**
+- Displays current mosquito count
+- Shows 3 randomly selected cards with name, description, cost, and card image
+- "Buy" button for each card (if affordable), "Skip" button to proceed without purchasing
+- Then a "Deck Preview Screen" that shows all cards currently in the deck, organized by category (Movement, Combat, Utility)
 
-**Step 2: Deck & Pool Preview**
-Once the card decision is made, the screen transitions to a preview of the player's current build:
- **Active Slots:** Displays the cards currently occupying the 3 active slots.
- **Deck Pool:** Shows a summary of the total cards accumulated in the deck that will cycle into the slots as active cards are "burned."
- **Commitment:** A single "Start Run" button launches the new attempt with the curated deck.
+**Interaction Flow:**
+1. Player sees 3 random cards from the full pool of 15
+2. Player may purchase **at most 1 card** if they have enough mosquitoes
+3. A deck preview scene is shown
+4. Purchased card is immediately added to the deck and saved to database
+5. "Start Run" button appears after purchase decision is made
+6. Starting a new run loads the updated deck from database
+
 
 *Strategic Note: Since cards are now consumable and randomly replaced from the pool, the selection screen is the primary way to "load up" on resources before facing the platforming sections and Bosses.*
+
+---
  
-    This replaces the original "Level Select" concept — there is no level selection in Anura, as the run structure is fixed (Platform → Boss → Platform → Boss → Final Boss).
+#### 3. **Play Scene (Game HUD)**
  
+The main gameplay screen where platforming and combat take place.
+ 
+**HUD Elements:**
+- Health Bar: Displays current health / max health
+- Mosquito Counter: Shows mosquitoes collected in the current run 
+- Card Slots (3): Visual display of active cards in slots 1, 2, 3 with card images and names
+  - Slot 1 (Movement) - activated with key **1**
+  - Slot 2 (Combat) - activated with key **2**
+  - Slot 3 (Utility) - activated with key **3**
+  - Active card highlighted in green, red, and yellow depending on the type
+  - Reserve cards are shown until the player burns the current top card
+- Damage Numbers: Floating combat text appears when enemies are hit
 
-3. Game
-    1. Inventory
-    2. Assessment / Next Level
-4. End Credits
+**Visual Feedback:**
+- Flash effect when card is burned and replaced
+- Invincibility frames make frog semi-transparent after taking damage
 
-_(example)_
+---
 
+#### 4. **Pause Menu**
+ 
+Accessed by pressing **Esc** during gameplay. Stops all game logic and timers.
+ 
+**Options:**
+- Resume: Returns to gameplay, unpauses timer
+- Settings: Settings: Adjust brightness and volume
+- Back to Menu: Returns to title screen
+
+**Note:** Pausing doesn´t save run progress. Only death or victory saves to database.
+ 
+---
+ 
+#### 5. **Game Over Screen**
+ 
+Appears when the frog's health reaches 0.
+ 
+**Display:**
+- "GAME OVER" message
+- "Card Selection Screen in 3 seconds... " message which takes you to the Card Selection Screen
+
+**Backend Behavior:**  
+`saveProgress()` function is called, which triggers the `/run/death` endpoint. This saves:
+- Mosquitoes collected in this run
+- Cards remaining in deck (unburned cards persist)
+- Run end time
+- Victory status = false
+
+---
+ 
+#### 6. **Victory Screen**
+ 
+Appears when the final boss (Eagle) is defeated.
+ 
+**Display:**
+- "SWAMP CLEARED!" message
+- "You've conquered the food chain!" message
+- "All predators defeated." message
+- Total mosquitoes collected
+- Back to title button
+
+**Backend Behavior:**  
+`saveProgress(true)` is called (true = victory), which saves the run with `victory = 1` and sets the run end time with the `set_end_time_on_victory` trigger.
+ 
+---
+ 
 ### **Controls**
+ 
+The player interacts with the game through direct character control in a 2D side-scrolling environment. Controls are simple and support fast reactions during boss fights while remaining comfortable during platforming sections.
 
-How will the player interact with the game? Will they be able to choose the controls? What kind of in-game events are they going to be able to trigger, and how? (e.g. pressing buttons, opening doors, etc.)
+#### **Basic Movement**
+- Walk Left: A key
+- Walk Right: D key  
+- Aim Up: W key (aims tongue upward)
+- Jump: Spacebar
+- Double Jump / Triple Jump: Spacebar (mid-air, if unlocked via cards)
+- Glide: I key (if unlocked via Glide Membrane card)
+- Dash: J key (if unlocked via Bubble Dash card)
 
-The player interacts with the game through direct character control in a 2D side environment. The controls are designed to be simple, supporting fast reactions during boss fights while remaining comfortable throughout the platform sections.
+#### **Combat**
+- Tongue Attack: Left Click (short-range melee hitbox in front of frog)
 
-#### **Basic Movement Controls**
+#### **Card Activation**
+- Slot 1 (Movement): 1 key
+- Slot 2 (Combat): 2 key
+- Slot 3 (Utility): 3 key
 
-- Walk to the right -> D button
-- Walk to the left -> A button
-- Crouch -> S button
-- Jump -> spacebar
-- Double jump (if unlocked) -> Press jump (space button) again mid air
+**Important:** Each slot can have one active card at a time. You can have all three slots active simultaneously (1 Movement + 1 Combat + 1 Utility). Pressing a slot key applies that card's effect, burns it, and replaces it with the next card from that category's reserve pool.
 
-#### **Combat controls**
-- Basic attack (tongue strike) -> left click button
-- Activate card 1 -> #1 button 
-- Activate card 2 -> #2 button
-- Activate card 3 -> #3 button
+#### **System**
+- Pause: Esc key
+- Interact: Walk into cave entrance or exit door to trigger the next scene
 
-Cards are activated manually during combat
-
-#### **Interaction with the environment**
-Players can trigger in game events such as:
-
-- Collecting mosquitoes by hitting them with the tongue
-- Entering boss arenas by walking through doors or caves
-- Navigating obstacles by jumping, dodging or using abilities
-
-#### **Menu and system controls**
-
-- Pause menu -> esc
-
-It will stop the game completly as well as pausing the timer that will exist in each run to indicate the player of its performance in the stadistics section. And the menu will contain the following
-->
-_Pause menu:_ 
-* Resume: it will resume the run where it stopped and the timer will resume its original count and continue.
-* Brightness: it will be an option to modify the view of screen.
-* Exit: The player will be able to exit the game but the progress they made will not be safed, they to finish the run by either dying or defeating the boss.
+---
 
 ### **Mechanics**
  
 Anura combines platforming, 1v1 boss combat, and a strategic card activation system within a roguelite progression loop. 
  
-The following are the core mechanics and how they function at a systems level.
+---
  
-1. Tongue collection and attack system
+#### **1. Tongue Collection & Attack System**
+ 
+The frog's tongue serves as both a collection tool and a combat weapon.
+
+**Collection:**
+- Mosquitoes have hitboxes. When the tongue collider overlaps a mosquito's hitbox, the mosquito is collected and the counter increments.
+- Collected mosquitoes are saved to the database at the end of each run.
+
+**Combat:**
+- The tongue is a short-range directional melee attack with a hitbox that extends in front of the frog.
+- Tongue damage is applied to enemies on collision.
+- Tongue has a cooldown timer to prevent spam attacks.
+- Tongue can be enhanced by Combat cards (Fire Kiss, Thunder Tongue, Venom Lash, etc.)
     
-    The frog uses its tongue as both a collection and combat mechanic. (tongue = weapon)
-    
-    - Mosquitoes are collected then the tongue collider overlaps with their hitbox.
- 
-    Defining how the currency (mosquitoes) will work:
-    - Mosquitoes are collected then the tongue collider overlaps with their hitbox.
- 
-    - Tongue itself will have a hitbox as well as all the mosquitoes. When these hitboxes interact the counter will increment counter++ and the mosquito will disappear.
- 
-    - The tongue acts as a short range directional attack, it will funcion as a fast meele hitbox in front of the frog.
- 
-    need: collision detection system for mosquito collection, hitbox activation during attack animation frames, cooldown timer to prevent spamming.
- 
-    The tongue attack will be a melee attack that will only depend on the direction the player is looking. This can be right, left and up, and it will have a limited distance so it'll be effective to use short range.
- 
-    - In terms of physics, we want to implement the movement of the tongue attack as a MRU movement that will stop at a short distance and will always move in “x” direction, we also want to assign these attack the hitpoints that will deal to the boss
- 
-    - Moving to the spit attack, we want to implement it the same way as the melee attack but the only thing is this movement will not have a limit in distance and it will only stop if it hits the enemy or if its surpasses the frame of what you see in the screen
- 
-    - Also we need to implement a cooldown on these attacks so it doesn’t become a spam and break the game.
- 
-    Movement: The character will have 3 types of movement: the regular running (since its 2D it can move sideways only), jumping and a dash.
- 
-    - Running will be the basic constant movement that the character will have, we will define a certain velocity that fits the pace of the game and it will specifically move in the x axis only. The keybinds “a” (left)  and “d” (right) will be the keys that trigger the move
- 
-    - Its also defined as a MRU movement only the x axis
- 
-    - The jump mechanic will be attached to the space bar key and will function a bit more complex than the other mechanics, it will work as a parabolic movement so this means it works as a MRUA and will have an initial velocity in “y” that's a predetermined velocity attached to the space bar and also an initial velocity in “x” that will be attached to the running mechanic. 
- 
-    - Finally the dash will be a movement that will have cooldowns so it can't be spammed and it will be a faster movement in “x” axis that will give better reaction time to enemies abilities to the player and this dash will have a limited distance reached.
- 
- 
-2. Card System
+**Implementation:**
+- Collision detection system checks for hitbox overlap between tongue and enemies/mosquitoes
+- Attack animation triggers on left-click with cooldown
+- Damage is dealt based on `frog.tongueDamage` property (modifiable by cards)
 
-The card system revolves around three active slots, each assigned to a specific category. While players manage three active cards at a time, they can now build a larger deck that cycles through these slots dynamically.
+---
+ 
+#### **2. Card System**
+ 
+The card system revolves around three active slots, each assigned to a specific category. Players can accumulate an unlimited number of cards in their deck, which cycle through these slots dynamically.
 
- Core Mechanics
+**Core Mechanics:**
 
-* **Slot System:** Cards are activated by pressing their assigned key (**1, 2, or 3**). Each slot is dedicated to a specific category (e.g., Combat, Movement, Utility).
-* **The Deck:** Players can now accumulate an unlimited number of cards in their deck. These cards sit in a queue behind the three active slots.
-* **Burn & Replace:** Cards are single-use. When a card is activated, it is "burned" and removed from the deck. Immediately after, a new card of the same category is randomly pulled from the remaining deck and placed into the active slot.The effects of the card are permantly until the player active another card or die.
-* **Sequential Activation:** In all game sections—including **Boss Fights**—cards are activated one by one.The player has the option to activate the 3 slots simultaneously if they want to.
+**Slot System:**  
+Cards are activated by pressing their assigned key (1, 2, or 3) Each slot is dedicated to a specific category:
+- Slot 1: Movement cards
+- Slot 2: Combat cards
+- Slot 3: Utility cards
 
-Technical Logic
+**The Deck:**  
+Players accumulate cards across runs. Cards are organized into three category specific arrays:
 
-Each card functions as an ability object with:
-* **Effect Value:** (Damage, shield, speed modifier, etc.)
-* **Category ID:** Determines which slot (1, 2, or 3) the card populates.
-* **Optional Synergy:** Interactions with other active effects.
+```
+deck = {
+    slot1_Movement:  [activeCard, reservedCard, reservedCard, ...],
+    slot2_Combat:    [activeCard, reservedCard, reservedCard, ...],
+    slot3_Utility:   [activeCard, reservedCard, reservedCard, ...]
+}
+```
 
-**Data Structure:**
-The deck is managed as a collection of categorized pools:
+**Burn & Replace:**  
+- Cards are single-use. When activated , the card is "burned" and permanently removed from the deck for that run.
+- Immediately after burning, a card from the same category's reserve pool is moved to the active slot.
+- Card effects persist until the next card in THAT SLOT is activated (burn-and-replace), NOT on a timer.
+- You can have up to 3 cards active simultaneously, one from each slot.
 
-    slot1_Movement:  [activeCard, reservedCard, reservedCard...],
-    slot2_Combat: [activeCard, reservedCard, reservedCard...],
-    slot3_Utility: [activeCard, reservedCard, reservedCard...]
+**Effect Application:**  
+Each card has:
+- `effectParameter`: The frog property to modify (`extraJumps`, `canGlide`, `tongueDamage`)
+- `effectValue`: The value to apply (`1`, `10`, `1.5`)
+- `.effect()`: Method that applies the card's ability to the frog
+- `.reset()`: Method that reverts the frog to base stats before applying a new card
 
-**Activation Flow:**
+**Database Integration:**  
+- All 15 cards live in the database
+- Your deck is saved to your account
+- When you start a run, your saved cards load automatically
+- Adding new cards only requires updating the database, not the code
 
-When a key (1, 2, or 3) is pressed:
 
-1. The system checks if a card is available in the slot.
-2. The card effect is applied to the player.
-3. The active card is **burned** (permanently removed from the deck for that run).
-4. A random card from the corresponding category pool is automatically moved to the active slot.
-5. Visual feedback triggers to show the new card entering the UI.
+**Strategic Gameplay:**  
+Cards are single-use and burned when activated, so players must:
+- Decide when to use powerful cards
+- Build a balanced deck across all 3 categories (Movement, Combat, Utility)
 
 ---
 
-### Strategic Component
+#### **3. Boss Pattern System**
 
-This new system shifts the focus toward **Deck Sustainability and Resource Management**. Since cards are burned upon use, players must strategically decide when to activate a powerful ability versus saving it for a more difficult encounter.
+Bosses use Finite State Machines (FSM), they switch between different behaviors (states) based on conditions like timers, distance to player, or remaining health.
 
-* **Build Diversity:** Players can stack their deck with as many cards as they want, ensuring they have enough "ammo" for their preferred playstyle.
-* **RNG Management:** Because the next card in the slot is chosen randomly from the category pool, players must curate a balanced deck to ensure high-quality replacements.
-* **Tactical Pacing:** The transition to one-by-one activation (especially in Boss Fights) prevents overwhelming power spikes, requiring the player to find the right rhythm for card usage.
-
-
-    ![alt text](image.png)
-    ![alt text](image-1.png)
-    ![alt text](image-2.png)
-
-3. Boss pattern system
+**FSM Model:**  
+Boss behavior is driven by structured pattern based logic, implemented through *state management* in JavaScript.
  
-    Boss behavior is driven by structured pattern based logic, implemented through *state management* in JavaScript.
+Each boss operates using a *Finite State Machine (FSM) model. This means the boss can only be in one state at a time, and it transitions between states based on predefined conditions such as timers, player distance or remaining health.
  
-    Each boss operates using a *Finite State Machine (FSM) model. This means the boss can only be in one state at a time, and it transitions between states based on predefined conditions such as timers, player distance or remaining health.
+**Example Boss States:**
  
-    Example boss states:
+- IDLE - the boss waits or prepares an attack.
+- ATTACK - the boss performs a specific attack animation and activates its hitbox.
+- RECOVERY - a short vulnerability window afer attacking
+- PHASE 2 - activated when health drops below a certain threshold (ex. 50% can vary)
  
-    - Idle - the boss waits or prepares an attack.
-    - Attack - the boss performs a specific attack animation and activates its hitbox.
-    - Recovery - a short vulnerability window afer attacking
-    - Phase 2 - activated when health drops below a certain threshold (ex. 50% can vary)
- 
-    State transitions are controlled using conditional logic an timers. For example:
- 
-    - Afer a certain time in idle -> transition to attack
-    - After Attack completes -> transition to recovery
-    - When health is below or 50% -> activate phase 2 behavior
- 
-    This system ensures predictable but challenging encounters, reinforcing pattern recognition and startegic gameplay instead of complete randomness.
- 
-    Since the game is built using HTML and JS mechanics are implemented using:
- 
-    - Game loop logic (e.g., requestAnimationFrame)
- 
-    - Collision detection systems (hitboxes and bounding boxes)
- 
-    - State variables
- 
-    - Timers and cooldown counters
- 
-    - Health threshold checks
- 
-    ----------------------------------------------
- 
-    Thus we will need pure logical programming, so we will need state machine that signifies logic behavior through if, variables, temporizers.
- 
-    
-    A boss pattern system is:
- 
-    When it currently has a determined state, this could be idle, attacking, recovering and this can be rotated in variables like time, HP.
+State transitions are controlled using conditional logic an timers. 
 
-4. Platform levels
-    
-    As we will describe further, our game will follow a cycle of having 2 sections levels and each one will have a boss. This means that each section will have platfrom and obstacle levels with enemies you will have to defeat before you reach the boss from the current level.
+**Snake Boss State Flow:**
 
-    Since the game follows a rogue lite mechanic, this means each level has to vary in a way obstacles and enemies are the same but only thing will change in the position in which they appear making every experience of the level different and not something the player can memorize.
+1. IDLE -> Waits and observes the player
+2. CHASE -> If player is within range (300 pixels), moves toward them
+3. DASH -> Lunges at the player with increased speed
+4. RETREAT -> Backs away after attacking (recovery window)
+5. ENRAGED -> If health drops below 50%, enters permanent aggressive mode (faster, more dangerous)
+6. STUNNED -> Temporarily disabled after taking massive damage
 
-    **Elements in levels**
+**Triggers:**
+- Distance-based: Player within 300-pixel range -> switch from IDLE to CHASE
+- Health-based: HP < 50% -> enter ENRAGED state (permanent until defeated)
+- Damage-based: Taking high damage -> temporarily STUNNED
+- Timer-based: After DASH completes -> transition to RETREAT (cooldown period)
 
-    It is esential to define the 3 types of elements each level will have:
-    * Enemies: this type of element will have moving mechanics like moving MRU in "x" position and each enemy will have different mechanics depending on the level. It will be able to damage the player when it detects collision with the player hitbox and the enemy hitbox and it can spawn in random location in the current level available spaces.
-    * Traps: this type of element will work as the enemy mechanics but the only thing that changes is that this type of enemy will be static but it will be set in positions where the player could fall and damage himself. 
-    * Platforms: this final type of element existing in levels will be the sections in the level that will allow the player to move and finally be able to reach the boss in the level. This means platform will not be able to damage the player and each time the player stays in contact with the platform, he will be able to move on the platform and perform actions to reach other platforms and reach the destination desired. In further levels, we might add moving platforms so it is harder for the player to move.
+**Eagle Boss State Flow:**
 
-    **Elements spawn system**
+1. HOVER -> Flies above the arena, circling the player
+2. DIVE -> Swoops down aggressively toward the player's position
+3. RETREAT -> Flies back up after a dive attack (recovery phase)
+4. ENRAGED -> When health drops below a threshold, becomes faster and more aggressive
 
-    In the programming of our game we will use the implementation of functions in javascript like randomRange() to ensure that each time the level spawns or generates it spawns in random location. This will apply for each of the type of elements, and we will show a code section as an example to demonstrate the implementation: 
+**Triggers:**
+- Timer-based: After hovering for X seconds -> execute DIVE attack
+- Position-based: After dive completes -> RETREAT back to the air
+- Health-based: HP drops below threshold -> enter ENRAGED mode (permanent)
+- Distance-based: Stays out of melee range while hovering, only vulnerable during dive
 
-        <!-- addBox() {
-        
-        const size = randomRange(50, 50);
-        
-        const posX = randomRange(canvasWidth);
-        const posY = randomRange(canvasHeight);
-        const box = new GameObject(new Vector(posX, posY), size, size, "grey");
-        
-        box.destroy = false;
-        this.actors.push(box);
-        } -->
+**Key Difference from Snake Boss:**
+- Eagle is **airborne** — flies above the player instead of ground-based movement
+- Dive attacks are **predictable** — learns your position, then swoops
+- **Harder to hit** — only vulnerable when it commits to a dive or stays low
 
-    This code portion shows a general grasp how we will implement the random generations of elements inside the level. This means we will have a determined canvas size and inside this canvas limits we will generate random elements of random sizes.
+**Implementation:**
+- Game loop updates boss state each frame
+- Collision detection systems check hitboxes between boss attacks and player
+- State variables track current state, timers, and health
+- Boss sprites change based on state (idle, chase, attack, enraged animations)
 
-    It's also important to mention that depending on each element it will have movement mechanics attached or not.
+---
+ 
+#### **4. Platform Levels**
+ 
+Anura features 2 platforming sections alternating with 2 boss fights:
+1. Platform Section 1
+2. Snake Boss
+3. Platform Section 2
+4. Eagle Boss (Final)
 
-    **Enemies, platforms, traps**
+**Level Generation:**  
+Levels are not fully random. They use pre-made chunks that are randomly selected and stitched together.
 
-    Furthermore, its imperative to explain each type of the enemies, platforms, traps that will be described in a chart:
+**Chunk System:**
+- START_CHUNK: Where you spawn (always the same, safe starting area)
+- LEVEL_CHUNKS_1 / LEVEL_CHUNKS_2: Random platform layouts with enemies (different each run)
+- END_CHUNK: Exit area with cave entrance or exit door
 
-    ![alt text](image-3.png)
+**How It Works:**
+1. Select START_CHUNK
+2. Randomly select 5-7 chunks from LEVEL_CHUNKS array (platform sections)
+3. Add the END_CHUNK at the end
+4. Connect chunks together horizontally to create full level
+5. The game reads an ASCII map to spawn objects:
+   - `#` = Platform (static 60x60 tile)
+   - `@` = Frog spawn point
+   - `M` = Mosquito enemy
+   - `%` = Spider enemy
+   - `C` = Cave entrance (leads to boss)
+   - `>` = Exit door (leads to next section or victory)
 
+**Elements in Levels:**
+ 
+**Platforms:**
+- Static collision boxes 
+- Textured with mud/moss sprites
+- Uniform size across all levels
+- No moving, falling, or breaking platforms
+
+**Enemies:**
+- Mosquitoes: Flying enemies that drop currency on death and deal a a bit of damage
+- Spiders: Ground enemies that patrol on an horizontal MRU movement, deal damage on contact
+
+**Transitions:**
+- Cave Entrance: Triggers transition to boss arena when frog collides with it
+- Exit Door: Triggers transition to next platforming section (or victory screen after final boss)
+
+**Variation:**  
+Each run feels different because chunk order is randomized, creating different platform layouts and enemy placements without requiring the player to memorize fixed level designs.
+ 
+---
+ 
+#### **5. Movement System**
+ 
+The frog has many movement abilities, some locked behind cards:
+ 
+**Base Movement (Always Available):**
+- Walk: Horizontal movement at constant speed (`frog.speed`)
+- Jump: Vertical impulse with gravity (`frog.jumpForce`, `frog.gravity`)
+- Collision detection with platforms prevents falling through
+
+**Card-Unlocked Movement:**
+- Extra Jumps: Double or triple jump (Iron Hindlegs, Dragonfly Hop cards)
+- Glide: Slow fall while holding I key (Glide Membrane card)
+- Dash: Quick horizontal burst with J key (Bubble Dash card)
+- Stronger Jumps: 1.5x jump height (Rocket Frog card)
+
+**Physics:**
+- Gravity pulls the frog down
+- Landing on platforms stops downward movement
+- Camera follows frog horizontally with a smooth scrolling
+
+---
+ 
+#### **6. Health & Damage System**
+ 
+**Player Health:**
+- Starts at 100 HP, shown in the HUD
+- Health bar displayed in HUD
+- Damage taken on collision with enemies or boss attacks
+- Invincibility frames prevent damage spam, so there's a brief period after taking damage where frog cannot be hurt
+**Enemy Health:**
+- Each enemy has HP value from database 
+- Bosses have much higher HP than regular enemies
+- Enemies disappear when their HP reaches 0
+**Damage:**
+- Frog tongue attack damage (can be boosted by Combat cards, p)
+- Enemy contact damage: (varies by enemy type)
+- Damage numbers appear as floating text on hit
+**Death:**
+- When `currentHealth <= 0`, game transitions to the Game Over screen
+- Run data is saved automatically when `saveProgress(false)` is called to save run data with victory = false
+- Player returns to Card Selection Screen
+
+---
+ 
 ### **Themes**
 
+Anura has two different swamp zones that match the calm exploration and intense boss fights.
 
 
-1. Swamp Surface (Initial Zone)
-    1. Mood
-        1. Calm, humid, cozy, slightly tense, natural and alive
-    2. Objects
-        1. _Ambient_
-            1. Fireflies
-            2. lily pads floating
-            3. Swamp cane (reeds)
-            4. Soft water reflections
-            5. Tiny flying insects
-            6. Swamp fauna
+#### **1. Swamp Surface (Platform Section 1)**
 
-        2. _Interactive_
-            1. Mosquitoes (coin)
-            2. Shallow water pools
-            3. Mud and moss platforms
-            4. Floating logs
-            4. boss arena entrance (possibly a cave)
+**Mood:**  
+Calm, humid, cozy, slightly tense, natural and alive
 
-        ![alt text](SurfaceSwampCollage.png)
+**Visual Elements:**
+- Green and earthy brown color palette with lavander tones
+- Soft swamp background 
+- Static mud and moss platforms 
 
-2. Dense Swamp (mid game zone): this area reflects progression, the frog is no longer in a safe space, the environment starts to feel more hostile.
+**Interactive Objects:**
+- Mosquitoes
+- Spider enemies
+- Platforms for jumping and navigation
+- Cave entrance (leads to Snake Boss arena)
 
-    1. Mood
-        1. Darker, more enclosed, slightly oppressive, more dangerous, less visually open
-    2. Objects
-        1. _Ambient_
-            1. Thick tree trunks
-            2. Large exposed roots
-            3. Light mist or fod
-            4. Glowing mushrooms
-            5. distant predator sounds
-        2. _Interactive_
-            1. Narrow platforms
-            2. Thorny plants (Damage on contact)
-            3. Deep water (slows movement)
-            2. Unstable logs
-            3. MAYBE MINOR ENEMIES (aggressive insects)
+![Surface Swamp Collage](GDD_Images/SurfaceSwampCollage.png)
 
+#### **2. Dense Swamp (Platform Section 2)**
 
-            ![alt text](DenseSwampCollage.png)
+**Mood:**  
+Darker, more enclosed, slightly oppressive, more dangerous, less visually open
 
+**Visual Elements:**
+- Darker color palette with heavier shadows
+- Less visually open
+- Static mud and moss platforms 
 
-3. Predator Arena (boss zone)
+**Interactive Objects:**
+- Mosquitoes
+- Spider enemies
+- Platforms for jumping and navigation
+- Exit door (leads to Eagle Boss arena)
 
-    1. Mood
-        1. Tense, focused, quiet before combat, isolated
-    2. Objects
-        1. _Ambient_
-            1. broken vegetations
-            2. bone fragments
-            3. Darker water
-            4. Heavy shadows
-        2. _Interactive_
-            1. Boss entity
-            2. Arena boundaries (invisible walls or natural barriers)
-            3. Terrain elements that influence movement (roots, shallow/deep patches)
+![Dense Swamp Collage](GDD_Images/DenseSwampCollage.png)
 
-         en el 3. roots -> serian como raices que sobresalen del suelo, pueden bloquear el paso, hacer que el jugador tenga que saltar, etc y las shallow deep patches son zonas de agua que reduzcan la velocidad, mas dificil esquivar ataques, etc
-    
-    Gameplay purpose
-    - 1v1 confrontation
-    - pattern recognition
-    - card strategy execution
-    - shift from calm to danger
-    - smart survival
+#### **3. Predator Arena (Boss Zones)**
 
+**Mood:**  
+Tense, focused, quiet before combat, isolated
 
-        ![alt text](image.png)
-        
-_(example)_
+**Visual Elements:**
+- Dark color palette 
+- Flat arena space for combat
+
+**Interactive Objects:**
+- Boss (Snake Boss or Eagle Boss)
+- Arena limits
+- Platform for dodging boss attacks
+- Exit door (appears after boss is defeated)
+
+**Gameplay Purpose:**
+- 1v1 confrontation
+- Pattern recognition
+- Card strategy execution
+- Shift from calm to danger
+- Smart survival
+
+![Boss Arena Collage](GDD_Images/BossArenaCollage.png)
+
+---
 
 ### **Game Flow**
 
-**Main Menu**
+---
 
-The title screen presents different options depending on the login status:
+#### **Main Menu → Login**
 
-**When Logged Out:**
-- **Log In:** Allows the user to login with their credentials so their data is saved in the database.
--**Settings:** Adjust volume and brightness.
+1. Player opens the game and sees the Title Screen  
+2. New player: Click "Log In" → "Don't have an account? Register" → Fill username/email/password → Account saved to database  
+3. Returning player: Click "Log In" → Enter credentials → Session starts and is saved  
+4. Session ID is stored and used for the duration of the session  
 
-**When Logged In:**
-- **Start Run:** Begins a fresh run attempt. The player's saved deck and accumulated mosquitoes are loaded from the database. Health, level, and position reset for each new run attempt.
+---
 
-- **Log Out:** Logs out the current user and returns to the logged-out title screen.
+#### **Starting a Run**
 
-- **Settings:** Adjust game preferences.
+1. Player clicks "Start Run" (only available when logged in)  
+2. Backend loads player data:  
+   - Deck (all purchased cards)  
+   - Total mosquitoes  
+3. Game initializes the run:  
+   - Generates Platform Section 1  
+   - Spawns frog at starting position  
+   - Resets health to `maxHealth = 100`  
+   - Creates a new run entry in the database  
 
-**Roguelite Structure**
- 
+---
+
+#### **Run Structure**
+
+Each run follows the same structure:
+- Platform Section 1  
+- Boss 1  
+- Platform Section 2  
+- Boss 2 (Final)  
+
+---
+
+#### **Platforming Section**
+
+1. Player navigates platforms, collects mosquitoes, and fights spider enemies  
+2. Frog can activate cards (keys 1, 2, 3) to gain abilities  
+3. Activated cards are burned and replaced within their category  
+4. Reaching the cave entrance triggers the boss transition  
+
+---
+
+#### **Boss Fight**
+
+1. Scene switches to boss arena (Snake Boss or Eagle Boss)  
+2. Boss is controlled by a Finite State Machine with distinct attack patterns  
+3. Player dodges attacks and deals damage using the tongue  
+4. Cards can be used during combat  
+5. Defeating the boss transitions to the next section (or Victory if final boss)  
+
+Bosses are predictable but challenging. Success depends on pattern recognition and timing rather than reaction speed, creating strategic gameplay instead of randomness.
+
+---
+
+#### **Death**
+
+1. When health reaches 0, Game Over screen appears  
+2. Run data is saved automatically:  
+   - Mosquitoes collected are added to the total  
+   - Run is marked as **false** (no victory)  
+   - Unburned cards remain in the deck  
+3. After a short delay, the game transitions to the Card Selection Screen  
+
+---
+
+#### **Card Selection Screen (Post-Death Only)**
+
+1. Three random cards are displayed from the full pool  
+2. Each card shows name, description, image, and cost  
+3. Player may:  
+   - Purchase **at most 1 card** (if affordable)  
+   - Skip to save mosquitoes  
+4. Purchased card is added to the deck  
+5. Player can start a new run or return to the main menu  
+
+---
+
+#### **Victory**
+
+1. Final boss defeated → Victory screen appears  
+2. Run is saved:  
+   - Marked as **true** (victory)  
+   - Mosquitoes added to total  
+3. Victory screen displays run results  
+4. Player can return to the main menu  
+
+---
+
+## **Roguelite Structure**
+
 Anura follows a roguelite meta-progression system:
--**Each run is one full attempt:** It starts at the beginning and ends when you win or die.
--**Progress carries over:** Mosquito currency and unlocked cards are persistent across all runs. These are never lost.
--**No mid-run saves:** The game does not support resuming from the middle of a run. You must finish or restart.
 
-**Run Flow**
+- **Each run is one full attempt:** Starts at the beginning and ends on death or victory  
+- **Progress carries over:** Mosquitoes and purchased cards persist across all runs  
+- **No mid-run saves:** Runs cannot be resumed  
 
-1. **First Run:** The player begins with an empty deck and 0 mosquitoes. During this run, the player collects mosquitoes and may encounter bosses. Death is expected and part of the learning process.
-
-2. **Death:** Upon dying, the game saves the run data (mosquitoes collected, bosses defeated) and transitions to the Card Selection Screen. Mosquitoes collected during the run are added to the player's lifetime total.
-
-
-3. **Card Selection Screen (post-death only):**
-   - Three random cards appear on screen.
-   - The player may purchase **at most 1 card** using their accumulated mosquitoes, or skip the selection.
-   - Cards vary in cost depending on their power.
-   - After purchasing (or skipping), the player chooses to start a new run or return to the main menu.
-
-4. **Subsequent Runs:** Each new run starts fresh (full health, level 1, no active card effects), but the player keeps their purchased deck and accumulated mosquitoes. As runs progress, the deck grows stronger, enabling deeper progression.
-
-5. **Victory:** If the player defeats the final boss, a victory screen appears with a button to return to the menu. The run is marked as complete, mosquitoes are saved, and the deck persists.
-
-**The run structure is always the same:**
-- Platform Section 1
-- Boss 1
-- Platform Section 2
-- Boss 2 (Final)
-
-**Card Persistence**
-
-- **Cards persist across runs:** Purchased cards are saved to the database in `character_deck` and loaded at the start of each run.
-- **Cards are consumed on activation:** When a player activates a card (presses 1, 2, or 3), the active card is "burned" and replaced by a random card from that slot's reserve.
-- **Unburned cards survive death:** If a card is not activated during a run, it remains in the deck for the next run.
-- **Starting a run doesn't reset anything:** There is no "reset" on death. To fully reset progress (delete deck and mosquitoes), the player must create a new account.
-
-**Mosquito Currency**
- 
-- **Mosquitoes are persistent:** Collected mosquitoes are saved to the database per run in `runs.mosquitoes_collected`. The total is summed across **all sessions** for the user via the `usersMosquitoes` database view, providing account-level persistence (not session-scoped).
-- **Never lost on death:** Dying adds the mosquitoes from that run to the lifetime total.
-- **Never lost on logout/page refresh:** Mosquitoes persist across login sessions. When the player logs in again, their total mosquitoes are loaded from the database via the `usersMosquitoes` view.
-- **Used for card purchases:** Mosquitoes are spent at the Card Selection Screen. The cost is deducted via the `boughtCard` stored procedure, which updates `runs.mosquitoes_collected` for the current run.
+**Flow:**
+- First run starts with no cards and 0 mosquitoes  
+- Death is expected and part of progression  
+- Each run strengthens the player through deck growth  
 
 ---
 
-### **Level Structure**
- 
+## **Persistence Model**
+
+**What Persists Across Death:**
+- Mosquito currency (never lost, always accumulates)  
+- Unburned cards in the deck  
+- User account data (username, email, login history)  
+
+**What Resets on New Run:**
+- Frog health → `maxHealth = 100`  
+- Frog position → start of level  
+- Active card effects → `clearAllMovementEffects()` resets stats  
+
+**No Full Reset Option:**
+- No "New Game" to wipe progress  
+- Full reset requires creating a new account  
+
+---
+
+## **Card System**
+
+- Cards persist across runs and are stored in the database  
+- Cards are consumed on activation (“burned”)  
+- Burned cards are replaced within their slot/category  
+- Unused cards carry over to the next run  
+- Starting a new run does not reset the deck  
+
+---
+
+## **Mosquito Currency**
+
+- Persistent across all runs and sessions  
+- Stored per run and aggregated at the account level  
+- Never lost on death or logout  
+- Used to purchase cards after death  
+
+---
+
+## **Level Structure**
+
 Mechanics are introduced naturally:
-- Early mosquito placement encourages tongue usage.
-- Small gaps teach jumping.
-- Bosses teach pattern recognition.
+- Early mosquito placement encourages tongue usage  
+- Small gaps teach jumping  
+- Bosses reinforce pattern recognition  
 
 ---
 
-### **Difficulty Progression**
- 
+## **Difficulty Progression**
+
 **Boss 1**
-- Simple attack pattern.
-- Clear visual signal before executing the attack.
-- Long recovery window.
+- Simple attack pattern  
+- Clear visual telegraph  
+- Long recovery window  
+
 **Boss 2 (Final)**
-- Faster attacks.
-- Shorter recovery window.
-- Requires better positioning.
-Platform sections between bosses gradually increase in:
-- Obstacle density.
-- Precision requirements.
-- Environmental hazards.
-The difficulty escalates without introducing entirely new mechanics late in the run. Instead, it demands mastery of the existing systems.
- 
+- Faster attacks  
+- Shorter recovery  
+- Requires precise positioning  
+
+Difficulty scales through mastery, not new mechanics.
+
 ---
- 
-### **Post-Death Screen**
- 
-After dying, the player is taken directly to the **Card Selection Screen**. This screen shows 3 randomly selected cards with their mosquito cost. The player may:
-- Purchase 1 card (if they have enough mosquitoes).
-- Skip the selection and keep their current deck unchanged.
-- Start a new run immediately.
-- Return to the main menu.
 
-There is no persistent hub area. Mosquito currency and the card deck persist across all runs regardless of death.
+## **Post-Death Flow**
 
+After dying, the player is taken directly to the Card Selection Screen:
+- 3 random cards are shown  
+- Player may buy 1 or skip  
+- Can immediately start a new run or return to menu  
+
+There is no hub area. Progression is entirely run-based, with persistent currency and deck.
+
+---
 
 ## _Development_
 
 ---
 
-### **Abstract Classes / Components**
+### **Core Classes**
 
-1. BasePhysics
-    1. BasePlayer
-    2. BaseEnemy
-    3. BaseObject
-2. BaseObstacle
-3. BaseInteractable
+*This section was written using AI, asked the chatbot to organize the classes from the code files*
 
-_(example)_
-
-### **Derived Classes / Component Compositions**
-
-1. BasePlayer
-    1. PlayerMain(Frog)
-2. BaseEnemy
-    1. EnemyMosquitoes
-    2. Enemyspider
-    3. EnemySnake
-    4. EnemyBoss1
-    5. EnemyBoss2
-    6. EnemyFinalBoss
-    
-3. BaseObject
-    1. ObjectCard(Makes a screen for card Selection)
-    2. ObjectChest (pick-up-able)
-4. BaseObstacle
-    1. ObstacleSpike
-    2. ObstacleWall
-    3. ObstaclePlatform
-5. BaseInteractable
-    1. InteractableButton
-    2. InteractableCards
-    3. InteractableCardspot   
-
-_(example)_
+#### **Frog (Player Character)**
+ 
+**File:** `frog.js`
+ 
+**Properties:**
+- `position` (x, y coordinates)
+- `velocity` (velocityX, velocityY for physics)
+- `size`, `halfSize` (collision box dimensions)
+- `health`, `maxHealth`
+- `tongueDamage` (base attack damage)
+- `speed` (horizontal movement speed)
+- `jumpForce` (vertical jump impulse)
+- `gravity` (downward acceleration)
+- `extraJumps`, `jumpsRemaining` (double/triple jump system)
+- `canGlide`, `canDash` (unlocked abilities)
+- `isAttacking`, `isDashing`, `isGliding` (state flags)
+- `invincibilityTimer` (prevents damage spam)
+- `sprite`, `animation` (visual rendering)
+**Methods:**
+- `update(deltaTime)` - Physics, collision, input handling
+- `draw(ctx)` - Renders sprite to canvas
+- `takeDamage(amount)` - Reduces health, triggers invincibility frames
+- `attack()` - Activates tongue hitbox
+- `jump()` - Applies vertical impulse
+- `dash()` - Horizontal burst movement
+- `glide()` - Reduces fall speed
+**Card Integration:**  
+Frog properties are directly modified by card effects. For example:
+- `Iron Hindlegs` card sets `frog.extraJumps = 1`
+- `Fire Kiss` card increases `frog.tongueDamage += 10`
+- `Rocket Frog` card multiplies `frog.jumpForce *= 1.5`
+---
+ 
+#### **Enemy (Base Enemy Class)**
+ 
+**File:** `enemy.js`
+ 
+**Properties:**
+- `position`, `velocity`
+- `health`, `maxHealth`
+- `damage` (contact damage dealt to frog)
+- `state` (FSM state: idle, patrol, attack, etc.)
+- `sprite`, `animation`
+- `range` (aggro distance)
+- `speed`
+- `statesObj` (FSM state enum)
+**Methods:**
+- `update(frog, deltaTime)` - AI behavior based on current state
+- `draw(ctx)` - Renders sprite
+- `takeDamage(amount)` - Reduces health, checks for death
+- `checkCollision(frog)` - Detects overlap with frog hitbox
+- `setAnimation(startFrame, endFrame, repeat, duration)` - Controls sprite animation
+**Subclasses:**
+- **SnakeBoss** (extends Enemy) - First boss with IDLE, CHASE, DASH, RETREAT, ENRAGED states
+- **EagleBoss** - Final boss with flying AI and dive attacks
+---
+ 
+#### **Platform**
+ 
+**File:** `platform.js`
+ 
+**Properties:**
+- `position` (x, y)
+- `size` (width, height)
+- `sprite` (mud/moss texture)
+**Methods:**
+- `draw(ctx)` - Renders platform sprite
+- `checkCollision(frog)` - Returns true if frog overlaps platform, used for ground detection
+---
+ 
+#### **Card**
+ 
+**File:** `cards.js`
+ 
+**Properties:**
+- `name` (e.g., "Iron Hindlegs")
+- `category` (Movement, Combat, Utility)
+- `cost` (mosquitoes required to purchase)
+- `description` (tooltip text)
+- `effectParameter` (frog property to modify, e.g., "extraJumps")
+- `effectValue` (value to apply, e.g., 1)
+- `image` (card visual sprite)
+**Methods:**
+- `effect()` - Applies card ability to frog
+  ```javascript
+  effect() {
+      frog[this.effectParameter] += this.effectValue;
+  }
+  ```
+- `reset()` - Reverts frog property to base value before applying new card
+  ```javascript
+  reset() {
+      frog[this.effectParameter] = FROG_BASE_VALUES[this.effectParameter];
+  }
+  ```
+ 
+**Card Creation Function:**
+- `createCardFromDatabase(dbRow)` - Builds a Card object from database row, automatically copying `effect_parameter` and `effect_value` to card methods
+---
+ 
+#### **Deck Management**
+ 
+**Global Object:**
+```javascript
+deck = {
+    slot1_Movement: [],
+    slot2_Combat: [],
+    slot3_Utility: []
+}
+```
+ 
+**Key Functions:**
+- `loadDeck()` - Fetches cards from API, populates deck arrays
+- `activateCard(slotNumber)` - Burns active card, applies effect, replaces with next card
+- `drawCardHUD(deck)` - Renders card slots in UI
+- `clearAllMovementEffects()` - Resets frog to base stats at run start
+---
 
 ## _Graphics_
 
@@ -601,131 +875,152 @@ _(example)_
 
 ### **Style Attributes**
 
-The visual identity of Anura relies on a high-contrast color palette that reinforces the dual nature of the swamp. For the exploration phases, we will use a "Surface Swamp" palette consisting of mossy greens, earthy browns, and soft turquoise to evoke a calm, humid, and cozy atmosphere. However, as the player enters "Predator Zones," the colors will shift toward saturated deep purples and dark greys to immediately signal danger and heighten tension. By using a limited 16-bit color palette, we ensure that interactive elements remain distinct from the background, maintaining visual clarity even during chaotic boss fights.
+**Visual Identity:**  
+Anura uses a pixel-art aesthetic with a "Cute but Deadly" design philosophy. 
 
-The art direction follows a detailed pixel-art aesthetic characterized as "Cute but Deadly." The protagonist, Anura, and the ambient insects will feature soft outlines and rounded shapes to appear charming and vulnerable. In contrast, the predators and bosses will be designed with sharper angles, heavy shadows, and intimidating proportions to establish them as clear threats. To make the world feel alive, we will implement environmental particles such as subtle fireflies and floating lily pads.
+**Color Palette:**
+https://lospec.com/palette-list/blk-nx64
 
-Visual feedback is our primary tool for teaching mechanics without lengthy tutorials. To indicate interactivity, mosquitoes will look with a subtle white outline. When a card is activated, Anura will emit a light. During combat, we will use "Flash on Hit" effects and camera shakes to provide tactile weight to every strike, ensuring the player feels the impact of both their successes and their mistakes.
+**Visual Feedback:**
+- Damage Numbers: Floating text shows damage dealt to enemies
+- Invincibility Flash: Frog becomes semi-transparent after taking damage
+- Card Activation Flash: Flash effect when a card is burned and replaced
+- Health Bar: red bar showing current health vs max health
 
-### **Graphics Needed**
+**Art Style:**
+- Frog (Player): cute pixel art design, big eyes, green tones, pink tongue
+- Enemies (Mosquitoes, Spiders): normal pixel art sprites
+- Bosses (Snake, Eagle): scary intimidating pixel art sprites with dark tones
+
+**Animation:**
+- Sprite based animations for frog (idle, walk, jump, attack)
+- Boss state-specific animations (idle, chase, attack, enraged)
+- Enemy patrol animations
+
+### **Graphics Used**
 
 1. Characters
-    1. Anura Principal Character: frog
+    1. Frog (player character) full spritesheet with animations
     2. Bosses
-        - Snake
-        - Hawk (final boss)
+        - Snake Boss - Complete spritesheet with state animations
+        - Eagle Boss - Complete spritesheet with state animations
     
     4. Enemies
-        - Slimes
+        - Spider Enemy - Patrol enemy spritesheet
         - Spiders
-        - Mosquitoes
+        - Mosquito Enemy - Flying collectible sprite (deals damage too)
 
 2. Environment & Blocks
-
-Tilesets for mud, moss-covered platforms, climbing roots, and hollow logs that serve as transitions between platforming sections and boss arenas.
+    1. Platform Tiles - Mud/moss texture
+    2. Predator Arena Tiles - Stone texture
+    3. Cave entrance door sprite - transitions to next section
+    4. Cave exit door sprite - transitions to next section
 
 3. UI & HUD Elements
+    1. Health Bar (red with a heart next to it)
+    2. Mosquito Counter (icon + text)
+    3. Card slot display (3 slots with images)
+    4. Card images (15 images)
+    5. Buttons (drawn inside canvas)
 
-A clean interface featuring a mosquito counter, a health bar for the frog, and a deck for the three distinct card slots with a visual overlay to indicate cooldown progress.
+4. Effects
+    1. Damage Numbers (floating text)
+    2. Invincibility Flash
+    3. Card Burn Flash
 
-
-### **Sounds Needed**
+### **Sounds Used**
 
 1. Player Effects
-        - Wet Step: A squelching sound for walking on mud or moss.
-        - Tongue Flick: A fast "thwip" sound for the melee attack.
-        - Card Gulp: A satisfying "glug" or eating sound when a card is activated.
-        - Dash: A sharp "whoosh" of air to indicate rapid movement.
+        - Tongue attack: a tongue sound effect with high pitch (https://freesound.org/people/Breviceps/sounds/445974/)
 
 2. Environmental & Feedback
-        - Mosquito Pop: A light, high-pitched "ding" or "pop" upon collection.
-        - Water Splash: Different sounds for jumping into shallow vs. deep water.
-        - Boss Roar: Low-frequency growls or screeched signals before a boss attacks.
-        - Death Croak: A sad, brief vocalization when a run ends.
+        - Title Screen Music: g/people/Superglue28/sounds/510148/
+        - Platform Section Music: https://freesound.org/people/cabled_mess/sounds/335361/
+        - Boss Fight Music: https://freesound.org/people/Superglue28/sounds/510148/
 
-2. Feedback
-    1. Relieved &quot;Ahhhh!&quot; (health)
-    2. Shocked &quot;Ooomph!&quot; (attacked)
-    3. Happy chime (extra life)
-    4. Sad chime (died)
+---
+ 
+## _Card System_
+ 
+---
+ 
+### **Complete Card Pool (15 cards)**
+ 
+---
+
+#### **Movement Cards (Slot 1)**
+ 
+1. **Iron Hindlegs**
+   - Cost: 15 mosquitoes
+   - Effect: Grants a double jump (extraJumps +1)
+   - Description: "Grants the frog a double jump."
+2. **Dragonfly Hop**
+   - Cost: 10 mosquitoes
+   - Effect: Grants a triple jump (extraJumps +2)
+   - Description: "Replaces normal jump with three rapid micro jumps."
+3. **Glide Membrane**
+   - Cost: 20 mosquitoes
+   - Effect: Allows the frog to glide (canGlide = true)
+   - Description: "Allows the frog to glide through the air."
+4. **Bubble Dash**
+   - Cost: 5 mosquitoes
+   - Effect: Unlocks dash ability (canDash = true)
+   - Description: "A quick dash encased in a bubble."
+5. **Rocket Frog**
+   - Cost: 25 mosquitoes
+   - Effect: Increases jump force by 50% (jumpForce * 1.5)
+   - Description: "Launches the frog with rocket power."
+---
+ 
+#### **Combat Cards (Slot 2)**
+ 
+6. **Chameleon Veil**
+   - Cost: 20 mosquitoes
+   - Effect: Grants temporary invisibility (isInvisible = true)
+   - Description: "Briefly turns the frog invincible."
+7. **Fire Kiss**
+   - Cost: 15 mosquitoes
+   - Effect: Adds fire damage to tongue (+10 damage)
+   - Description: "Coats the tongue in fire for extra damage."
+8. **Thunder Tongue**
+   - Cost: 20 mosquitoes
+   - Effect: Electrifies tongue attack (+15 damage)
+   - Description: "Electrifies the tongue attack."
+9. **Toad Shockwave**
+   - Cost: 25 mosquitoes
+   - Effect: Tongue creates shockwave (+20 damage, pushes enemies)
+   - Description: "Tongue shockwave that pushes enemies."
+10. **Venom Lash**
+    - Cost: 10 mosquitoes
+    - Effect: Poisons enemies on hit (+5 damage over time)
+    - Description: "Poisons enemies on hit."
+---
+ 
+#### **Utility Cards (Slot 3)**
+ 
+11. **Lucky Pond**
+    - Cost: 10 mosquitoes
+    - Effect: Chance to double mosquito drops (extraMosquitos = true)
+    - Description: "Chance to double mosquito drops."
+12. **Metamorphosis**
+    - Cost: 25 mosquitoes
+    - Effect: Temporarily transforms the frog (canMetamorph = true)
+    - Description: "Temporarily transforms the frog."
+13. **Spiked Whip**
+    - Cost: 15 mosquitoes
+    - Effect: Extends tongue range with spikes (+5 whip damage)
+    - Description: "Extends tongue range with spikes."
+14. **Tadpole Heart**
+    - Cost: 20 mosquitoes
+    - Effect: Grants bonus health at run start (+25 HP)
+    - Description: "Grants bonus health at run start."
+15. **Thorn Skin**
+    - Cost: 15 mosquitoes
+    - Effect: Reflects damage back to attackers (+5 thorn damage)
+    - Description: "Reflects damage back to attackers."
+---
 
 
-## _Schedule_
-
-
-
-
-1. develop base classes
-    1. base entity
-        1. base player
-        2. base enemy
-        3. base block
-  2. base app state
-        1. game world
-        2. menu world
-2. develop player and basic block classes
-    1. physics / collisions
-3. find some smooth controls/physics
-4. develop other derived classes
-    1. blocks
-        1. moving
-        2. falling
-        3. breaking
-        4. cloud
-    2. enemies
-        1. soldier
-        2. rat
-        3. etc.
-5. design levels
-    1. introduce motion/jumping
-    2. introduce throwing
-    3. mind the pacing, let the player play between lessons
-6. design sounds
-7. design music
-
-
-### Card List
-
-**Movement Cards**
-- Iron Hindlegs: Grants a double jump while airborne
-- Rocket Frog: Charged Jump
-- Glide Membrane: Slow fall / glide
-- Bubble dash: Air dash
-- Dragonfly Hop: Triple short jump
-
-**Combat Cards**
-- Fire Kiss: Area damage + burn
-- Venom Lash: Damage over time (DoT)
-- Thunder Tongue: Chance to stun
-- Chamaeleon Veil: Temporary invisibility
-- Toad Shockwave: Shockwave when damaged
-
-**Utility Cards**
-- Thorn Skin: Reflects a portion of meele damage
-- Spiked Whip: Extra damage on hit
-- Metamorphosis: Heal on kill
-- Lucky Pond: Increased mosquito drops
-- Tadpole heart: Revive once per run
-
-
-### Screens
-
-- Title screen 
-    - play screen
-    - log in
-    - settings
-- First platform section screen
-- First boss fight section screen
-- Second platform section screen
-- Second boss fight screen
-- Third and final boss fight screen
-- Victory/You died screen
-- Pause screen
-- Card selection screen
-
-### Sketches
-
-![Screen Sketches](./GDD_Images/ScreenSketches.png)
 
 
 

@@ -748,7 +748,7 @@ FADE TO THE SAME COLOR AS THE START OF THE STORY SECTION FROM THE HERO SECTION
 
 .slot-movement {
     background-color: rgba(140, 218, 255, 0.1);
-    border: 2px solid #8cdaff;
+    border: 2px solid #8cff9b;
 }
 
 .slot-combat {
@@ -758,7 +758,7 @@ FADE TO THE SAME COLOR AS THE START OF THE STORY SECTION FROM THE HERO SECTION
 
 .slot-utility {
     background-color: rgba(140, 255, 155, 0.1);
-    border: 2px solid #8cff9b;
+    border: 2px solid #deff8c;
 }
 
 .slot-title {
