@@ -478,8 +478,8 @@ async function beginRun() {
     activeRunId = await getActiveRunID(activeSessionId);
     await createLevel(); // generates a new level layout with platforms and enemies
     
-    currentHealth = 100;
-    maxHealth = 100;
+    currentHealth = 1000;
+    maxHealth = 1000;
     runMosquitos = 0;
     currentLevel = 1;
     mosqKills = 0;

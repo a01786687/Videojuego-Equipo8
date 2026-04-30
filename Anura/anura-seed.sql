@@ -264,4 +264,11 @@ CREATE PROCEDURE saveRunMob(IN run_id2 SMALLINT, IN mob_name2 VARCHAR(25), IN mo
 	END$$
 DELIMITER ;
 
+-- UTILITY CARDS
+UPDATE cards SET effect_parameter = 'luckyPond',           effect_value = 1  WHERE card_id = 11;
+UPDATE cards SET effect_parameter = 'metamorphosisActive', effect_value = 1  WHERE card_id = 12;
+UPDATE cards SET effect_parameter = 'tongueRangeBonus',    effect_value = 2 WHERE card_id = 13;
+UPDATE cards SET effect_parameter = 'tadpoleHeart',        effect_value = 1  WHERE card_id = 14;
+UPDATE cards SET effect_parameter = 'thornSkin',           effect_value = 1  WHERE card_id = 15;
+
 
