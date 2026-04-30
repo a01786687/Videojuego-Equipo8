@@ -36,8 +36,10 @@ async function initEagleBossLevel() {
             const posY = y * TILE_SIZE + yOffset;
 
             if (char === "#") {
-                platforms.push(new Platform(posX + TILE_SIZE / 2, posY + TILE_SIZE / 2, TILE_SIZE, TILE_SIZE));
-
+                let platform = new Platform(posX + TILE_SIZE / 2, posY + TILE_SIZE / 2, TILE_SIZE, TILE_SIZE);
+                platform.setSprite("../Anura/assets/tileset/Tile_61.png");
+                platforms.push(platform);
+                
             } else if (char === "@") {
                 if (!frog) {
                     frog = new Frog({ x: posX + TILE_SIZE / 2, y: posY - 50 }, 50, 50, 4);
@@ -86,7 +88,7 @@ function drawBossScene2(deltaTime) {
 
     if (!deltaTime || isNaN(deltaTime) || deltaTime > 50) deltaTime = 16.6;
 
-    if (pause) return;
+    //if (pause) return;
 
     // Clear canvas first — prevents black screen if background image hasn't loaded yet
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
@@ -99,7 +101,13 @@ function drawBossScene2(deltaTime) {
         ctx.fillRect(0, 0, canvasWidth, canvasHeight);
     }
 
-    if (!isGameOver && frog) {
+    // if VICTORY
+    if (isVictory) {
+        drawVictory();
+        return;  // stop drawing the game
+    }
+
+    if (!isGameOver && !pause && frog) {
 
         // --- CAMERA LERP ---
         eagleTargetCameraX = frog.position.x - canvasWidth / 2;
@@ -173,9 +181,18 @@ function drawBossScene2(deltaTime) {
             // Eagle defeated — show victory screen
             if (eagleBoss.health <= 0) {
                 eagleBoss = null;
-                ctx.restore();
-                drawVictory();
-                return;
+                isVictory = true; // activate state
+
+            // implemented with AI help, 
+            // calls saveProgress(true) to save victory state to database, AI helped identify that it was 
+            // needed to pass 'true' ad a parameter to indicate victory (not death)
+            // related to changes in app_anura.js /run/death ndpoint, playScene.js saveProgress() function
+            
+            saveProgress(true).then(response => {
+                console.log("Victory saved:", response);
+                sessionMosquitos = response.savedData.mosquitoes_total;
+            });
+
             } else {
                 eagleBoss.draw(ctx);
             }
@@ -198,6 +215,10 @@ function drawBossScene2(deltaTime) {
         drawGameOver();
     }
 
-    backButton();
-}
+    // pause menu
+    if (pause && !isGameOver) {
+        drawPauseMenu();
+    }
 
+    // backButton();
+}

@@ -27,7 +27,8 @@ import { createUser, getMobData, getUsers, getUsersById, startSession,
          saveRun, countRunsPerSession, getRandomCards, getTotalMosquitoesBySession, 
          updateDeck, getAllCards, getNewSessionById, startRun, getDeck, boughtCard,
          addCardToDeck, getTotalRunsPerUser, getTotalMosquitoesPerUser, getTotalMosquitoesByUser, 
-         getMosquitoeReward} from './db.js'
+         getMosquitoeReward, getUserStatsById, getTotalWinsByUser, getTotalDeathsByUser, getBestTimeByUser, 
+         saveRunMob, startRunMob} from './db.js'
 
 const app = express();
 const port = 8080;
@@ -154,7 +155,7 @@ app.get("/updateAfterPurchase/:session_id", async (req, res) => {
 // When someone sends POST /run/death, run this function:
 app.post("/run/death", async (req, res) => {
     
-    const { mosquitoes, run_id, deck, session_id } = req.body;
+    const { mosquitoes, run_id, deck, session_id, victory } = req.body;
 
     if (!session_id) {
         return res.status(400).json({ error: " a valid run_id is required" });
@@ -162,10 +163,12 @@ app.post("/run/death", async (req, res) => {
 
     try {
         // save the run
-        const bosses_defeated = 0;
-        const victory = false;
-        const runId = await saveRun(run_id, mosquitoes, bosses_defeated, victory);
-
+        // implemented with AI help
+        // added victory parameter handling to support death and victory tracking
+        // AI helped identify that bosses_Defeated should be 2 for victory and 0 for death, it uses a ternary operator victory ? 2 : 0
+        const bosses_defeated = victory ? 2 : 0; // this modification was done with AI for saving the victory boolean true
+        
+        const runId = await saveRun(run_id, mosquitoes, bosses_defeated, victory || false); 
         // get the updated lifetime mosquito total
         const mosquitoData = await getTotalMosquitoesByUser(session_id);
 
@@ -249,6 +252,31 @@ app.get("/test", async (req,res) =>{
     res.send(data);
 });
 
+// GET /stats/user/:user_id -> returns stats for a specific user 
+// used by the index.html sidebar to show personal stats 
+app.get("/stats/user/:user_id", async (req, res) => {
+    try {
+        const user_id = req.params.user_id;
+
+        // call all 4 functions from db.js
+        const totalRuns = await getUserStatsById(user_id);
+        const totalWins = await getTotalWinsByUser(user_id);
+        const totalDeaths = await getTotalDeathsByUser(user_id);
+        const bestTime = await getBestTimeByUser(user_id);
+
+        res.json({
+            runsPlayed: totalRuns.totalRuns,
+            wins: totalWins.totalWins,
+            deaths: totalDeaths.totalDeaths,
+            bestTime: bestTime.bestTime
+        });
+
+    } catch (err) {
+        console.error("Error in GET /stats/user/:user_id:", err);
+        res.status(500).json({ error: "Failed to get user stats" });
+    }
+})
+
 // GET /stats/mosquitoesPerUser -> returns top 10 users by total mosquitoes collected
 app.get("/stats/mosquitoesPerUser", async (req, res) => {
     try {
@@ -266,6 +294,38 @@ app.get("/mob/reward/:mob_name", async (req, res) =>{
     res.send(reward);
 });
 
+app.post("/startRunMob", async (req, res) =>{
+    const {run_id, mob_name} = req.body;
+    
+    if(!run_id || !mob_name){
+        return res.status(400).json({ error: "Values must be recived" });
+    }
+    try{
+        const data = await startRunMob(run_id, mob_name);
+        res.json({success: true, initialize: data});
+    }
+    catch(err){
+        console.error("Error in POST /startRunMob:", err);
+        res.status(500).json({ error: "Failed to add data to run_mob" });
+    }
+});
+
+app.post("/saveRunMob", async (req, res) =>{
+    const {run_id, mob_name, mobKills} = req.body;
+
+    if(!run_id || !mob_name || !mobKills){
+         return res.status(400).json({ error: "Values can't be null" });
+    }
+    try{
+        const data = await saveRunMob(run_id, mob_name, mobKills);
+        res.json({success: true, saved: data});
+    }
+    catch(err){
+        console.error("Error in POST /saveRunMob:", err);
+        res.status(500).json({ error: "Failed to update data to run_mob" });
+    }
+
+});
 
 // --- SERVER START ---
 

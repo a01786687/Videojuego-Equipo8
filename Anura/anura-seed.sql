@@ -109,7 +109,7 @@ USE anura;
 	USING (session_id)
 	INNER JOIN anura.users AS Y
 	ON session_user_id = user_id
-	GROUP BY (user_id);
+	GROUP BY (user_id); 
 
 	CREATE OR REPLACE VIEW timeToKillBoss as 
 	SELECT X.boss_name, AVG(Y.time_to_defeat) AS avgTime2Defeat
@@ -149,6 +149,25 @@ USE anura;
 			THEN
 				SET NEW.run_time = TIMESTAMPDIFF(SECOND, NEW.start_time, NEW.end_time);
 		END IF;
+	END$$
+	DELIMITER ;
+
+
+	-- TRIGGER for calulating run_time when a run is UPDATED (victory/death)
+	-- Needed because the existing trigger calculateRunTime only fires on INSERT (run start), 
+	-- but run_time needs to be calculated when end_time is set during 
+	-- UPDATE (when saveRun procedure is called with victory status)
+	-- IDENTIFIED WITH AI, I asked AI what the problem was and why was the run time not updating, and it pointed this out
+	DROP TRIGGER IF EXISTS calculateRunTimeOnUpdate;
+	DELIMITER $$
+	CREATE TRIGGER calculateRunTimeOnUpdate
+	BEFORE UPDATE ON anura.runs  -- We had small issue since it was on insert instead of UPDATE
+	FOR EACH ROW					-- Most of the TRIGGER was implemented by us just the correction with AI on UPDATE
+	BEGIN						
+		-- if end_time was just set victory or death, calculate the run time
+		IF NEW.end_time IS NOT NULL AND OLD.end_time IS NULL THEN
+			SET NEW.run_time = TIMESTAMPDIFF(SECOND, NEW.start_time, NEW.end_time);  -- We asked AI if it was possible calculate time from TIMESTAMPS
+		END IF;																		-- and gave us this native procedure from MySQL called TIMESTAPDIFF
 	END$$
 	DELIMITER ;
 
@@ -208,4 +227,41 @@ USE anura;
 		WHERE run_session_id = session_id2 LIMIT 1;
 	END$$
 	DELIMITER ;
+
+-- UPDATE COMBAT CARDS
+UPDATE cards SET effect_value = 1.00, effect_parameter = 'canChameleon' WHERE card_id = 6;
+UPDATE cards SET effect_value = 1.00, effect_parameter = 'fireKiss' WHERE card_id = 7;
+UPDATE cards SET effect_value = 0.40, effect_parameter = 'thunderChance' WHERE card_id = 8;
+UPDATE cards SET effect_value = 1.00, effect_parameter = 'canShockwave' WHERE card_id = 9;
+UPDATE cards SET effect_value = 999.99, effect_parameter = 'poisonDuration' WHERE card_id = 10;
+
+-- TRIGGERS and PROCEDURES to set data to run_mob table
+
+DROP PROCEDURE IF EXISTS startRunMob;
+DELIMITER $$
+CREATE PROCEDURE startRunMob(IN run_id2 SMALLINT, IN mob_name2 VARCHAR(25))
+	BEGIN 
+		SET @mobID = NULL;
+		SELECT mob_id INTO @mobID FROM mobs
+		WHERE mob_name = mob_name2;
+
+		INSERT INTO run_mob(rm_mob_id, rm_run_id)
+		VALUES (@mobID, run_id2);
+
+	END$$
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS saveRunMob;
+DELIMITER $$
+CREATE PROCEDURE saveRunMob(IN run_id2 SMALLINT, IN mob_name2 VARCHAR(25), IN mobKills SMALLINT)
+	BEGIN
+		SET @mobID = NULL;
+		SELECT mob_id INTO @mobID FROM mobs
+		WHERE mob_name = mob_name2;
+
+		UPDATE run_mob SET mobs_killed = mobKills
+		WHERE rm_run_id = run_id2 AND rm_mob_id = @mobID;
+	END$$
+DELIMITER ;
+
 

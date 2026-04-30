@@ -33,7 +33,7 @@ We use a connection pool instead of a single connection.
 const pool = mysql.createPool({
     host: '127.0.0.1', // localhost
     user: 'root',
-    password: 'Cerplirp&130506',
+    password: '',
     database: 'anura'
 }).promise() // promise -> enables async/await
 
@@ -290,12 +290,86 @@ export async function getTotalMosquitoesPerUser() {
         return rows;
 }
 
+// INDIVIDUAL USER STATS located in the sidebar on index.html which is the play page
+// getUserStatsById(user_id) -> returns total runs for a specific user
+// uses the runsPerUser view that already exists
+export async function getUserStatsById(user_id) {
+    const [rows] = await pool.query(`
+        SELECT totalRuns
+        FROM runsPerUser
+        WHERE session_user_id = ?;
+        `, [user_id]);
+
+        console.log("Total runs for user_id", user_id, ":", rows[0]);
+        return rows[0] ?? {totalRuns: 0}; // if no runs exist, return 0
+}
+
+// getTotalWinsByUser(user_id) -> counts runs where victory = TRUE for one user
+// counts runs, filters by user AND victory = TRUE
+export async function getTotalWinsByUser(user_id) {
+    const [rows] = await pool.query(`
+        SELECT COUNT(R.run_id) AS totalWins
+        FROM runs AS R
+        INNER JOIN sessions AS S ON R.run_session_id = S.session_id
+        WHERE S.session_user_id = ? AND R.victory = TRUE;
+        `, [user_id]);
+
+    console.log("Total wins for user_id", user_id, ":", rows[0]);
+    return rows [0] ?? { totalWins: 0};
+}
+
+// getTotalDeathsByUser(user_id) -> count runs where victory = FALSE for one user
+// counts runs, filters by user AND victory = FALSE
+export async function getTotalDeathsByUser(user_id) {
+    const [rows] = await pool.query(`
+        SELECT COUNT(R.run_id) AS totalDeaths
+        FROM runs AS R
+        INNER JOIN sessions AS S on R.run_session_id = S.session_id
+        WHERE S.session_user_id = ? AND R.victory = FALSE;
+        `, [user_id]);
+
+    console.log("Total deaths for user_id", user_id, ":", rows[0]);
+    return rows[0] ?? { totalDeaths: 0 };
+}
+
+// getBestTimeByUser(user_id) -> finds the shortest run_time from VICTORY state runs
+// uses mysql MIN() to find the fastest time from victories
+export async function getBestTimeByUser(user_id) {
+    const [rows] = await pool.query(`
+        SELECT MIN(R.run_time) AS bestTime
+        FROM runs AS R
+        INNER JOIN sessions AS S 
+        ON R.run_session_id = S.session_id
+        WHERE S.session_user_id = ? 
+        AND R.victory = TRUE
+        AND R.run_time IS NOT NULL
+        AND R.run_time > 0;
+        `, [user_id]);
+
+    console.log("Best time for user_id", user_id, ":", rows[0]);
+    return rows [0] ?? { bestTime: null }; // null if no victories yet
+}
+
 export async function getMosquitoeReward(mob_name){
     const [reward] = await pool.query("SELECT mosquito_reward FROM mobs WHERE mob_name = ?", [mob_name]);
 
     const mosqReward = reward[0].mosquito_reward;
     console.log("This ",mob_name, " reward is:",mosqReward);
     return mosqReward;
+}
+
+export async function startRunMob(run_id, mob_name){
+    const [data] = await pool.query("CALL startRunMob (?,?)",[run_id, mob_name]);
+
+    console.log(data);
+    return data;
+}
+
+export async function saveRunMob(run_id,mob_name, mobKills){
+    const [data] = await pool.query("CALL saveRunMob (?,?,?)",[run_id, mob_name, mobKills]);
+
+    console.log(data);
+    return data;
 }
 
 

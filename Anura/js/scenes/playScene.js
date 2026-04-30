@@ -25,6 +25,8 @@ let sessionMosquitos = 0;
 let currentLevel = 1;
 let enemies = []; // Array for enemies
 let damageNumbers = []; // array for damage numbers
+let mosqKills = 0;  // For run_mob data
+let spiderKills = 0; // For run_mob data
 
 // game loop id for stopping the game when there's a game over, 
 // initialized as null since there's not an active game yet
@@ -34,7 +36,9 @@ let activeRunId = null; // stores the current run's ID from the database
 //This variable is used to store the last active scene before a game over, so when the player continues, they return to the correct scene (play or boss)
 let lastActiveScene = "play";
 
-
+// cave entrance
+let caveEntranceImg = new Image();
+caveEntranceImg.src = "../Anura/assets/caveEntrance.png";
 
 // --- GLOBAL ASSETS ---
 let swampSurfaceBg = new Image();
@@ -75,14 +79,23 @@ async function gameOver() {
     console.log("Game Over"); // for debugging
     
     // send death data to backend and WAIT for a reply, front end sends mosquitoes and deck to the backend
-    const response = await saveProgressOnDeath();
+    const response = await saveProgress(false);
     // shows what backend returned in JSON format
     console.log("Backend response:", response);
     sessionMosquitos = response.savedData.mosquitoes_total;
     console.log("Cheking...",sessionMosquitos);
 
+    const verifySpiderRM = await saveRunMobData(activeRunId,'spider',spiderKills);
+    const verifyMosqRM = await saveRunMobData(activeRunId,'mosquito',mosqKills);
+    console.log("Verify run mob for spider: ", verifySpiderRM);
+    console.log("Verify run mob for mosq: ", verifyMosqRM);
+
+    mosqKills = 0;
+    spiderKills = 0; 
+
     // always transition to cardSelection screen from gameOver after 2 Seconds 
     setTimeout(() => {
+        loadUserStats(); // update user stats
         currentScene = "cardSelection";
         generateCardOffers();
     }, 2000);
@@ -154,7 +167,8 @@ function drawPlayScene(deltaTime) {
         ctx.fillStyle = "#4b3621"; 
         
         for (let plat of platforms) {
-            ctx.fillRect(
+            ctx.drawImage(
+                Tile_02,
                 plat.position.x - plat.halfSize.x, 
                 plat.position.y - plat.halfSize.y, 
                 plat.size.x, 
@@ -162,30 +176,36 @@ function drawPlayScene(deltaTime) {
             );
         }
 
-        // placeholder cave entrance
+        // cave entrance, natural size (96x96 px)
         if (caveEntrance) {
-            ctx.fillStyle = "#1a0a00";
-            ctx.fillRect(
-                caveEntrance.position.x - caveEntrance.halfSize.x,
-                caveEntrance.position.y - caveEntrance.halfSize.y,
-                caveEntrance.halfSize.x * 2,
-                caveEntrance.halfSize.y * 2
+            
+            ctx.drawImage(
+                caveEntranceImg,
+                caveEntrance.position.x - caveEntranceImg.width / 2,
+                caveEntrance.position.y - caveEntranceImg.height / 2 - 40,
+                caveEntranceImg.width,
+                caveEntranceImg.height
             );
         }
 
         // Exit door — drawn inside ctx.translate so it moves with the world
+        // Exit door — drawn inside ctx.translate so it moves with the world
         if (exitDoor) {
-            ctx.fillStyle = "#00cc44";
-            ctx.fillRect(
-                exitDoor.position.x - exitDoor.halfSize.x,
-                exitDoor.position.y - exitDoor.halfSize.y,
-                exitDoor.halfSize.x * 2,
-                exitDoor.halfSize.y * 2
+            const size = 96;
+            
+            // Dibujar la imagen de la cueva
+            ctx.drawImage(
+                caveEntranceImg,
+                exitDoor.position.x - size / 2,
+                exitDoor.position.y - (size / 2) - 27,
+                size,
+                size
             );
+            
             ctx.fillStyle = "#ffffff";
             ctx.font = "10px Pixelify Sans";
             ctx.textAlign = "center";
-            ctx.fillText(">", exitDoor.position.x, exitDoor.position.y + 4);
+            ctx.fillText("EXIT", exitDoor.position.x, exitDoor.position.y + 4);
         }
 
         // draw player and restore camera transform
@@ -256,8 +276,9 @@ window.addEventListener("keyup", handleKeyUp);
 window.addEventListener('keydown', (event) => {
     keys[event.key] = true; // if a key is pressed -> sets to true
     
-    // toggle pause (esc)
-    if (event.key === 'Escape') {
+    // toggle pause (esc) 
+    if (event.key === 'Escape' && (currentScene === "play" || currentScene === "boss" || currentScene === "eagle_boss") // only allow pausing if the player is actually in gameplay (suggested by AI since we were having bugs for the pause menu)
+    ) {
         pressPause();
     }
 
@@ -457,10 +478,12 @@ async function beginRun() {
     activeRunId = await getActiveRunID(activeSessionId);
     await createLevel(); // generates a new level layout with platforms and enemies
     
-    currentHealth = 200;
-    maxHealth = 200;
+    currentHealth = 100;
+    maxHealth = 100;
     runMosquitos = 0;
     currentLevel = 1;
+    mosqKills = 0;
+    spiderKills = 0;
     // deck = [];
     cameraX = 0;
 
@@ -524,7 +547,7 @@ class DamageNumber {
 
 // GAME OVER async function for API call
 
-async function saveProgressOnDeath() {
+async function saveProgress(isVictory) {
 
     // collect all card IDs from each slot into one array
     const cardIds = [];
@@ -546,9 +569,19 @@ async function saveProgressOnDeath() {
             mosquitoes: runMosquitos,
             run_id: activeRunId,
             deck: cardIds,
-            session_id: activeSessionId
+            session_id: activeSessionId,
+            victory: isVictory // victory added
         })
     });
+
+
+    const verifySpiderRM = await saveRunMobData(activeRunId,'spider',spiderKills);
+    const verifyMosqRM = await saveRunMobData(activeRunId,'mosquito',mosqKills);
+    console.log("Verify run mob for spider: ", verifySpiderRM);
+    console.log("Verify run mob for mosq: ", verifyMosqRM);
+
+    mosqKills = 0;
+    spiderKills = 0; 
 
     return await res.json();
 }
@@ -570,4 +603,18 @@ async function getActiveRunID(current_session_id){
     }
     
 
+}
+
+async function saveRunMobData(front_run_id,front_mob_name, front_mobKills){
+    const res = await fetch("http://localhost:8080/saveRunMob",{
+        method: "POST",
+        headers: { "Content-Type" : "application/json" },
+        body: JSON.stringify({
+            run_id: front_run_id,
+            mob_name: front_mob_name,
+            mobKills: front_mobKills
+        })
+    });
+    const savedData = await res.json();
+    return savedData;
 }

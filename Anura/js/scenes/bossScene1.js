@@ -10,6 +10,10 @@ let snakeBoss = null;
 let predatorArenaBg = new Image();
 predatorArenaBg.src = "../Anura/assets/predator_arena/predator_arena_background.png";
 
+// cave exit
+let caveExitImg = new Image();
+caveExitImg.src = "../Anura/assets/caveExit.png";
+
 let arenaPixelWidth   = 0;
 let bossTargetCameraX = 0;
 let bossExitDoor      = null; // spawns after boss is defeated, leads to level 2
@@ -41,7 +45,10 @@ async function initBossLevel() {
             const posY = y * TILE_SIZE + yOffset;
 
             if (char === "#") {
-                platforms.push(new Platform(posX + TILE_SIZE / 2, posY + TILE_SIZE / 2, TILE_SIZE, TILE_SIZE));
+                let platform = new Platform(posX + TILE_SIZE / 2, posY + TILE_SIZE / 2, TILE_SIZE, TILE_SIZE);
+                platform.setSprite("../Anura/assets/tileset/Tile_61.png");
+                platforms.push(platform);
+
 
             } else if (char === "@") {
                 if (!frog) {
@@ -83,11 +90,11 @@ async function initBossLevel() {
 function drawBossScene1(deltaTime) {
     if (!deltaTime || isNaN(deltaTime) || deltaTime > 50) deltaTime = 16.6;
 
-    if (pause) return;
+    //if (pause) return;
 
     ctx.drawImage(predatorArenaBg, 0, 0, canvasWidth, canvasHeight);
 
-    if (!isGameOver && frog) {
+    if (!isGameOver && !pause && frog) {
 
         // --- CAMERA LERP ---
         bossTargetCameraX = frog.position.x - canvasWidth / 2;
@@ -180,13 +187,17 @@ function drawBossScene1(deltaTime) {
 
         // Draw exit door and handle level 2 transition
         if (bossExitDoor) {
-            ctx.fillStyle = "#00cc44";
-            ctx.fillRect(
-                bossExitDoor.position.x - bossExitDoor.halfSize.x,
-                bossExitDoor.position.y - bossExitDoor.halfSize.y,
-                bossExitDoor.halfSize.x * 2,
-                bossExitDoor.halfSize.y * 2
+            const size = 96;
+
+            // draw exit door image
+            ctx.drawImage(
+                caveExitImg,
+                bossExitDoor.position.x - size / 2,
+                bossExitDoor.position.y - (size / 2) - 15,
+                size,
+                size
             );
+
             ctx.fillStyle = "#ffffff";
             ctx.font = "10px Pixelify Sans";
             ctx.textAlign = "center";
@@ -223,5 +234,14 @@ function drawBossScene1(deltaTime) {
         drawGameOver();
     }
 
+    // pause menu
+    if (pause && !isGameOver) {
+        drawPauseMenu();
+    }
+
     // backButton();
 }
+
+
+
+

@@ -36,6 +36,17 @@ let currentVolume = 0.5;
 // sound effect assets
 let tongueAttackSound;
 
+// tile set images
+// platform tileset
+let Tile_02 = new Image();
+Tile_02.src = "../Anura/assets/tileset/Tile_02.png";
+
+let Tile_12 = new Image();
+Tile_12.src = "../Anura/assets/tileset/Tile_12.png";
+
+let Tile_61 = new Image();
+Tile_61.src = "../Anura/assets/tileset/Tile_61.png";
+
 // current active scene
 let currentScene = "title";
 
@@ -43,6 +54,8 @@ let previousScene = "title";
 
 // this is for tracking where we came from when going to settings
 let sceneBeforeSettings = null;
+
+let isVictory = false;
 
 // main(), runs once when the page loads
 
@@ -204,8 +217,28 @@ function handleClick(event) {
 
     console.log(mouseX, mouseY);
 
+
+    // --- VICTORY SCREEN CLICK ---
+    if (isVictory) {
+        // back to Title button bounds
+        const buttonWidth = 200;
+        const buttonHeight = 60;
+        const buttonX = (canvasWidth - buttonWidth) / 2;
+        const buttonY = 400;
+
+        if (mouseX >= buttonX && mouseX <= buttonX + buttonWidth &&
+            mouseY >= buttonY && mouseY <= buttonY + buttonHeight) {
+            // click on button
+            isVictory = false;
+            loadUserStats(); // load stats after victory
+            currentScene = "title";
+            return;  // important to stop processing clicks
+        }
+        return;  // if we're on victory, we don't process other clicks
+    }
+
     // handle pause menu clicks
-    if (currentScene === "play" && pause) {
+    if ((currentScene === "play" || currentScene === "boss" || currentScene === "eagle_boss") && pause) {
         const buttonWidth = 280;
         const buttonHeight = 60;
         const buttonX = (canvasWidth - buttonWidth) / 2;
