@@ -33,7 +33,7 @@ We use a connection pool instead of a single connection.
 const pool = mysql.createPool({
     host: '127.0.0.1', // localhost
     user: 'root',
-    password: 'Cerplirp&130506',
+    password: '#Clifjumper4406',
     database: 'anura'
 }).promise() // promise -> enables async/await
 
@@ -385,6 +385,12 @@ export async function finalStage(run_id) {
         WHERE rs_run_id = ?`, [run_id]);
     console.log("Update into run_stage: ",data);
     return data;
+}
+
+export async function loadFrog(){
+    const [values] = await pool.query("SELECT base_hp, base_damage, base_speed FROM playable_character LIMIT 1");
+    console.log("Frog stats: ", values);
+    return values;
 }
 
 

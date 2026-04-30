@@ -22,7 +22,7 @@ const frogMotion = {
 let frog = null; // Global reference so playScene and levelGenerator can see it
  
 class Frog extends AnimatedPlayer {
-    constructor(position, width, height, sheetCols) {
+    constructor(position, width, height, sheetCols, speed, tongueDamage) {
         super(position, width, height, "#7ed967", sheetCols, frogMotion);
  
         this.width = width;
@@ -48,7 +48,7 @@ class Frog extends AnimatedPlayer {
         this.facing = 1;
  
         // --- MOVEMENT PROPERTIES ---
-        this.speed = 10;
+        this.speed = speed;
         this.velocityY = 0;
         this.isOnGround = true;
         this.gravity = 0.8;
@@ -91,7 +91,7 @@ class Frog extends AnimatedPlayer {
         this.invincibilityDuration = 1500;
  
         // --- COMBAT & CARD MODIFIERS ---
-        this.tongueDamage = 25;
+        this.tongueDamage = tongueDamage;
         this.tongueElement = "normal"; // Can be "fire", "poison", "ice"
         this.activeStatusEffects = []; // Store temporary card buffs here
  
