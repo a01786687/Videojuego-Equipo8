@@ -30,7 +30,8 @@ import { createUser, getMobData, getUsers, getUsersById, startSession,
          getMosquitoeReward, getUserStatsById, getTotalWinsByUser, getTotalDeathsByUser, getBestTimeByUser, 
          saveRunMob, startRunMob,
          initStage,
-         finalStage} from './db.js'
+         finalStage,
+         loadFrog} from './db.js'
 
 const app = express();
 const port = 8080;
@@ -357,6 +358,11 @@ app.post("/secondLevel", async (req, res) => {
         console.error("Error in POST /secondLevel:", err);
         res.status(500).json({ error: "Failed to update data to run_stage" });
     }
+});
+
+app.get("/frogValues", async (req,res) => {
+    const fvalues = await loadFrog();
+    res.send(fvalues);
 });
 
 // --- SERVER START ---

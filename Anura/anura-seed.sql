@@ -271,4 +271,10 @@ UPDATE cards SET effect_parameter = 'tongueRangeBonus',    effect_value = 2 WHER
 UPDATE cards SET effect_parameter = 'tadpoleHeart',        effect_value = 1  WHERE card_id = 14;
 UPDATE cards SET effect_parameter = 'thornSkin',           effect_value = 1  WHERE card_id = 15;
 
+SET SQL_SAFE_UPDATES = 0;  -- run this first
+UPDATE playable_character SET base_damage = 1; -- first
+SET SQL_SAFE_UPDATES = 1; -- then this
+
+
+
 
