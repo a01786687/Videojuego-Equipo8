@@ -91,6 +91,7 @@ SELECT * FROM usersMosquitoes;
 SELECT * FROM mobs;
 SELECT * FROM boss;
 SELECT * FROM playable_character;
+SELECT * FROM run_mob;
 
 
         

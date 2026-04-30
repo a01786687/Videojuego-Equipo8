@@ -27,7 +27,8 @@ import { createUser, getMobData, getUsers, getUsersById, startSession,
          saveRun, countRunsPerSession, getRandomCards, getTotalMosquitoesBySession, 
          updateDeck, getAllCards, getNewSessionById, startRun, getDeck, boughtCard,
          addCardToDeck, getTotalRunsPerUser, getTotalMosquitoesPerUser, getTotalMosquitoesByUser, 
-         getMosquitoeReward, getUserStatsById, getTotalWinsByUser, getTotalDeathsByUser, getBestTimeByUser } from './db.js'
+         getMosquitoeReward, getUserStatsById, getTotalWinsByUser, getTotalDeathsByUser, getBestTimeByUser, 
+         saveRunMob, startRunMob} from './db.js'
 
 const app = express();
 const port = 8080;
@@ -293,6 +294,38 @@ app.get("/mob/reward/:mob_name", async (req, res) =>{
     res.send(reward);
 });
 
+app.post("/startRunMob", async (req, res) =>{
+    const {run_id, mob_name} = req.body;
+    
+    if(!run_id || !mob_name){
+        return res.status(400).json({ error: "Values must be recived" });
+    }
+    try{
+        const data = await startRunMob(run_id, mob_name);
+        res.json({success: true, initialize: data});
+    }
+    catch(err){
+        console.error("Error in POST /startRunMob:", err);
+        res.status(500).json({ error: "Failed to add data to run_mob" });
+    }
+});
+
+app.post("/saveRunMob", async (req, res) =>{
+    const {run_id, mob_name, mobKills} = req.body;
+
+    if(!run_id || !mob_name || !mobKills){
+         return res.status(400).json({ error: "Values can't be null" });
+    }
+    try{
+        const data = await saveRunMob(run_id, mob_name, mobKills);
+        res.json({success: true, saved: data});
+    }
+    catch(err){
+        console.error("Error in POST /saveRunMob:", err);
+        res.status(500).json({ error: "Failed to update data to run_mob" });
+    }
+
+});
 
 // --- SERVER START ---
 

@@ -78,9 +78,6 @@ class Enemy extends AnimatedObject {
         this.motion = motion;
         this.dirData;
 
-
-
-
         // Initialize spriteRect for AnimatedObject.js
         this.spriteRect = new Rect(0, 0, width, height);
     }
@@ -154,6 +151,40 @@ class Enemy extends AnimatedObject {
                 console.log("Mosquito reward from ", this.type,":", reward);
                 console.log("Mosquitoes collected: ", runMosquitos);
             }
+        }
+
+        if(this.type == "mosquito"){
+            mosqKills++; 
+            if(mosqKills == 1){
+                const res = await fetch("http://localhost:8080/startRunMob",{
+                    method: "POST",
+                    headers: { "Content-Type" : "application/json" },
+                    body: JSON.stringify({
+                        run_id: activeRunId,
+                        mob_name: this.type
+                    })
+                });
+                const verify = await res.json();
+                console.log("Verifying run_mob: ",verify);
+            }
+               
+        }
+        else if(this.type == "spider"){
+            spiderKills++;
+            console.log(spiderKills);
+            if(spiderKills == 1){
+                const res = await fetch("http://localhost:8080/startRunMob",{
+                    method: "POST",
+                    headers: { "Content-Type" : "application/json" },
+                    body: JSON.stringify({
+                        run_id: activeRunId,
+                        mob_name: this.type
+                    })
+                });
+                const verify = await res.json();
+                console.log("Verifying run_mob: ",verify);
+            }
+            
         }
     }
     // changeAnimation(){

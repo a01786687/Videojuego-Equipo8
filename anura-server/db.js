@@ -33,7 +33,7 @@ We use a connection pool instead of a single connection.
 const pool = mysql.createPool({
     host: '127.0.0.1', // localhost
     user: 'root',
-    password: '',
+    password: '#Clifjumper4406',
     database: 'anura'
 }).promise() // promise -> enables async/await
 
@@ -338,7 +338,8 @@ export async function getBestTimeByUser(user_id) {
     const [rows] = await pool.query(`
         SELECT MIN(R.run_time) AS bestTime
         FROM runs AS R
-        INNER JOIN sessions AS S ON R.run_session_id = S.session_id
+        INNER JOIN sessions AS S 
+        ON R.run_session_id = S.session_id
         WHERE S.session_user_id = ? 
         AND R.victory = TRUE
         AND R.run_time IS NOT NULL
@@ -349,13 +350,26 @@ export async function getBestTimeByUser(user_id) {
     return rows [0] ?? { bestTime: null }; // null if no victories yet
 }
 
-
 export async function getMosquitoeReward(mob_name){
     const [reward] = await pool.query("SELECT mosquito_reward FROM mobs WHERE mob_name = ?", [mob_name]);
 
     const mosqReward = reward[0].mosquito_reward;
     console.log("This ",mob_name, " reward is:",mosqReward);
     return mosqReward;
+}
+
+export async function startRunMob(run_id, mob_name){
+    const [data] = await pool.query("CALL startRunMob (?,?)",[run_id, mob_name]);
+
+    console.log(data);
+    return data;
+}
+
+export async function saveRunMob(run_id,mob_name, mobKills){
+    const [data] = await pool.query("CALL saveRunMob (?,?,?)",[run_id, mob_name, mobKills]);
+
+    console.log(data);
+    return data;
 }
 
 
