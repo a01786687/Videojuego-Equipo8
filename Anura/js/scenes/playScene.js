@@ -621,3 +621,4 @@ async function saveRunMobData(front_run_id,front_mob_name, front_mobKills){
     const savedData = await res.json();
     return savedData;
 }
+
