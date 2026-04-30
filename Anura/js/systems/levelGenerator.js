@@ -76,7 +76,7 @@ function generateLevelPlan2() {
 }
 
 // function for the objects
-function createLevel() {
+async function createLevel() {
     platforms = []; // clean platforms array to avoid duplicates when creating a new level
     enemies = [];   // Clean enemies array to avoid duplicates when creating a new level
     caveEntrance = null; // reset on every new level
@@ -86,6 +86,9 @@ function createLevel() {
     let rows = fullPlan.split('\n');
 
     let yOffset = canvasHeight - (rows.length * TILE_SIZE);
+
+    const reachedL1 = await reachedLevel1(activeRunId);
+    console.log("Verify run stages: ", reachedL1);
     
     rows.forEach((row, y) => {
         [...row].forEach(async (char, x) => {
@@ -139,7 +142,7 @@ function createLevel() {
     });
 }
 
-function createLevel2() {
+async function createLevel2() {
     platforms    = [];
     enemies      = [];
     caveEntrance = null;
@@ -148,6 +151,9 @@ function createLevel2() {
     let fullPlan = generateLevelPlan2();
     let rows = fullPlan.split('\n');
     let yOffset = canvasHeight - (rows.length * TILE_SIZE);
+
+    const reachedL2 = await reachedLevel2(activeRunId);
+    console.log("Verify run stages 2: ", reachedL2);
  
     rows.forEach((row, y) => {
         [...row].forEach(async (char, x) => {
@@ -187,4 +193,28 @@ function createLevel2() {
             }
         });
     });
+}
+
+async function reachedLevel1(front_run_id){
+    const res = await fetch("http://localhost:8080/firstLevel",{
+        method: "POST",
+        headers: { "Content-Type" : "application/json" },
+        body: JSON.stringify({
+            run_id: front_run_id
+        })
+    });
+    const savedData = await res.json();
+    return savedData;
+}
+
+async function reachedLevel2(front_run_id){
+    const res = await fetch("http://localhost:8080/secondLevel",{
+        method: "POST",
+        headers: { "Content-Type" : "application/json" },
+        body: JSON.stringify({
+            run_id: front_run_id
+        })
+    });
+    const updatedData = await res.json();
+    return updatedData;
 }

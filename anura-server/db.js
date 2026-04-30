@@ -372,6 +372,21 @@ export async function saveRunMob(run_id,mob_name, mobKills){
     return data;
 }
 
+export async function initStage(run_id) {
+    const [data] = await pool.query(`INSERT INTO run_stages(rs_run_id,stage_number)
+        VALUES (?,1)`,[run_id]);
+    console.log("Insert into run_stage: ",data);
+    return data;
+}
+
+export async function finalStage(run_id) {
+    const [data] = await pool.query(`UPDATE run_stages 
+        SET stage_number = 2 
+        WHERE rs_run_id = ?`, [run_id]);
+    console.log("Update into run_stage: ",data);
+    return data;
+}
+
 
 /*
  FUTURE FUNCTIONS:
