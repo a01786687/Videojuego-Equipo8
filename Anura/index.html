@@ -221,6 +221,52 @@ Authors: Renata Uruchurtu, Carlos Rosete, Emilio Torres
         <p class="footer-copyright">© 2025 Anura. All rights reserved.</p>
     </footer>
 
+
+    <!-- stats sidebar code loader-->
+     <script>
+        // loadUserStats() -> gets stats from the backend 
+        // called after login and after returning from a run
+        async function loadUserStats() {
+
+            // only load if theres a logged in user
+            if (!activeUserId) {
+                console.log("No active user, no stats to load");
+                return;
+            }
+
+            try {
+                // get stats from the backend
+                const response = await fetch(`http://localhost:8080/stats/user/${activeUserId}`);
+                const stats = await response.json();
+                console.log("Loaded stats for user", activeUserId, ":", stats);
+
+                // update the HTML sidebar, we find all .stat-value spans and update them with an index
+                const statValues = document.querySelectorAll('.stat-value');
+                statValues[0].textContent = stats.runsPlayed || 0;
+                statValues[1].textContent = stats.wins || 0;
+                statValues[2].textContent = stats.deaths || 0;
+
+                // format for best time, show in seconds or N/A not available if it's null
+                if (stats.bestTime !== null) {
+                    statValues[3].textContent = stats.bestTime + "s";
+                } else {
+                    statValues[3].textContent = "N/A";
+                }
+
+            } catch (error) {
+                console.error("Error loading user stats:", error);
+
+                // if there's an error, dashes will show "-"
+                const statValues = document.querySelectorAll('.stat-value');
+                statValues[0].textContent = "-";
+                statValues[1].textContent = "-";
+                statValues[2].textContent = "-";
+                statValues[3].textContent = "-";
+            } 
+        }
+
+     </script>
+
 </body>
 
 </html>

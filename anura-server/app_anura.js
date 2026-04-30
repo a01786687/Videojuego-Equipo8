@@ -27,7 +27,7 @@ import { createUser, getMobData, getUsers, getUsersById, startSession,
          saveRun, countRunsPerSession, getRandomCards, getTotalMosquitoesBySession, 
          updateDeck, getAllCards, getNewSessionById, startRun, getDeck, boughtCard,
          addCardToDeck, getTotalRunsPerUser, getTotalMosquitoesPerUser, getTotalMosquitoesByUser, 
-         getMosquitoeReward} from './db.js'
+         getMosquitoeReward, getUserStatsById, getTotalWinsByUser, getTotalDeathsByUser, getBestTimeByUser } from './db.js'
 
 const app = express();
 const port = 8080;
@@ -248,6 +248,31 @@ app.get("/test", async (req,res) =>{
     const data = await getNewSessionById(17);
     res.send(data);
 });
+
+// GET /stats/user/:user_id -> returns stats for a specific user 
+// used by the index.html sidebar to show personal stats 
+app.get("/stats/user/:user_id", async (req, res) => {
+    try {
+        const user_id = req.params.user_id;
+
+        // call all 4 functions from db.js
+        const totalRuns = await getUserStatsById(user_id);
+        const totalWins = await getTotalWinsByUser(user_id);
+        const totalDeaths = await getTotalDeathsByUser(user_id);
+        const bestTime = await getBestTimeByUser(user_id);
+
+        res.json({
+            runsPlayed: totalRuns.totalRuns,
+            wins: totalWins.totalWins,
+            deaths: totalDeaths.totalDeaths,
+            bestTime: bestTime.bestTime
+        });
+
+    } catch (err) {
+        console.error("Error in GET /stats/user/:user_id:", err);
+        res.status(500).json({ error: "Failed to get user stats" });
+    }
+})
 
 // GET /stats/mosquitoesPerUser -> returns top 10 users by total mosquitoes collected
 app.get("/stats/mosquitoesPerUser", async (req, res) => {
