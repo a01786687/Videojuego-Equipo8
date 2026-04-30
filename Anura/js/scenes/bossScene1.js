@@ -68,17 +68,19 @@ async function initBossLevel() {
                 bossTargetCameraX = cameraX;
 
             } else if (char === "S") {
-                const mob_name = "snake_boss";
-                let hp = 50, dmg = 10;
+                const boss_name = "snake_boss";
+                let hp = 10, dmg = 5;
 
                 try {
-                    const values = await receiveMobData(mob_name);
-                    if (values && values.length >= 2) { hp = values[0]; dmg = values[1]; }
+                    const values = await getBossValues(boss_name);
+                    hp = values[0];
+                    dmg = values[1];
+
                 } catch (e) {
                     console.warn("Using default stats for snake_boss");
                 }
 
-                snakeBoss = new SnakeBoss(posX, posY, 120, 60, "green", mob_name, 4, 300, hp, dmg, bossMotion, BOSS_STATE, 8);
+                snakeBoss = new SnakeBoss(posX, posY, 120, 60, "green", boss_name, 4, 300, hp, dmg, bossMotion, BOSS_STATE, 8);
                 snakeBoss.setSprite("./assets/finalSnakeSprites.png", new Rect(0,0,192,73.14));
                 snakeBoss.setAnimation(4,7,true,100);
             }
@@ -240,6 +242,19 @@ function drawBossScene1(deltaTime) {
     }
 
     // backButton();
+}
+
+async function getBossValues(boss_name){
+    const res = await fetch(`http://localhost:8080/bossValues/${boss_name}`);
+    const data = await res.json();
+
+    if(data.length > 0){
+        const attributes = await data[0];
+    
+        return [attributes.base_hp,attributes.base_damage,attributes.mosquito_reward];
+    }
+    
+    return;
 }
 
 

@@ -275,6 +275,11 @@ SET SQL_SAFE_UPDATES = 0;  -- run this first
 UPDATE playable_character SET base_damage = 1; -- first
 SET SQL_SAFE_UPDATES = 1; -- then this
 
+-- INSERT BOOS DATA
+INSERT INTO boss(boss_name, base_hp, base_damage, mosquito_reward)
+VALUES ('snake_boss', 50, 20, 25), ('eagle_boss', 100, 30,0);
+
+
 
 
 

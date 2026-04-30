@@ -142,6 +142,17 @@ class Enemy extends AnimatedObject {
             updateMosquitoHUD();
             console.log("Mosquitoes collected:", runMosquitos);
         }
+        else if(this.type == "snake_boss" || this.type == "eagle_boss"){
+            const values = await getBossValues(this.type);
+            const reward = await values[2];
+            if(reward > 0){
+                runMosquitos = runMosquitos + reward;
+                updateMosquitoHUD();
+                console.log("Mosquito reward from ", this.type,":", reward);
+                console.log("Mosquitoes collected: ", runMosquitos);
+            }
+            
+        }
         else{
             const res = await fetch(`http://localhost:8080/mob/reward/${this.type}`);
             const reward = await res.json();
@@ -186,6 +197,7 @@ class Enemy extends AnimatedObject {
             }
             
         }
+        
     }
     // changeAnimation(){
     //     if (this.type === 'mosquito') {

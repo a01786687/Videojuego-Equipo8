@@ -481,8 +481,8 @@ async function beginRun() {
     const values = await getFrogValues();
 
 
-    currentHealth = values[0];
-    maxHealth = values[0];
+    currentHealth = values[0]+900;
+    maxHealth = values[0]+900;
     runMosquitos = 0;
     currentLevel = 1;
     mosqKills = 0;

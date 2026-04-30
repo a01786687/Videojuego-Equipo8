@@ -393,6 +393,14 @@ export async function loadFrog(){
     return values;
 }
 
+export async function loadBoss(boss_name){
+    const [values] = await pool.query(`SELECT base_hp, base_damage, mosquito_reward 
+        FROM boss 
+        WHERE boss_name = ?`,[boss_name]);
+    console.log("Boss values: ", values);
+    return values;
+}
+
 
 /*
  FUTURE FUNCTIONS:
