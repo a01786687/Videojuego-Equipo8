@@ -25,31 +25,38 @@ USE anura;
 	('Glide Membrane', 20, 'Movement', 1, 'canGlide', 'Allows the frog to glide through the air.'),
 	('Bubble Dash', 5, 'Movement', 1, 'canDash', 'A quick dash encased in a bubble.'),
 	('Rocket Frog', 25, 'Movement', 1.5, 'jumpForce', 'Launches the frog with rocket power.'),
-
+    
 	-- COMBAT CARDS
-	('Chameleon Veil', 20, 'Combat', 1, 'isInvisible', 'Briefly turns the frog invisible.'),
-	('Fire Kiss', 15, 'Combat', 10, 'fireDamage', 'Coats the tongue in fire for extra damage.'),
-	('Thunder Tongue', 20, 'Combat', 15, 'thunderDamage', 'Electrifies the tongue attack.'),
-	('Toad Shockwave', 25, 'Combat', 20, 'shockwaveDamage', 'Releases a shockwave on landing.'),
-	('Venom Lash', 10, 'Combat', 5, 'venomDamage', 'Poisons enemies on hit.'),
+	('Chameleon Veil',  20, 'Combat',  1,    'canChameleon',   'Briefly turns the frog invisible.'),
+	('Fire Kiss',       15, 'Combat',  1,    'fireKiss',       'Coats the tongue in fire for extra damage.'),
+	('Thunder Tongue',  20, 'Combat',  0.4,  'thunderChance',  'Electrifies the tongue attack.'),
+	('Toad Shockwave',  25, 'Combat',  1,    'canShockwave',   'Releases a shockwave on landing.'),
+	('Venom Lash',      10, 'Combat',  3000, 'poisonDuration', 'Poisons enemies on hit.'),
 
 	-- UTILITY CARDS
-	('Lucky Pond', 10, 'Utility', 1, 'extraMosquitos', 'Chance to double mosquito drops.'),
-	('Metamorphosis', 25, 'Utility', 1, 'canMetamorph', 'Temporarily transforms the frog.'),
-	('Spiked Whip', 15, 'Utility', 5, 'whipDamage', 'Extends tongue range with spikes.'),
-	('Tadpole Heart', 20, 'Utility', 25, 'bonusHealth', 'Grants bonus health at run start.'),
-	('Thorn Skin', 15, 'Utility', 5, 'thornDamage', 'Reflects damage back to attackers.');
+	('Lucky Pond',      10, 'Utility', 1,  'luckyPond',           'Chance to double mosquito drops.'),
+	('Metamorphosis',   25, 'Utility', 1,  'metamorphosisActive', 'Temporarily transforms the frog.'),
+	('Spiked Whip',     15, 'Utility', 2, 'tongueRangeBonus',    'Extends tongue range with spikes.'),
+	('Tadpole Heart',   20, 'Utility', 1,  'tadpoleHeart',        'Grants bonus health at run start.'),
+	('Thorn Skin',      15, 'Utility', 1,  'thornSkin',           'Reflects damage back to attackers.');
 
 
-	-- UPDATE COMBAT CARDS
+	-- BOSS DATA
+    
+    INSERT INTO boss (boss_name,base_hp,base_damage, mosquito_reward)
+    VALUES ('snake',50,20,20);
+    
 	-- MOBS DATA
 
 	INSERT IGNORE INTO mobs (mob_name,base_damage,base_hp,mosquito_reward)
 	VALUES ('mosquito',0,2,1),('spider',10,5,5);
 
 	-- use UPDATES to make game rogue-like:
-	UPDATE anura.mobs SET base_damage = 17 -- make mosquitoes have damage
+	UPDATE anura.mobs SET base_damage = 12 -- make mosquitoes have damage
 	WHERE mob_name = 'spider';
+    
+    UPDATE anura.mobs SET mosquito_reward = 3  -- Final changes to damage values and mosquitoe reward from spiders
+    WHERE mob_name = 'spider';
 
 	UPDATE mobs SET base_damage = 3 -- make spiders stronger
 	WHERE mob_name = 'mosquito';

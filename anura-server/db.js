@@ -290,6 +290,14 @@ export async function getTotalMosquitoesPerUser() {
         return rows;
 }
 
+export async function getMosquitoeReward(mob_name){
+    const [reward] = await pool.query("SELECT mosquito_reward FROM mobs WHERE mob_name = ?", [mob_name]);
+
+    const mosqReward = reward[0].mosquito_reward;
+    console.log("This ",mob_name, " reward is:",mosqReward);
+    return mosqReward;
+}
+
 
 /*
  FUTURE FUNCTIONS:

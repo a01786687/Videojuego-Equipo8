@@ -2,35 +2,35 @@
 cards.js
 card definition and deck management
 */
-
+ 
 "use strict";
-
+ 
 let slot1FlashTimer = 0;
 let slot2FlashTimer = 0;
 let slot3FlashTimer = 0;
-
+ 
 let lastBurnedSlot1 = null;
 let lastBurnedSlot2 = null;
 let lastBurnedSlot3 = null;
-
+ 
 // --- CARD IMAGE OBJECT ---
-
+ 
 const cardImages = {
-
+ 
     // MOVEMENT CARDS
     "Bubble Dash": "assets/cards/movementCards/bubble_dash.png",
     "Dragonfly Hop": "assets/cards/movementCards/dragonfly_hop.png",
     "Glide Membrane": "assets/cards/movementCards/glide_membrane.png",
     "Iron Hindlegs": "assets/cards/movementCards/iron_hindlegs.png",
     "Rocket Frog": "assets/cards/movementCards/rocket_frog.png",
-
+ 
     // COMBAT CARDS
     "Chameleon Veil": "assets/cards/combatCards/chameleon_veil.png",
     "Fire Kiss": "assets/cards/combatCards/fire_kiss.png",
     "Thunder Tongue": "assets/cards/combatCards/thunder_tongue.png",
     "Toad Shockwave": "assets/cards/combatCards/toad_shockwave.png",
     "Venom Lash": "assets/cards/combatCards/venom_lash.png",
-
+ 
     // UTILITY CARDS
     "Lucky Pond": "assets/cards/utilityCards/lucky_pond.png",
     "Metamorphosis": "assets/cards/utilityCards/metamorphosis.png",
@@ -38,70 +38,77 @@ const cardImages = {
     "Tadpole Heart": "assets/cards/utilityCards/tadpole_heart.png",
     "Thorn Skin": "assets/cards/utilityCards/thorn_skin.png",
 }
-
+ 
 function getImageByName(name) {
-
+ 
     let path = cardImages[name];
-
+ 
     if(!path) {
         console.log("No image for:", name);
         return null;
     }
-
+ 
     let img = new Image();
     img.src = path;
-
+ 
     return img;
-
+ 
 }
-
+ 
 // --- FROG BASE VALUES
 // copies the frog constructor defaults for every property a card can touch
 // reset() uses these to know what value to restore the frog to
 // if a default value in frog.js constructor it must be updated here too
-
+ 
 const FROG_BASE_VALUES = {
     extraJumps:     0, // no extra jumps by default
     jumpsRemaining: 0, // no jumps remaining by default
     canGlide: false, // glide locked by default
     canDash: false, // dash locked by default
     jumpForce: -15, // must match frog.js constructor exactly
-
+ 
     tongueElement:   "normal", // "normal" | "fire" | "poison"
     fireKiss:        false,    // Fire Kiss — activates burn DoT on tongue hit (no splash)
     poisonDuration:  0,        // Venom Lash — how long poison lasts in ms (0 = off)
     poisonDamage:    0,        // Venom Lash — damage per poison tick
     thunderChance:   0,        // Thunder Tongue — 0.0-1.0 chance to stun on hit (0 = off)
     canChameleon:    false,    // Chameleon Veil — turns invisible after attacking
-    canShockwave:    false,
+    canShockwave:    false,    // Toad Shockwave — pushes hit enemy away
+ 
+    // utility cards
+    luckyPond:           false, // Lucky Pond — 50% chance to double mosquito drops
+    metamorphosisActive: false, // Metamorphosis — regenerates 1 HP every 2 seconds
+    tongueRangeBonus:    0,     // Spiked Whip — bonus added to tongueRange
+    thornSkin:           false, // Thorn Skin — reflects 2 damage to attacker on hit
+    tadpoleHeart:        false, // Tadpole Heart — grants +50 max HP while active
 };
-
-
+ 
+ 
 // --- CARD BASE ---
 // this function takes a card from the database and turns it into a usable card object
 // it makes the effect() and reset() functions automatically using the DB data
 // so hardcode shouldn't happen for any card here
 // to add a new card in the future, just add a new row to the database so not new code at all :D
-
+ 
 function createCardFromDatabase(dbCard) {
-
+ 
     // param = the frog property that the card will change (e.g. canGlide, extraJumps, etc)
     // cardValue = the number stored in the database for this card
     const param = dbCard.effect_parameter;
     const cardValue = dbCard.effect_value;
-
+ 
     // db only stores numbers, but some frog properties are true/false values
     // FROG_BASE_VALUES is checked to see what type the property should be
     // true/false -> convert the DB number 1 to true
     // number -> keep it as a number
-
+ 
     const isBoolean   = param in FROG_BASE_VALUES && typeof FROG_BASE_VALUES[param] === "boolean";
     const effectValue = isBoolean ? Boolean(cardValue) : cardValue;
-
+ 
     // Rocket Frog is different, its DB value is a multiplier, not a direct value
     // effect_value: 2 means multiply the base jump force by 2
     const isMultiplier = (param === "jumpForce");
-
+ 
      return {
         card_id:          dbCard.card_id,
         name:             dbCard.card_name,
@@ -111,73 +118,102 @@ function createCardFromDatabase(dbCard) {
         effect_parameter: param,
         effect_value:     effectValue,
         image:            getImageByName(dbCard.card_name),
-
+ 
         // effect() runs when the player burns this card 
         effect() {
             if (isMultiplier) {
                 // rocket frog -> multiply base jumpForce by 2 for example
                 frog[param] = FROG_BASE_VALUES[param] * effectValue;
-
+ 
             } else {
                 // all other cards directly set the frog property to true true false etc
                 frog[param] = effectValue;
-
+ 
                 // extra jumps needs jumpsRemaining updated asap so the player can use them without landing
                 if (param === "extraJumps") frog.jumpsRemaining = effectValue;
             }
+ 
+            // --- SIDE EFFECTS ---
+ 
+            // Venom Lash: also set poisonDamage as % of tongueDamage
+            if (param === "poisonDuration") {
+                frog.poisonDamage = Math.floor(frog.tongueDamage * 0.25);
+            }
+ 
+            // Fire Kiss: set tongue element to fire
+            if (param === "fireKiss") frog.tongueElement = "fire";
+ 
+            // Spiked Whip: increase tongueRange by the bonus
+            if (param === "tongueRangeBonus") frog.tongueRange *= effectValue;
+ 
+            // Metamorphosis: start the regen timer immediately
+            if (param === "metamorphosisActive") frog.metamorphosisTimer = 2000;
+ 
+            // Tadpole Heart: grant +50 HP immediately
+            if (param === "tadpoleHeart") {
+                currentHealth += 50;
+                maxHealth     += 50;
+            }
         },
-
+ 
         // reset() runs when the player burns a new card replacing this one or when the run ends
         reset() {
             frog[param] = FROG_BASE_VALUES[param];
-
+ 
             // if we reset extraJumps, also clear jumpsRemaining
-            // so no leftover jumps stay after the card is gone
             if (param === "extraJumps") frog.jumpsRemaining = 0;
-
+ 
             // if we reset canDash also stop any dash happening right now
-            // this prevents the frog from dashing forever if the card is replaced mid-dash
             if (param === "canDash") {
                 frog.isDashing = false;
                 frog.dashTimer = 0;
             }
-
-            
+ 
             // reset Venom Lash side effects
             if (param === "poisonDuration") frog.poisonDamage = 0;
  
             // reset Fire Kiss
             if (param === "fireKiss") frog.tongueElement = "normal";
-            
+ 
+            // Spiked Whip: remove the range bonus
+            if (param === "tongueRangeBonus") frog.tongueRange /= effectValue;
+ 
+            // Tadpole Heart: remove the +50 HP bonus
+            if (param === "tadpoleHeart") {
+                currentHealth -= 50;
+                maxHealth     -= 50;
+                if (currentHealth < 1) currentHealth = 1;
+                if (maxHealth < 1)     maxHealth     = 1;
+            }
         }
     }
 }
-
+ 
 // --- CLEAR ALL MOVEMENT EFFECTS ---
 // this runs when the player dies or starts a new game
 // it makes sure the frog goes back to its normal state with no card abilities active
-
+ 
 function clearAllMovementEffects() {
-
+ 
     // first try to use the last burned card's own reset function
-
+ 
     // reset all burned cards
-
+ 
     if (lastBurnedSlot1 && lastBurnedSlot1.reset) {
         lastBurnedSlot1.reset();
     }
     lastBurnedSlot1 = null;
-
+ 
     if (lastBurnedSlot2 && lastBurnedSlot2.reset) {
         lastBurnedSlot2.reset();
     }
     lastBurnedSlot2 = null;
-
+ 
     if (lastBurnedSlot3 && lastBurnedSlot3.reset) {
         lastBurnedSlot3.reset();
     }
     lastBurnedSlot3 = null;
-
+ 
     // for safety issues, manually restore every frog property to its base value, handling cases like player dying before burning a card
     if (frog) {
         for (const [param, baseValue] of Object.entries(FROG_BASE_VALUES)) {
@@ -189,20 +225,15 @@ function clearAllMovementEffects() {
         frog.isGliding              = false;  // stop any active glide
         frog.extraJumpCooldownTimer = 0;      // clear jump cooldown
     }
-
+ 
     console.log("All movement effects cleared.");
 }
-
+ 
 // --- DECK ---
-
+ 
 let deck = {
     slot1_Movement: [],
     slot2_Combat: [],
     slot3_Utility: []  
 };
-
-
-
-
-
-
+ 
