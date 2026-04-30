@@ -230,6 +230,7 @@ function handleClick(event) {
             mouseY >= buttonY && mouseY <= buttonY + buttonHeight) {
             // click on button
             isVictory = false;
+            loadUserStats(); // load stats after victory
             currentScene = "title";
             return;  // important to stop processing clicks
         }
