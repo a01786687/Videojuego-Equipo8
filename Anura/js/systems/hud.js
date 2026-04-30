@@ -129,10 +129,10 @@ function updateMosquitoHUD() {
 
 }
 
-function dispActiveUser(){
+//function dispActiveUser(){
     user_disp = new TextLabel(canvasWidth/2,90,"80spx Ubuntu Mono","red");
     user_disp.draw(ctx,'User: '+ activeUser);
-}
+//}
 
 function drawGameOver() {
     ctx.fillStyle = "rgba(0, 0, 0, 0.6)";

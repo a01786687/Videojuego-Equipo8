@@ -64,6 +64,9 @@ function initLoginScene() {
                 
                 activeSessionId = sessionData.session_id; // storing the session_id
                 loadUserStats(); // load stats after login
+
+                document.getElementById('active-username').textContent = usernameInput.value;
+
                 loginMessage.textContent = "";
                 currentScene = "title";
                 
@@ -112,6 +115,8 @@ function logoutUser() {
     // doesnt delete progress since it's saved on the db
     activeUser = null;
     activeUserId = null;
+
+    document.getElementById('active-username').textContent = 'Not logged in';
 
     console.log("User logged out");
 
