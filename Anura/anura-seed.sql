@@ -12,9 +12,9 @@ USE anura;
 
 	-- TEST PLAYABLE CHARACTERS (one per user) REMOVE LATER
 	INSERT IGNORE INTO playable_character (pc_user_id, character_name, base_hp, base_speed, base_damage) VALUES
-	(1, 'Froggy_Renata', 100, 10, 15),
-	(2, 'Froggy_Carlos', 100, 10, 15),
-	(3, 'Froggy_Emilio', 100, 10, 15);
+	(1, 'Froggy_Renata', 100, 10, 1),
+	(2, 'Froggy_Carlos', 100, 10, 1),
+	(3, 'Froggy_Emilio', 100, 10, 1);
 
 	-- CARDS
 	INSERT IGNORE INTO cards (card_name, card_cost, card_type, effect_value, effect_parameter, card_description) VALUES

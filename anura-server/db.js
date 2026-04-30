@@ -33,7 +33,7 @@ We use a connection pool instead of a single connection.
 const pool = mysql.createPool({
     host: '127.0.0.1', // localhost
     user: 'root',
-    password: '#Clifjumper4406',
+    password: 'Cerplirp&130506',
     database: 'anura'
 }).promise() // promise -> enables async/await
 
