@@ -25,6 +25,8 @@ let sessionMosquitos = 0;
 let currentLevel = 1;
 let enemies = []; // Array for enemies
 let damageNumbers = []; // array for damage numbers
+let mosqKills = 0;  // For run_mob data
+let spiderKills = 0; // For run_mob data
 
 // game loop id for stopping the game when there's a game over, 
 // initialized as null since there's not an active game yet
@@ -82,6 +84,14 @@ async function gameOver() {
     console.log("Backend response:", response);
     sessionMosquitos = response.savedData.mosquitoes_total;
     console.log("Cheking...",sessionMosquitos);
+
+    const verifySpiderRM = await saveRunMobData(activeRunId,'spider',spiderKills);
+    const verifyMosqRM = await saveRunMobData(activeRunId,'mosquito',mosqKills);
+    console.log("Verify run mob for spider: ", verifySpiderRM);
+    console.log("Verify run mob for mosq: ", verifyMosqRM);
+
+    mosqKills = 0;
+    spiderKills = 0; 
 
     // always transition to cardSelection screen from gameOver after 2 Seconds 
     setTimeout(() => {
@@ -472,6 +482,8 @@ async function beginRun() {
     maxHealth = 100;
     runMosquitos = 0;
     currentLevel = 1;
+    mosqKills = 0;
+    spiderKills = 0;
     // deck = [];
     cameraX = 0;
 
@@ -562,6 +574,15 @@ async function saveProgress(isVictory) {
         })
     });
 
+
+    const verifySpiderRM = await saveRunMobData(activeRunId,'spider',spiderKills);
+    const verifyMosqRM = await saveRunMobData(activeRunId,'mosquito',mosqKills);
+    console.log("Verify run mob for spider: ", verifySpiderRM);
+    console.log("Verify run mob for mosq: ", verifyMosqRM);
+
+    mosqKills = 0;
+    spiderKills = 0; 
+
     return await res.json();
 }
 
@@ -582,4 +603,18 @@ async function getActiveRunID(current_session_id){
     }
     
 
+}
+
+async function saveRunMobData(front_run_id,front_mob_name, front_mobKills){
+    const res = await fetch("http://localhost:8080/saveRunMob",{
+        method: "POST",
+        headers: { "Content-Type" : "application/json" },
+        body: JSON.stringify({
+            run_id: front_run_id,
+            mob_name: front_mob_name,
+            mobKills: front_mobKills
+        })
+    });
+    const savedData = await res.json();
+    return savedData;
 }

@@ -5,7 +5,7 @@
  * Authors: Renata Uruchurtu, Carlos Rosete, Emilio Torres
  */
 "use strict";
-
+ 
 // Motion config for AnimatedPlayer — maps logical states to frame ranges
 // moveFrames: [start, end] | idleFrames: [start, end]
 const frogMotion = {
@@ -18,16 +18,16 @@ const frogMotion = {
     attackL: { status: false, axis: "x", sign:  0, repeat: false, duration: 80,  moveFrames: [20, 23], idleFrames: [0,  3]  },
     dash:    { status: false, axis: "x", sign:  0, repeat: true,  duration: 60,  moveFrames: [24, 26], idleFrames: [0,  3]  },
 };
-
+ 
 let frog = null; // Global reference so playScene and levelGenerator can see it
-
+ 
 class Frog extends AnimatedPlayer {
     constructor(position, width, height, sheetCols) {
         super(position, width, height, "#7ed967", sheetCols, frogMotion);
-
+ 
         this.width = width;
         this.height = height;
-
+ 
         // --- SPRITESHEET ---
         // Sheet: 4 cols x 7 rows, each frame 170x180px
         // Row 0: IDLE  | Row 1: WALK  | Row 2: JUMP
@@ -39,32 +39,32 @@ class Frog extends AnimatedPlayer {
         );
         // Start in idle
         this.setAnimation(0, 3, true, 120);
-
+ 
         // Tracks which animation is currently active so we only call
         // setAnimation when the state actually changes (avoids frame resets)
         this.currentAnim = "idle";
-
+ 
         // Facing direction: 1 = right, -1 = left
         this.facing = 1;
-
+ 
         // --- MOVEMENT PROPERTIES ---
         this.speed = 10;
         this.velocityY = 0;
         this.isOnGround = true;
         this.gravity = 0.8;
         this.jumpForce = -10;
-
+ 
         // --- EXTRA JUMPS ---
         this.extraJumps = 0; // set by card: Iron Hindlegs = 1, Dragonfly Hop = 2
         this.jumpsRemaining = 0;
         this.extraJumpCooldown = 150; // 3 sec between extra jumps
         this.extraJumpCooldownTimer = 0;
-
+ 
         // --- GLIDE ---
         this.canGlide = false;
         this.isGliding = false;
         this.glideGravity = 0.01;
-
+ 
         // --- DASH ---
         this.canDash = false; // used in Bubble Dash card
         this.dashSpeed = 15;
@@ -74,9 +74,9 @@ class Frog extends AnimatedPlayer {
         this.dashCooldownTimer = 0;
         this.isDashing = false;
         this.dashDirection = 1;
-
+ 
         // --- ATTACK (TONGUE) ---
-
+ 
         this.isAttacking = false;
         this.attackTimer = 0;
         this.attackDuration = 100;
@@ -85,19 +85,27 @@ class Frog extends AnimatedPlayer {
         this.tongueRange = 80;
         this.tongueWidth = 15;
         this.lastDirection = { x: 1, y: 0 };
-
+ 
         // --- DAMAGE & INVINCIBILITY ---
         this.invincibilityTimer = 0;
         this.invincibilityDuration = 1500;
-
+ 
         // --- COMBAT & CARD MODIFIERS ---
         this.tongueDamage = 25;
         this.tongueElement = "normal"; // Can be "fire", "poison", "ice"
         this.activeStatusEffects = []; // Store temporary card buffs here
-
+ 
+        // --- UTILITY CARD PROPERTIES ---
+        this.luckyPond           = false; // Lucky Pond — 50% chance to double mosquito drops
+        this.metamorphosisActive = false; // Metamorphosis — regenerates 1 HP every 2 seconds
+        this.metamorphosisTimer  = 0;     // counts down to next regen tick
+        this.tongueRangeBonus    = 0;     // Spiked Whip — bonus added to tongueRange
+        this.thornSkin           = false; // Thorn Skin — reflects 2 damage to attacker on hit
+        this.tadpoleHeart        = false; // Tadpole Heart — grants +50 max HP while active
+ 
         // Fire Kiss
         this.fireKiss = false;
-
+ 
         // Venom Lash 
         this.poisonDuration  = 0;   // ms poison lasts per hit
         this.poisonDamage    = 1;   // damage per poison tick
@@ -114,16 +122,16 @@ class Frog extends AnimatedPlayer {
         this.canShockwave    = false;
         this.shockwaveRadius = 120;  // px radius of the shockwave push
         this.shockwaveForce  = 5;    // pixels pushed per frame unit
-
+ 
         // Required for boxOverlap compatibility
         this.halfSize = { x: width / 2, y: height / 2 };
     }
-
+ 
     
     update(deltaTime, keys, platforms, canvasHeight, cameraX, worldBoundsLeft = 0, worldBoundsRight = Infinity) {
         // Update animation frames from parent class
         this.updateFrame(deltaTime);
-
+ 
         // --- TIMERS ---
         if (this.extraJumpCooldownTimer > 0) this.extraJumpCooldownTimer -= deltaTime;
         if (this.dashTimer > 0) {
@@ -134,26 +142,37 @@ class Frog extends AnimatedPlayer {
         }
         if (this.dashCooldownTimer > 0) this.dashCooldownTimer -= deltaTime;
         if (this.invincibilityTimer > 0) this.invincibilityTimer -= deltaTime;
-
+ 
         if (this.chameleonTimer > 0) {
             this.chameleonTimer -= deltaTime;
         }
-
+ 
+        // Metamorphosis — regenerate 1 HP every 2 seconds while active
+        if (this.metamorphosisActive) {
+            this.metamorphosisTimer -= deltaTime;
+            if (this.metamorphosisTimer <= 0) {
+                this.metamorphosisTimer = 2000; // reset to 2 seconds
+                if (currentHealth < maxHealth) {
+                    currentHealth++;
+                }
+            }
+        }
+ 
         // Attack cooldown management for the tongue attack
         if (this.attackTimer > 0) {
             this.attackTimer -= deltaTime;
             if (this.attackTimer <= 0) this.isAttacking = false;
         }
         if (this.attackCooldown > 0) this.attackCooldown -= deltaTime;
-
+ 
         // --- HORIZONTAL MOVEMENT & INPUT ---
         let moveX = 0;
         
-
+ 
         if (keys["a"]) { moveX = -1; this.lastDirection = { x: -1, y: 0 }; this.dashDirection = -1; this.facing = -1; }
         if (keys["d"]) { moveX =  1; this.lastDirection = { x:  1, y: 0 }; this.dashDirection =  1; this.facing =  1; }
         if (keys["w"]) { this.lastDirection = { x: 0, y: -1 }; }
-
+ 
         // Apply movement velocity
         if (this.isDashing) {
             this.position.x += this.dashSpeed * this.dashDirection * (deltaTime / 16);
@@ -161,40 +180,40 @@ class Frog extends AnimatedPlayer {
             let currentSpeed = this.speed;
             this.position.x += moveX * currentSpeed * (deltaTime / 16);
         }
-
+ 
         // --- VERTICAL MOVEMENT (GRAVITY) ---
-
+ 
         // sets gliding to true if ALL four conditions are true at the same time
         this.isGliding = this.canGlide && !this.isOnGround && this.velocityY > 0 && (keys["s"] || keys["S"]); // player burns card, frog on air, frog falling down, keys are active
-
+ 
         let activeGravity; // gravity value
-
+ 
         if (this.isGliding) { // if frog is gliding
             activeGravity = this.glideGravity; // 0.1 slow fall
         } else {
             activeGravity = this.gravity; // normal fall
         }
-
+ 
         // gravity applied, every frame we add a bit more pull down to the vertical speed,
         this.velocityY += activeGravity * (deltaTime / 16);
         if (this.velocityY > 20) this.velocityY = 20; // Terminal velocity limit, without it the frog would fall faster forever with no limit, so if VelocityY tries to exceed it, it goes back to 20
         this.position.y += this.velocityY * (deltaTime / 16); // move frog, if velocityY is + = frog moves down, else if negative, it would move up
-
+ 
         // --- FULL SOLID PLATFORM COLLISION ---
         this.isOnGround = false;
-
+ 
         for (let plat of platforms) {
             // First, check if they are overlapping at all
             if (boxOverlap(this, plat)) {
-
+ 
                 // Calculate distance between the center of the frog and the center of the platform
                 let dx = this.position.x - plat.position.x;
                 let dy = this.position.y - plat.position.y;
-
+ 
                 // Calculate the overlap (penetration depth) on both axes
                 let overlapX = (this.halfSize.x + plat.halfSize.x) - Math.abs(dx);
                 let overlapY = (this.halfSize.y + plat.halfSize.y) - Math.abs(dy);
-
+ 
                 // Resolve collision on the axis with the SMALLEST overlap
                 // This prevents teleporting to the top when hitting the side of a wall
                 if (overlapX < overlapY) {
@@ -217,14 +236,14 @@ class Frog extends AnimatedPlayer {
                         this.position.y -= overlapY;
                         this.velocityY = 0;
                         this.isOnGround = true;
-
+ 
                         // reset extra jumps on landing
                         this.jumpsRemaining = this.extraJumps;
                     }
                 }
             }
         }
-
+ 
         // Floor limits (Canvas Bottom)
         const groundLimitY = canvasHeight - this.height / 2;
         if (this.position.y >= groundLimitY) {
@@ -234,24 +253,24 @@ class Frog extends AnimatedPlayer {
             // reset extra jumps on landing
             this.jumpsRemaining = this.extraJumps;
         }
-
+ 
         // World bounds — fixed pixel walls passed by each scene.
         // Never use cameraX here: it moves with lerp and would push the frog every frame.
         if (this.position.x - this.halfSize.x < worldBoundsLeft)  this.position.x = worldBoundsLeft  + this.halfSize.x;
         if (this.position.x + this.halfSize.x > worldBoundsRight) this.position.x = worldBoundsRight - this.halfSize.x;
-
+ 
         // --- ANIMATION STATE SELECTION ---
         // Pick the correct animation based on current action.
         // selectAnimation only calls startMovement when the state actually changes (avoids frame resets)
         this.selectAnimation(keys);
     }
-
+ 
     // Chooses the right animation based on priority:
     // DASH > ATTACK > JUMP > FALL > WALK > IDLE
     // Uses AnimatedPlayer's startMovement/stopMovement instead of calling setAnimation directly
     selectAnimation(keys) {
         let newAnim;
-
+ 
         if (this.isDashing) {
             newAnim = "dash";
         } else if (this.isAttacking) {
@@ -265,7 +284,7 @@ class Frog extends AnimatedPlayer {
         } else {
             newAnim = "idle"; // IDLE
         }
-
+ 
         if (newAnim !== this.currentAnim) {
             if (this.currentAnim && this.currentAnim !== "idle") {
                 this.stopMovement(this.currentAnim);
@@ -275,22 +294,22 @@ class Frog extends AnimatedPlayer {
             this.currentAnim = newAnim;
         }
     }
-
+ 
     draw(ctx) {
         // Handle blink effect during invincibility
         if (this.invincibilityTimer > 0) {
             ctx.globalAlpha = Math.floor(this.invincibilityTimer / 150) % 2 === 0 ? 0.3 : 1.0;
         }
-
+ 
         ctx.save();
-
+ 
         // Flip horizontally when facing left
         if (this.facing === -1) {
             ctx.translate(this.position.x, this.position.y);
             ctx.scale(-1, 1);
             ctx.translate(-this.position.x, -this.position.y);
         }
-
+ 
         if (this.spriteImage && this.spriteImage.complete && this.spriteRect) {
             // Draw sprite centered on position
             ctx.drawImage(
@@ -309,22 +328,22 @@ class Frog extends AnimatedPlayer {
             ctx.fillStyle = this.color;
             ctx.fillRect(this.position.x - this.width / 2, this.position.y - this.height / 2, this.width, this.height);
         }
-
+ 
         ctx.restore();
-
+ 
         // Tongue is drawn on top without the flip transform so it always
         // goes in the logical attack direction regardless of facing
         if (this.isAttacking) {
             this.drawAttack(ctx);
         }
-
+ 
         // Reset alpha for other elements
         ctx.globalAlpha = 1.0;
-
+ 
         if (showBBox) this.drawBoundingBox(ctx);
-
+ 
     }
-
+ 
     drawAttack(ctx) {
         // Tongue color changes based on active combat card
         if (this.fireKiss) {
@@ -336,10 +355,10 @@ class Frog extends AnimatedPlayer {
         } else {
             ctx.fillStyle = "#ff7eb6"; // default tongue pink
         }
-
+ 
         let tonguePosX = this.position.x + (this.lastDirection.x * this.tongueRange / 2);
         let tonguePosY = this.position.y + (this.lastDirection.y * this.tongueRange / 2);
-
+ 
         let tongueRect = {
             position: { x: tonguePosX, y: tonguePosY },
             halfSize: {
@@ -347,7 +366,7 @@ class Frog extends AnimatedPlayer {
                 y: this.lastDirection.y !== 0 ? this.tongueRange / 2 : this.tongueWidth / 2
             }
         };
-
+ 
         ctx.fillRect(
             tongueRect.position.x - tongueRect.halfSize.x,
             tongueRect.position.y - tongueRect.halfSize.y,
@@ -355,7 +374,7 @@ class Frog extends AnimatedPlayer {
             tongueRect.halfSize.y * 2
         );
     }
-
+ 
     // Returns a label for the active combat card — shown in the HUD
     getActiveCombatCardLabel() {
         if (this.fireKiss)          return "Fire Kiss";
@@ -365,17 +384,17 @@ class Frog extends AnimatedPlayer {
         if (this.canShockwave)       return "Toad Shockwave";
         return null;
     }
-
+ 
     /**
      * Returns the bounding box of the tongue for collision detection in playScene.js
      * Returns null if not attacking.
      */
     getTongueCollider() {
         if (!this.isAttacking) return null;
-
+ 
         let tonguePosX = this.position.x + (this.lastDirection.x * this.tongueRange / 2);
         let tonguePosY = this.position.y + (this.lastDirection.y * this.tongueRange / 2);
-
+ 
         return {
             position: { x: tonguePosX, y: tonguePosY },
             halfSize: {
@@ -384,6 +403,6 @@ class Frog extends AnimatedPlayer {
             }
         };
     }
-
+ 
     
 }

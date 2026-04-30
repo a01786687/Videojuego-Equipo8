@@ -25,20 +25,20 @@ USE anura;
 	('Glide Membrane', 20, 'Movement', 1, 'canGlide', 'Allows the frog to glide through the air.'),
 	('Bubble Dash', 5, 'Movement', 1, 'canDash', 'A quick dash encased in a bubble.'),
 	('Rocket Frog', 25, 'Movement', 1.5, 'jumpForce', 'Launches the frog with rocket power.'),
-
+    
 	-- COMBAT CARDS
-	('Chameleon Veil', 20, 'Combat', 1, 'isInvisible', 'Briefly turns the frog invincible.'),
-	('Fire Kiss', 15, 'Combat', 10, 'fireDamage', 'Coats the tongue in fire for extra damage.'),
-	('Thunder Tongue', 20, 'Combat', 15, 'thunderDamage', 'Electrifies the tongue attack.'),
-	('Toad Shockwave', 25, 'Combat', 20, 'shockwaveDamage', 'Tongue shockwave that pushes enemies'),
-	('Venom Lash', 10, 'Combat', 5, 'venomDamage', 'Poisons enemies on hit.'),
+	('Chameleon Veil',  20, 'Combat',  1,    'canChameleon',   'Briefly turns the frog invisible.'),
+	('Fire Kiss',       15, 'Combat',  1,    'fireKiss',       'Coats the tongue in fire for extra damage.'),
+	('Thunder Tongue',  20, 'Combat',  0.4,  'thunderChance',  'Electrifies the tongue attack.'),
+	('Toad Shockwave',  25, 'Combat',  1,    'canShockwave',   'Releases a shockwave on landing.'),
+	('Venom Lash',      10, 'Combat',  3000, 'poisonDuration', 'Poisons enemies on hit.'),
 
 	-- UTILITY CARDS
-	('Lucky Pond', 10, 'Utility', 1, 'extraMosquitos', 'Chance to double mosquito drops.'),
-	('Metamorphosis', 25, 'Utility', 1, 'canMetamorph', 'Temporarily transforms the frog.'),
-	('Spiked Whip', 15, 'Utility', 5, 'whipDamage', 'Extends tongue range with spikes.'),
-	('Tadpole Heart', 20, 'Utility', 25, 'bonusHealth', 'Grants bonus health at run start.'),
-	('Thorn Skin', 15, 'Utility', 5, 'thornDamage', 'Reflects damage back to attackers.');
+	('Lucky Pond',      10, 'Utility', 1,  'luckyPond',           'Chance to double mosquito drops.'),
+	('Metamorphosis',   25, 'Utility', 1,  'metamorphosisActive', 'Temporarily transforms the frog.'),
+	('Spiked Whip',     15, 'Utility', 2, 'tongueRangeBonus',    'Extends tongue range with spikes.'),
+	('Tadpole Heart',   20, 'Utility', 1,  'tadpoleHeart',        'Grants bonus health at run start.'),
+	('Thorn Skin',      15, 'Utility', 1,  'thornSkin',           'Reflects damage back to attackers.');
 
 
 	-- BOSS DATA
@@ -109,7 +109,7 @@ USE anura;
 	USING (session_id)
 	INNER JOIN anura.users AS Y
 	ON session_user_id = user_id
-	GROUP BY (user_id);
+	GROUP BY (user_id); 
 
 	CREATE OR REPLACE VIEW timeToKillBoss as 
 	SELECT X.boss_name, AVG(Y.time_to_defeat) AS avgTime2Defeat
@@ -161,13 +161,13 @@ USE anura;
 	DROP TRIGGER IF EXISTS calculateRunTimeOnUpdate;
 	DELIMITER $$
 	CREATE TRIGGER calculateRunTimeOnUpdate
-	BEFORE UPDATE ON anura.runs
-	FOR EACH ROW
-	BEGIN
+	BEFORE UPDATE ON anura.runs  -- We had small issue since it was on insert instead of UPDATE
+	FOR EACH ROW					-- Most of the TRIGGER was implemented by us just the correction with AI on UPDATE
+	BEGIN						
 		-- if end_time was just set victory or death, calculate the run time
 		IF NEW.end_time IS NOT NULL AND OLD.end_time IS NULL THEN
-			SET NEW.run_time = TIMESTAMPDIFF(SECOND, NEW.start_time, NEW.end_time);
-		END IF;
+			SET NEW.run_time = TIMESTAMPDIFF(SECOND, NEW.start_time, NEW.end_time);  -- We asked AI if it was possible calculate time from TIMESTAMPS
+		END IF;																		-- and gave us this native procedure from MySQL called TIMESTAPDIFF
 	END$$
 	DELIMITER ;
 
@@ -234,3 +234,41 @@ UPDATE cards SET effect_value = 1.00, effect_parameter = 'fireKiss' WHERE card_i
 UPDATE cards SET effect_value = 0.40, effect_parameter = 'thunderChance' WHERE card_id = 8;
 UPDATE cards SET effect_value = 1.00, effect_parameter = 'canShockwave' WHERE card_id = 9;
 UPDATE cards SET effect_value = 999.99, effect_parameter = 'poisonDuration' WHERE card_id = 10;
+
+-- TRIGGERS and PROCEDURES to set data to run_mob table
+
+DROP PROCEDURE IF EXISTS startRunMob;
+DELIMITER $$
+CREATE PROCEDURE startRunMob(IN run_id2 SMALLINT, IN mob_name2 VARCHAR(25))
+	BEGIN 
+		SET @mobID = NULL;
+		SELECT mob_id INTO @mobID FROM mobs
+		WHERE mob_name = mob_name2;
+
+		INSERT INTO run_mob(rm_mob_id, rm_run_id)
+		VALUES (@mobID, run_id2);
+
+	END$$
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS saveRunMob;
+DELIMITER $$
+CREATE PROCEDURE saveRunMob(IN run_id2 SMALLINT, IN mob_name2 VARCHAR(25), IN mobKills SMALLINT)
+	BEGIN
+		SET @mobID = NULL;
+		SELECT mob_id INTO @mobID FROM mobs
+		WHERE mob_name = mob_name2;
+
+		UPDATE run_mob SET mobs_killed = mobKills
+		WHERE rm_run_id = run_id2 AND rm_mob_id = @mobID;
+	END$$
+DELIMITER ;
+
+-- UTILITY CARDS
+UPDATE cards SET effect_parameter = 'luckyPond',           effect_value = 1  WHERE card_id = 11;
+UPDATE cards SET effect_parameter = 'metamorphosisActive', effect_value = 1  WHERE card_id = 12;
+UPDATE cards SET effect_parameter = 'tongueRangeBonus',    effect_value = 2 WHERE card_id = 13;
+UPDATE cards SET effect_parameter = 'tadpoleHeart',        effect_value = 1  WHERE card_id = 14;
+UPDATE cards SET effect_parameter = 'thornSkin',           effect_value = 1  WHERE card_id = 15;
+
+
