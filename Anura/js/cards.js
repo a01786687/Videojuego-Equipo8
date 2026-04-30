@@ -137,7 +137,7 @@ function createCardFromDatabase(dbCard) {
  
             // Venom Lash: also set poisonDamage as % of tongueDamage
             if (param === "poisonDuration") {
-                frog.poisonDamage = Math.floor(frog.tongueDamage * 0.25);
+                frog.poisonDamage = 1;
             }
  
             // Fire Kiss: set tongue element to fire
