@@ -152,6 +152,25 @@ USE anura;
 	END$$
 	DELIMITER ;
 
+
+	-- TRIGGER for calulating run_time when a run is UPDATED (victory/death)
+	-- Needed because the existing trigger calculateRunTime only fires on INSERT (run start), 
+	-- but run_time needs to be calculated when end_time is set during 
+	-- UPDATE (when saveRun procedure is called with victory status)
+	-- IDENTIFIED WITH AI, I asked AI what the problem was and why was the run time not updating, and it pointed this out
+	DROP TRIGGER IF EXISTS calculateRunTimeOnUpdate;
+	DELIMITER $$
+	CREATE TRIGGER calculateRunTimeOnUpdate
+	BEFORE UPDATE ON anura.runs
+	FOR EACH ROW
+	BEGIN
+		-- if end_time was just set victory or death, calculate the run time
+		IF NEW.end_time IS NOT NULL AND OLD.end_time IS NULL THEN
+			SET NEW.run_time = TIMESTAMPDIFF(SECOND, NEW.start_time, NEW.end_time);
+		END IF;
+	END$$
+	DELIMITER ;
+
 	DROP TRIGGER IF EXISTS set_end_time_on_victory;
 	DELIMITER $$
 	CREATE TRIGGER set_end_time_on_victory -- We're missing implementation of win

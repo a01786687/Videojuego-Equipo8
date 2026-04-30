@@ -77,7 +77,7 @@ async function gameOver() {
     console.log("Game Over"); // for debugging
     
     // send death data to backend and WAIT for a reply, front end sends mosquitoes and deck to the backend
-    const response = await saveProgressOnDeath();
+    const response = await saveProgress(false);
     // shows what backend returned in JSON format
     console.log("Backend response:", response);
     sessionMosquitos = response.savedData.mosquitoes_total;
@@ -535,7 +535,7 @@ class DamageNumber {
 
 // GAME OVER async function for API call
 
-async function saveProgressOnDeath() {
+async function saveProgress(isVictory) {
 
     // collect all card IDs from each slot into one array
     const cardIds = [];
@@ -557,7 +557,8 @@ async function saveProgressOnDeath() {
             mosquitoes: runMosquitos,
             run_id: activeRunId,
             deck: cardIds,
-            session_id: activeSessionId
+            session_id: activeSessionId,
+            victory: isVictory // victory added
         })
     });
 

@@ -339,7 +339,10 @@ export async function getBestTimeByUser(user_id) {
         SELECT MIN(R.run_time) AS bestTime
         FROM runs AS R
         INNER JOIN sessions AS S ON R.run_session_id = S.session_id
-        WHERE S.session_user_id = ? AND R.victory = TRUE;
+        WHERE S.session_user_id = ? 
+        AND R.victory = TRUE
+        AND R.run_time IS NOT NULL
+        AND R.run_time > 0;
         `, [user_id]);
 
     console.log("Best time for user_id", user_id, ":", rows[0]);
