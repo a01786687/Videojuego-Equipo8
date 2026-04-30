@@ -58,17 +58,19 @@ async function initEagleBossLevel() {
                 eagleTargetCameraX = cameraX;
 
             } else if (char === "E") {
-                const mob_name = "eagle_boss";
-                let hp = 80, dmg = 15;
+                const boss_name = "eagle_boss";
+                let hp = 10, dmg = 10;
 
                 try {
-                    const values = await receiveMobData(mob_name);
-                    if (values && values.length >= 2) { hp = values[0]; dmg = values[1]; }
+                    const values = await getBossValues(boss_name);
+                    hp = values[0];
+                    dmg = values[1];
+                    
                 } catch (e) {
                     console.warn("Using default stats for eagle_boss");
                 }
 
-                eagleBoss = new EagleBoss(posX, posY, 100, 100, "#8B6914", mob_name, 6, 400, hp, dmg, eagleMotion, EAGLE_STATE);
+                eagleBoss = new EagleBoss(posX, posY, 100, 100, "#8B6914", boss_name, 6, 400, hp, dmg, eagleMotion, EAGLE_STATE);
                 eagleBoss.setSprite(
                     "../Anura/assets/enemies/eagleBoss.png",
                     new Rect(0, 0, 448, 479)

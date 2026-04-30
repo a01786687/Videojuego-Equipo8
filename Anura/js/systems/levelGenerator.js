@@ -104,7 +104,7 @@ async function createLevel() {
             else if (char === "@") {
                 const values = await getFrogValues();
                 const speed = values[2];
-                const damage = values[1];
+                const damage = values[1]+25;
 
                 frog = new Frog(
                     { x: posX + TILE_SIZE / 2, y: posY - 25 }, // Centered position

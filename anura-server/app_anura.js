@@ -31,7 +31,8 @@ import { createUser, getMobData, getUsers, getUsersById, startSession,
          saveRunMob, startRunMob,
          initStage,
          finalStage,
-         loadFrog} from './db.js'
+         loadFrog,
+         loadBoss} from './db.js'
 
 const app = express();
 const port = 8080;
@@ -363,6 +364,12 @@ app.post("/secondLevel", async (req, res) => {
 app.get("/frogValues", async (req,res) => {
     const fvalues = await loadFrog();
     res.send(fvalues);
+});
+
+app.get("/bossValues/:boss_name", async (req, res) => {
+    const boss_name = req.params.boss_name;
+    const bvalues = await loadBoss(boss_name);
+    res.send(bvalues);
 });
 
 // --- SERVER START ---
