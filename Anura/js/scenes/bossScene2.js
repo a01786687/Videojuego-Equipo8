@@ -182,6 +182,17 @@ function drawBossScene2(deltaTime) {
             if (eagleBoss.health <= 0) {
                 eagleBoss = null;
                 isVictory = true; // activate state
+
+            // implemented with AI help, 
+            // calls saveProgress(true) to save victory state to database, AI helped identify that it was 
+            // needed to pass 'true' ad a parameter to indicate victory (not death)
+            // related to changes in app_anura.js /run/death ndpoint, playScene.js saveProgress() function
+            
+            saveProgress(true).then(response => {
+                console.log("Victory saved:", response);
+                sessionMosquitos = response.savedData.mosquitoes_total;
+            });
+
             } else {
                 eagleBoss.draw(ctx);
             }

@@ -154,7 +154,7 @@ app.get("/updateAfterPurchase/:session_id", async (req, res) => {
 // When someone sends POST /run/death, run this function:
 app.post("/run/death", async (req, res) => {
     
-    const { mosquitoes, run_id, deck, session_id } = req.body;
+    const { mosquitoes, run_id, deck, session_id, victory } = req.body;
 
     if (!session_id) {
         return res.status(400).json({ error: " a valid run_id is required" });
@@ -162,10 +162,12 @@ app.post("/run/death", async (req, res) => {
 
     try {
         // save the run
-        const bosses_defeated = 0;
-        const victory = false;
-        const runId = await saveRun(run_id, mosquitoes, bosses_defeated, victory);
-
+        // implemented with AI help
+        // added victory parameter handling to support death and victory tracking
+        // AI helped identify that bosses_Defeated should be 2 for victory and 0 for death, it uses a ternary operator victory ? 2 : 0
+        const bosses_defeated = victory ? 2 : 0; // this modification was done with AI for saving the victory boolean true
+        
+        const runId = await saveRun(run_id, mosquitoes, bosses_defeated, victory || false); 
         // get the updated lifetime mosquito total
         const mosquitoData = await getTotalMosquitoesByUser(session_id);
 
