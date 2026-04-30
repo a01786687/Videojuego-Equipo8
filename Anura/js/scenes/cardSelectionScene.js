@@ -67,7 +67,7 @@ function drawCardOffer(card, x, y) {
 
     // card description
     ctx.fillStyle = "#ffffff";
-    ctx.font = "12px Pixelify Sans";
+    ctx.font = "9px Pixelify Sans";
     ctx.fillText(card.description, x + cardWidth / 2, y + imageHeight + 32);
 
     // disabled card visual effect if player can't afford the card

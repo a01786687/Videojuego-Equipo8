@@ -83,18 +83,27 @@ function drawMosquito(ctx, x, y, size) {
 */
 
 function drawHealthBar(ctx){
+    const barWidth = 160;
+    const barHeight = 20;
+    const barX = 60;
+    const barY = 50;
+
     // bg, empty part of bar
     ctx.fillStyle = "#2a2a2a";
-    ctx.fillRect(60, 50, 160, 20);
+    ctx.fillRect(barX, barY, barWidth, barHeight);
+
+    // calc current width based on health %
+    const healthPercentage = currentHealth / maxHealth;
+    const currentBarWidth = barWidth * healthPercentage;
 
     // current health
     ctx.fillStyle = "#dd3745";
-    ctx.fillRect(60, 50, 1.6 * currentHealth, 20);
+    ctx.fillRect(barX, barY, currentBarWidth, barHeight);
 
     // border
     ctx.strokeStyle = "#000000";
     ctx.lineWidth = 2;
-    ctx.strokeRect(60, 50, 160, 20);
+    ctx.strokeRect(barX, barY, barWidth, barHeight);
 }
 
 function HealthBarDisplay(){
@@ -103,7 +112,7 @@ function HealthBarDisplay(){
     
     // white percentage text, positioned to the right
     HP_display = new TextLabel(230, 65, "16px Pixelify Sans", "white");
-    HP_display.draw(ctx, currentHealth + '%');
+    HP_display.draw(ctx, currentHealth + '/' + maxHealth);
 }
 
 // placeholder for the health HUD RF-14
@@ -129,10 +138,10 @@ function updateMosquitoHUD() {
 
 }
 
-function dispActiveUser(){
+//function dispActiveUser(){
     user_disp = new TextLabel(canvasWidth/2,90,"80spx Ubuntu Mono","red");
     user_disp.draw(ctx,'User: '+ activeUser);
-}
+//}
 
 function drawGameOver() {
     ctx.fillStyle = "rgba(0, 0, 0, 0.6)";

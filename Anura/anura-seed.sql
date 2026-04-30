@@ -20,26 +20,26 @@ USE anura;
 	INSERT IGNORE INTO cards (card_name, card_cost, card_type, effect_value, effect_parameter, card_description) VALUES
 
 	-- MOVEMENT CARDS
-	('Iron Hindlegs', 15, 'Movement', 1, 'extraJumps', 'Grants the frog a double jump.'),
-	('Dragonfly Hop', 10, 'Movement', 2, 'extraJumps', 'Replaces normal jump with three rapid micro jumps.'),
-	('Glide Membrane', 20, 'Movement', 1, 'canGlide', 'Allows the frog to glide through the air.'),
-	('Bubble Dash', 5, 'Movement', 1, 'canDash', 'A quick dash encased in a bubble.'),
-	('Rocket Frog', 25, 'Movement', 1.5, 'jumpForce', 'Launches the frog with rocket power.'),
+	('Iron Hindlegs', 30, 'Movement', 1, 'extraJumps', 'Grants the frog a double jump.'),
+	('Dragonfly Hop', 35, 'Movement', 2, 'extraJumps', 'Three rapid micro jumps.'),
+	('Glide Membrane', 40, 'Movement', 1, 'canGlide', 'Gliding through the air.'),
+	('Bubble Dash', 45, 'Movement', 1, 'canDash', 'A quick dash encased in a bubble.'),
+	('Rocket Frog', 50, 'Movement', 1.5, 'jumpForce', 'Launches frog with rocket power.'),
     
+
 	-- COMBAT CARDS
-	('Chameleon Veil',  20, 'Combat',  1,    'canChameleon',   'Briefly turns the frog invisible.'),
-	('Fire Kiss',       15, 'Combat',  1,    'fireKiss',       'Coats the tongue in fire for extra damage.'),
-	('Thunder Tongue',  20, 'Combat',  0.4,  'thunderChance',  'Electrifies the tongue attack.'),
-	('Toad Shockwave',  25, 'Combat',  1,    'canShockwave',   'Releases a shockwave on landing.'),
-	('Venom Lash',      10, 'Combat',  3000, 'poisonDuration', 'Poisons enemies on hit.'),
+	('Chameleon Veil',  30, 'Combat',  1,    'canChameleon',   'Briefly turns the frog invisible.'),
+	('Fire Kiss',       35, 'Combat',  1,    'fireKiss',       'Fire tongue deals extra damage.'),
+	('Thunder Tongue',  40, 'Combat',  0.4,  'thunderChance',  'Electrifies the tongue attack.'),
+	('Toad Shockwave',  45, 'Combat',  1,    'canShockwave',   'Releases a shockwave on landing.'),
+	('Venom Lash',      50, 'Combat',  3000, 'poisonDuration', 'Poisons enemies on hit.'),
 
 	-- UTILITY CARDS
-	('Lucky Pond',      10, 'Utility', 1,  'luckyPond',           'Chance to double mosquito drops.'),
-	('Metamorphosis',   25, 'Utility', 1,  'metamorphosisActive', 'Temporarily transforms the frog.'),
-	('Spiked Whip',     15, 'Utility', 2, 'tongueRangeBonus',    'Extends tongue range with spikes.'),
-	('Tadpole Heart',   20, 'Utility', 1,  'tadpoleHeart',        'Grants bonus health at run start.'),
-	('Thorn Skin',      15, 'Utility', 1,  'thornSkin',           'Reflects damage back to attackers.');
-
+	('Lucky Pond',      30, 'Utility', 1,  'luckyPond',           'Chance to double mosquito drops.'),
+	('Metamorphosis',   35, 'Utility', 1,  'metamorphosisActive', 'Temporarily transforms the frog.'),
+	('Spiked Whip',     40, 'Utility', 2, 'tongueRangeBonus',    'Extends tongue range with spikes.'),
+	('Tadpole Heart',   45, 'Utility', 1,  'tadpoleHeart',        'Grants bonus health at run start.'),
+	('Thorn Skin',      50, 'Utility', 1,  'thornSkin',           'Reflects damage back to attackers.');
 
 	-- BOSS DATA
     
@@ -274,6 +274,21 @@ UPDATE cards SET effect_parameter = 'thornSkin',           effect_value = 1  WHE
 SET SQL_SAFE_UPDATES = 0;  -- run this first
 UPDATE playable_character SET base_damage = 1; -- first
 SET SQL_SAFE_UPDATES = 1; -- then this
+
+-- CARD COST UPDATE
+UPDATE cards SET card_cost = 30 WHERE card_id IN (1, 6, 11);
+UPDATE cards SET card_cost = 35 WHERE card_id IN (2, 7, 12);
+UPDATE cards SET card_cost = 40 WHERE card_id IN (3, 8, 13);
+UPDATE cards SET card_cost = 45 WHERE card_id IN (4, 9, 14);
+UPDATE cards SET card_cost = 50 WHERE card_id IN (5, 10, 15);
+
+-- CARD DESC UPDATE
+UPDATE cards SET card_description = "Three rapid micro jumps." WHERE card_id = 2;
+UPDATE cards SET card_description = "Gliding through the air." WHERE card_id = 3;
+UPDATE cards SET card_description = "Launches the frog with rocket power." WHERE card_id = 5;
+
+UPDATE cards SET card_description = "Fire tongue deals extra damage." WHERE card_id = 7;
+
 
 
 
