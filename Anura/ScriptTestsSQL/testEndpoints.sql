@@ -1,3 +1,11 @@
+-- This script was used by developers to visualize and plan
+-- the creation of triggers, procedures, views by testing queries from tables
+-- and complex queries for some views, triggers or procedures
+-- in our game (endpoints). This mean only those triggers and procedures
+-- that were implemented in our game are currently existing in anura-seed.sql,
+-- so note that it is possible some triggers, views or procedures were not implemented
+
+
 USE anura;
 
 SELECT username, password FROM users;
@@ -92,6 +100,7 @@ SELECT * FROM mobs;
 SELECT * FROM boss;
 SELECT * FROM playable_character;
 SELECT * FROM run_mob;
+SELECT * FROM run_boss;
 
 
         

@@ -80,7 +80,7 @@ async function initBossLevel() {
                     console.warn("Using default stats for snake_boss");
                 }
 
-                snakeBoss = new SnakeBoss(posX, posY, 120, 60, "green", boss_name, 4, 300, hp, dmg, bossMotion, BOSS_STATE, 8);
+                snakeBoss = new SnakeBoss(posX, posY, 120, 60, "green", boss_name, 4, 300, hp, dmg, bossMotion, BOSS_STATE, 8, false);
                 snakeBoss.setSprite("./assets/finalSnakeSprites.png", new Rect(0,0,192,73.14));
                 snakeBoss.setAnimation(4,7,true,100);
             }

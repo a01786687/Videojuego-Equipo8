@@ -114,7 +114,7 @@ USE anura;
 	CREATE OR REPLACE VIEW timeToKillBoss as 
 	SELECT X.boss_name, AVG(Y.time_to_defeat) AS avgTime2Defeat
 	FROM anura.boss AS X INNER JOIN anura.run_boss AS Y 
-	WHERE Y.defeated = FALSE
+	WHERE Y.defeated = TRUE
 	GROUP BY (boss_id);
 
 	DROP PROCEDURE IF EXISTS newCharacter2newUser;  -- Each time new user registers 
@@ -263,7 +263,7 @@ CREATE PROCEDURE saveRunMob(IN run_id2 SMALLINT, IN mob_name2 VARCHAR(25), IN mo
 		WHERE rm_run_id = run_id2 AND rm_mob_id = @mobID;
 	END$$
 DELIMITER ;
-
+ 
 -- UTILITY CARDS
 UPDATE cards SET effect_parameter = 'luckyPond',           effect_value = 1  WHERE card_id = 11;
 UPDATE cards SET effect_parameter = 'metamorphosisActive', effect_value = 1  WHERE card_id = 12;
@@ -291,6 +291,36 @@ UPDATE cards SET card_description = "Gliding through the air." WHERE card_id = 3
 UPDATE cards SET card_description = "Launches the frog with rocket power." WHERE card_id = 5;
 
 UPDATE cards SET card_description = "Fire tongue deals extra damage." WHERE card_id = 7;
+
+
+-- Procedures from run_boss will work similarly to run_mob 
+-- only diference is that it tells diferent thing about bosses compared to mobs
+
+DROP PROCEDURE IF EXISTS saveRunBoss;
+DELIMITER $$
+CREATE PROCEDURE saveRunBoss(IN run_id2 SMALLINT, IN boss_name2 VARCHAR(25), IN time_to_defeat2 SMALLINT, IN defeated2 BOOLEAN) -- rb_boss_id, rb_run_id
+	BEGIN
+		SET @bossID = NULL;
+        
+		SELECT boss_id INTO @bossID FROM boss
+		WHERE boss_name = boss_name2;
+
+		INSERT INTO run_boss (rb_boss_id, rb_run_id, time_to_defeat, defeated)
+		VALUES (@bossID,run_id2, time_to_defeat2, defeated2);
+	END$$
+DELIMITER ;
+
+DROP TRIGGER IF EXISTS updateTimeRB;
+DELIMITER $$
+CREATE TRIGGER updateTimeRB BEFORE INSERT ON run_boss
+FOR EACH ROW
+BEGIN
+	IF NEW.time_to_defeat IS NOT NULL
+		THEN 
+			SET NEW.time_to_defeat = NEW.time_to_defeat / 1000; -- Pass time to seconds
+	END IF;
+END$$
+DELIMITER ;
 
 
 

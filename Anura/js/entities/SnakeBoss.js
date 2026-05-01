@@ -55,7 +55,7 @@ const bossMotion = {
 };
 
 class SnakeBoss extends Enemy {
-    constructor(x, y, width, height, color, mob_name, sheetCols, range, hp, dmg, motion, statesObj, speed) {
+    constructor(x, y, width, height, color, mob_name, sheetCols, range, hp, dmg, motion, statesObj, speed, defeated) {
         super(x, y, width, height, color, mob_name, sheetCols, range, hp, dmg, motion, statesObj);
 
         // Boss starts in IDLE — waits for the frog to enter aggro range
@@ -112,6 +112,9 @@ class SnakeBoss extends Enemy {
         this.enragedSpeed     = this.chaseSpeed * 1.5;
         this.enragedDashSpeed = 14;
         this.enragedCooldown  = 1100; // shorter dash cooldown in phase 2
+
+        this.defeated = defeated;
+        this.defeatCounter = 0;
     }
 
     update(target, deltaTime) {
@@ -119,6 +122,7 @@ class SnakeBoss extends Enemy {
         // --- STUN ---
         // When stunned the boss can't move — just counts down the timer.
         // Gravity still applies so it doesn't float if hit while airborne.
+        this.defeatCounter = (this.defeatCounter + deltaTime);
         if (this.state === this.statesObj.STUNNED) {
             this.stunTimer -= deltaTime;
             if (this.stunTimer <= 0) {
