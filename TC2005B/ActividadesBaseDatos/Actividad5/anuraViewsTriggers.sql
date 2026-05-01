@@ -18,7 +18,7 @@ SELECT X.run_session_id AS session_id, COUNT(X.run_id) as totalRunPerSession
 FROM anura.runs AS X
 GROUP BY run_session_id;
  
--- Implementacion runs per user USAR EN ENDPOINTS
+-- Implementacion runs per user USAR EN ENDPOINTS
 CREATE VIEW totalRunsPerUser AS
 SELECT X.session_user_id AS user_id, Y.username, SUM(Z.totalRunPerSession) AS totalRuns
 FROM anura.sessions AS X INNER JOIN anura.sampleView AS Z

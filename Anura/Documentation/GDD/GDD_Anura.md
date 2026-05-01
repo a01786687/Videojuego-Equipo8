@@ -748,124 +748,219 @@ There is no hub area. Progression is entirely run-based, with persistent currenc
 
 ### **Core Classes**
 
-*This section was written using AI, asked the chatbot to organize the classes from the code files*
+---
 
 #### **Frog (Player Character)**
  
 **File:** `frog.js`
  
 **Properties:**
-- `position` (x, y coordinates)
-- `velocity` (velocityX, velocityY for physics)
-- `size`, `halfSize` (collision box dimensions)
-- `health`, `maxHealth`
-- `tongueDamage` (base attack damage)
-- `speed` (horizontal movement speed)
+- `position` (x, y coordinates — Vector object)
+- `velocity` (`velocityY` for physics)
+- `width`, `height`, `halfSize` (collision box dimensions)
+- `health` (tracked globally as `currentHealth` / `maxHealth`)
+- `tongueDamage` (base attack damage — loaded from database)
+- `speed` (horizontal movement speed — loaded from database)
 - `jumpForce` (vertical jump impulse)
 - `gravity` (downward acceleration)
 - `extraJumps`, `jumpsRemaining` (double/triple jump system)
-- `canGlide`, `canDash` (unlocked abilities)
-- `isAttacking`, `isDashing`, `isGliding` (state flags)
-- `invincibilityTimer` (prevents damage spam)
-- `sprite`, `animation` (visual rendering)
+- `canGlide`, `isGliding` (glide ability and state)
+- `canDash`, `isDashing`, `dashTimer`, `dashCooldownTimer` (dash system)
+- `isAttacking`, `attackTimer`, `attackCooldown` (tongue attack state)
+- `invincibilityTimer`, `invincibilityDuration` (prevents damage spam)
+- `tongueRange`, `tongueWidth` (attack hitbox dimensions)
+- `tongueElement` ("normal" | "fire" | "poison" — set by combat cards)
+- `facing` (1 = right, -1 = left)
+- `currentAnim` (tracks active animation to prevent frame resets)
+
+**Card-Modified Properties:**
+- `fireKiss` (Fire Kiss — activates burn DoT)
+- `poisonDuration`, `poisonDamage` (Venom Lash — poison effect)
+- `thunderChance` (Thunder Tongue — stun chance on hit)
+- `canChameleon`, `chameleonTimer` (Chameleon Veil — invisibility)
+- `canShockwave`, `shockwaveRadius`, `shockwaveForce` (Toad Shockwave)
+- `luckyPond` (Lucky Pond — 50% chance to double mosquito drops)
+- `metamorphosisActive`, `metamorphosisTimer` (Metamorphosis — HP regen)
+- `tongueRangeBonus` (Spiked Whip — extends tongue range)
+- `thornSkin` (Thorn Skin — reflects damage to attackers)
+- `tadpoleHeart` (Tadpole Heart — grants +50 max HP)
+
 **Methods:**
-- `update(deltaTime)` - Physics, collision, input handling
-- `draw(ctx)` - Renders sprite to canvas
-- `takeDamage(amount)` - Reduces health, triggers invincibility frames
-- `attack()` - Activates tongue hitbox
-- `jump()` - Applies vertical impulse
-- `dash()` - Horizontal burst movement
-- `glide()` - Reduces fall speed
+- `update(deltaTime, keys, platforms, canvasHeight, cameraX, worldBoundsLeft, worldBoundsRight)` — Physics, collision, input handling, timer management
+- `draw(ctx)` — Renders sprite to canvas with proper animation frames
+- `takeDamage(amount)` — Reduces health (global `currentHealth`), triggers invincibility frames
+- `attack()` — Activates tongue hitbox, handles attack cooldown
+- `jump()` — Applies vertical impulse, supports extra jumps
+- `dash()` — Horizontal burst movement with cooldown
+- `glide()` — Reduces fall speed when gliding is active
+- `updateFrame(deltaTime)` — Inherited from `AnimatedPlayer`, handles sprite animation
+- `setAnimation(startFrame, endFrame, repeat, duration)` — Sets sprite animation range
+
+**Database Integration:**  
+Frog base stats (`base_hp`, `base_damage`, `base_speed`) are loaded from the `playable_character` table via `getFrogValues()` API call at run start. Values are fetched in `beginRun()` and applied to global `maxHealth`, `currentHealth`, and frog instance properties.
+
 **Card Integration:**  
-Frog properties are directly modified by card effects. For example:
-- `Iron Hindlegs` card sets `frog.extraJumps = 1`
-- `Fire Kiss` card increases `frog.tongueDamage += 10`
-- `Rocket Frog` card multiplies `frog.jumpForce *= 1.5`
+Frog properties are directly modified by card effects through the `createCardFromDatabase()` factory function. Cards reference `FROG_BASE_VALUES` to determine whether a property is boolean or numeric, then apply effects accordingly.
+
+Examples:
+- `Iron Hindlegs` sets `frog.extraJumps = 1`
+- `Fire Kiss` sets `frog.fireKiss = true` and `frog.tongueElement = "fire"`
+- `Rocket Frog` multiplies `frog.jumpForce` by the database `effect_value` (e.g., 1.5x)
+
 ---
- 
+
 #### **Enemy (Base Enemy Class)**
  
 **File:** `enemy.js`
  
 **Properties:**
-- `position`, `velocity`
-- `health`, `maxHealth`
-- `damage` (contact damage dealt to frog)
-- `state` (FSM state: idle, patrol, attack, etc.)
-- `sprite`, `animation`
-- `range` (aggro distance)
-- `speed`
-- `statesObj` (FSM state enum)
+- `position` (Vector object with x, y)
+- `velocity` (inherited from GameObject)
+- `health` (loaded from database per enemy type)
+- `damage` (contact damage dealt to frog — loaded from database)
+- `state` (FSM state: `PATROL`, `CHASE`, `STUNNED`)
+- `statesObj` (state enum reference — `ENEMY_STATE`)
+- `sprite`, `animation` (inherited from AnimatedObject)
+- `range` (patrol range in pixels)
+- `speed` (movement speed)
+- `detectionRadius` (aggro distance)
+- `direction` (1 = right, -1 = left)
+- `startX` (patrol pivot point)
+- `stunTimer`, `stunDuration` (stun mechanics on hit)
+- `hitCounter` (tracks consecutive hits for extended stun)
+- `type` (enemy name: "mosquito", "spider", "snake_boss", "eagle_boss")
+- `motion` (animation frame data object)
+- `dirData` (current state's animation data)
+
 **Methods:**
-- `update(frog, deltaTime)` - AI behavior based on current state
-- `draw(ctx)` - Renders sprite
-- `takeDamage(amount)` - Reduces health, checks for death
-- `checkCollision(frog)` - Detects overlap with frog hitbox
-- `setAnimation(startFrame, endFrame, repeat, duration)` - Controls sprite animation
+- `update(frog, deltaTime)` — AI behavior based on current state (patrol, chase, stunned)
+- `draw(ctx)` — Renders sprite (inherited from AnimatedObject)
+- `takeDamage(amount)` — Reduces health, enters STUNNED state, checks for death
+- `die()` — Handles death logic: increments mosquito counter, awards rewards from database, saves run_mob data via API
+- `checkCollision(frog)` — Detects overlap with frog hitbox using `boxOverlap()`
+- `setAnimation(startFrame, endFrame, repeat, duration)` — Controls sprite animation (inherited)
+- `updateFrame(deltaTime)` — Inherited from AnimatedObject
+
+**Database Integration:**  
+Enemy stats (`base_hp`, `base_damage`, `mosquito_reward`) are loaded from the `mobs` or `boss` tables via `receiveMobData(mob_name)` or `getBossValues(boss_name)` API calls. Values are passed to the Enemy constructor at spawn time in `createLevel()` or boss scene initialization.
+
+On death, enemies trigger:
+- Mosquito reward fetched from database via `/mob/reward/${mob_name}` endpoint
+- Run-mob tracking saved via `startRunMob()` and `saveRunMob()` stored procedures
+- Global `runMosquitos` counter updated and HUD refreshed
+
 **Subclasses:**
-- **SnakeBoss** (extends Enemy) - First boss with IDLE, CHASE, DASH, RETREAT, ENRAGED states
-- **EagleBoss** - Final boss with flying AI and dive attacks
+- **SnakeBoss** (extends Enemy) — First boss with FSM states: `IDLE`, `CHASE`, `DASH`, `RETREAT`, `ENRAGED`, `STUNNED`. Uses custom `bossMotion` animation data and gravity-based movement (overrides Enemy's atan2 floating behavior).
+- **EagleBoss** (extends Enemy) — Final boss with FSM states: `HOVER`, `SWOOP`, `DIVE`, `RECOVER`, `ENRAGED`, `STUNNED`. Airborne movement without gravity, dive attack patterns, and phase-based aggression scaling.
+
 ---
- 
+
 #### **Platform**
  
 **File:** `platform.js`
  
 **Properties:**
-- `position` (x, y)
-- `size` (width, height)
-- `sprite` (mud/moss texture)
+- `position` (x, y coordinates)
+- `size` (width, height — uniform `TILE_SIZE` constant)
+- `sprite` (mud/moss texture image)
+- `halfSize` (used for `boxOverlap()` collision detection)
+
 **Methods:**
-- `draw(ctx)` - Renders platform sprite
-- `checkCollision(frog)` - Returns true if frog overlaps platform, used for ground detection
+- `draw(ctx)` — Renders platform sprite to canvas
+- `checkCollision(frog)` — Returns `true` if frog overlaps platform using `boxOverlap()`, used for ground detection and landing logic
+
+**Implementation Notes:**  
+Platforms are static collision boxes generated from ASCII level maps in `levelGenerator.js`. They do not move, break, or have physics. Platform collision prevents the frog from falling through and resets `isOnGround = true`.
+
 ---
- 
+
 #### **Card**
  
 **File:** `cards.js`
  
 **Properties:**
+- `card_id` (database primary key)
 - `name` (e.g., "Iron Hindlegs")
-- `category` (Movement, Combat, Utility)
+- `category` (Movement, Combat, Utility — determines slot assignment)
 - `cost` (mosquitoes required to purchase)
-- `description` (tooltip text)
-- `effectParameter` (frog property to modify, e.g., "extraJumps")
-- `effectValue` (value to apply, e.g., 1)
-- `image` (card visual sprite)
+- `description` (tooltip text shown in card selection screen)
+- `effect_parameter` (frog property to modify, e.g., "extraJumps", "canGlide")
+- `effect_value` (value to apply — can be numeric or boolean)
+- `image` (card visual sprite loaded via `getImageByName()`)
+
 **Methods:**
-- `effect()` - Applies card ability to frog
-  ```javascript
+- `effect()` — Applies card ability to frog. Automatically generated by `createCardFromDatabase()` based on database row data. Handles:
+  - Boolean properties: converts database `1` to `true`
+  - Numeric properties: applies value directly
+  - Multiplier properties (e.g., Rocket Frog): multiplies base value by `effect_value`
+  - Side effects: sets additional properties (e.g., Fire Kiss sets `tongueElement = "fire"`)
+  
+```javascript
   effect() {
-      frog[this.effectParameter] += this.effectValue;
+      if (isMultiplier) {
+          frog[param] = FROG_BASE_VALUES[param] * effectValue;
+      } else {
+          frog[param] = effectValue;
+      }
+      // Handle side effects (e.g., Venom Lash sets poisonDamage)
   }
-  ```
-- `reset()` - Reverts frog property to base value before applying new card
-  ```javascript
+```
+
+- `reset()` — Reverts frog property to base value before applying new card. Uses `FROG_BASE_VALUES` lookup table.
+  
+```javascript
   reset() {
-      frog[this.effectParameter] = FROG_BASE_VALUES[this.effectParameter];
+      frog[this.effect_parameter] = FROG_BASE_VALUES[this.effect_parameter];
   }
-  ```
- 
+```
+
 **Card Creation Function:**
-- `createCardFromDatabase(dbRow)` - Builds a Card object from database row, automatically copying `effect_parameter` and `effect_value` to card methods
+- `createCardFromDatabase(dbRow)` — Factory function that builds a Card object from a database row. Automatically:
+  - Maps `effect_parameter` and `effect_value` from DB columns
+  - Determines if property is boolean or numeric via `FROG_BASE_VALUES` type check
+  - Generates `effect()` and `reset()` methods dynamically
+  - Loads card image via `getImageByName(card_name)`
+  - Returns a fully functional card object ready for deck insertion
+
+**Database Integration:**  
+All 15 cards exist in the `cards` table with columns: `card_id`, `card_name`, `card_cost`, `card_type`, `effect_value`, `effect_parameter`, `card_description`. Adding a new card requires only a database INSERT, no frontend code changes.
+
 ---
- 
+
 #### **Deck Management**
  
 **Global Object:**
 ```javascript
 deck = {
-    slot1_Movement: [],
-    slot2_Combat: [],
-    slot3_Utility: []
+    slot1_Movement: [],  // Movement cards (Iron Hindlegs, Glide Membrane, etc.)
+    slot2_Combat: [],    // Combat cards (Fire Kiss, Thunder Tongue, etc.)
+    slot3_Utility: []    // Utility cards (Lucky Pond, Metamorphosis, etc.)
 }
 ```
  
 **Key Functions:**
-- `loadDeck()` - Fetches cards from API, populates deck arrays
-- `activateCard(slotNumber)` - Burns active card, applies effect, replaces with next card
-- `drawCardHUD(deck)` - Renders card slots in UI
-- `clearAllMovementEffects()` - Resets frog to base stats at run start
+
+- **`loadDeck()`** — Fetches player's saved cards from API (`/deck/${activeSessionId}`), builds Card objects via `createCardFromDatabase()`, and populates the three deck slot arrays by category. Called at run start in `beginRun()`.
+
+- **`activateCard(slotNumber)`** — Burns the active card in the specified slot (1, 2, or 3), applies its effect to the frog, removes it from the deck array, and triggers visual flash feedback. If more cards exist in that slot's reserve pool, the next card becomes active. Called when player presses keys 1, 2, or 3 during gameplay.
+
+- **`drawCardHUD(deck)`** — Renders the 3-slot card display in the HUD showing active cards and reserve counts. Active cards are highlighted with color-coded borders (green/red/yellow by category). Called every frame in `playScene.js` and `bossScene.js`.
+
+- **`clearAllMovementEffects()`** — Resets all frog properties modified by cards back to base values using `FROG_BASE_VALUES`. Called at the start of every new run in `beginRun()` to ensure the frog starts with no lingering card effects.
+
+**Database Integration:**  
+The deck is stored in the `player_card` table with foreign keys to `session_id` and `card_id`. Cards persist across runs and are only removed when burned during gameplay. The `boughtCard` stored procedure handles card purchases, and `deleteFromDeck` handles burned card removal.
+
+**Card Burn Mechanism:**  
+When a card is activated:
+1. `card.reset()` reverts frog to base stats
+2. `card.effect()` applies the new card's ability
+3. Card is removed from deck array (`splice`)
+4. Next card in slot becomes active (if any)
+5. Flash timer triggers visual feedback
+
+Cards are single-use and consumed on activation. Unburned cards persist across deaths and runs.
+
 ---
 
 ## _Graphics_
