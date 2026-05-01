@@ -118,5 +118,8 @@ ALTER TABLE boss ADD CONSTRAINT UNIQUE (boss_name);
 ALTER TABLE run_stages ADD CONSTRAINT UNIQUE (rs_run_id, stage_number);
 ALTER TABLE runs MODIFY mosquitoes_collected SMALLINT SIGNED; 
 
-ALTER TABLE run_boss MODIFY time_to_defeat SMALLINT UNISGNED DEFAULT NULL;
+-- adapting run_boss structure to run_mob table
+ALTER TABLE run_boss MODIFY time_to_defeat SMALLINT UNSIGNED DEFAULT NULL;
 ALTER TABLE run_boss MODIFY defeated BOOLEAN DEFAULT FALSE;
+ALTER TABLE run_boss DROP PRIMARY KEY, DROP COLUMN run_boss_id,
+ADD CONSTRAINT PRIMARY KEY(rb_boss_id, rb_run_id);

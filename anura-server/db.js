@@ -33,7 +33,11 @@ We use a connection pool instead of a single connection.
 const pool = mysql.createPool({
     host: '127.0.0.1', // localhost
     user: 'root',
+<<<<<<< HEAD
     password: 'Cerplirp&130506',
+=======
+    password: '#Clifjumper4406',
+>>>>>>> main
     database: 'anura'
 }).promise() // promise -> enables async/await
 
@@ -399,6 +403,13 @@ export async function loadBoss(boss_name){
         WHERE boss_name = ?`,[boss_name]);
     console.log("Boss values: ", values);
     return values;
+}
+
+export async function saveRunBoss(run_id, boss_name,timeToKill, defeated){
+    const [data] = await pool.query("CALL saveRunBoss(?,?,?,?)",
+        [run_id, boss_name, timeToKill, defeated]);
+    console.log("Verify mob_boss: ", data);
+    return data;
 }
 
 

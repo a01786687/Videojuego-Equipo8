@@ -143,6 +143,7 @@ class Enemy extends AnimatedObject {
             console.log("Mosquitoes collected:", runMosquitos);
         }
         else if(this.type == "snake_boss" || this.type == "eagle_boss"){
+            //Mosquitoe reward
             const values = await getBossValues(this.type);
             const reward = await values[2];
             if(reward > 0){
@@ -151,6 +152,20 @@ class Enemy extends AnimatedObject {
                 console.log("Mosquito reward from ", this.type,":", reward);
                 console.log("Mosquitoes collected: ", runMosquitos);
             }
+            this.defeated = true;
+            //Send to run_boss that this boss was defeated
+            const res = await fetch("http://localhost:8080/saveRunBoss",{
+                method: "POST",
+                headers: { "Content-Type" : "application/json" },
+                body: JSON.stringify({
+                    run_id: activeRunId,
+                    boss_name: this.type,
+                    timeToKill: this.defeatCounter,
+                    defeated: this.defeated
+                })
+            });
+            const verify = await res.json();
+            console.log("Verifying run_boss: ", verify);
             
         }
         else{
@@ -288,3 +303,4 @@ class Enemy extends AnimatedObject {
         ctx.globalAlpha = 1.0;
     }
 }
+

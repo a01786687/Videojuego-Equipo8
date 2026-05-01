@@ -70,7 +70,7 @@ async function initEagleBossLevel() {
                     console.warn("Using default stats for eagle_boss");
                 }
 
-                eagleBoss = new EagleBoss(posX, posY, 100, 100, "#8B6914", boss_name, 6, 400, hp, dmg, eagleMotion, EAGLE_STATE);
+                eagleBoss = new EagleBoss(posX, posY, 100, 100, "#8B6914", boss_name, 6, 400, hp, dmg, eagleMotion, EAGLE_STATE, false);
                 eagleBoss.setSprite(
                     "../Anura/assets/enemies/eagleBoss.png",
                     new Rect(0, 0, 448, 479)

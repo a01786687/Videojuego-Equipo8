@@ -54,7 +54,7 @@ const eagleMotion = {
 };
 
 class EagleBoss extends Enemy {
-    constructor(x, y, width, height, color, mob_name, speed, range, hp, dmg, motion, statesObj) {
+    constructor(x, y, width, height, color, mob_name, speed, range, hp, dmg, motion, statesObj,defeated) {
         super(x, y, width, height, color, mob_name, 4, range, hp, dmg, motion, statesObj);
 
         this.maxHealth  = hp;
@@ -95,6 +95,8 @@ class EagleBoss extends Enemy {
         this.recoverTargetY  = 0;
         this.recoverTimer    = 0;
         this.recoverDuration = 800;
+        this.defeated = defeated;
+        this.defeatCounter = 0;
 
         // Start in fly animation
         this.setAnim(this.statesObj.HOVER);
@@ -102,6 +104,7 @@ class EagleBoss extends Enemy {
 
     update(target, deltaTime) {
         // Parent stun logic
+        this.defeatCounter = (this.defeatCounter + deltaTime) ;
         if (this.state === this.statesObj.STUNNED) {
             this.stunTimer -= deltaTime;
             if (this.stunTimer <= 0) {

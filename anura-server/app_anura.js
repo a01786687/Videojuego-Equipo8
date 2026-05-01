@@ -32,7 +32,8 @@ import { createUser, getMobData, getUsers, getUsersById, startSession,
          initStage,
          finalStage,
          loadFrog,
-         loadBoss} from './db.js'
+         loadBoss,
+         saveRunBoss} from './db.js'
 
 const app = express();
 const port = 8080;
@@ -370,6 +371,21 @@ app.get("/bossValues/:boss_name", async (req, res) => {
     const boss_name = req.params.boss_name;
     const bvalues = await loadBoss(boss_name);
     res.send(bvalues);
+});
+
+app.post("/saveRunBoss", async (req, res) => {
+    const {run_id, boss_name, timeToKill,defeated} = req.body;
+    if(!run_id || !boss_name || !timeToKill || !defeated){
+         return res.status(400).json({ error: "Params invalid (HINT: value might be null)" });
+    }
+    try{
+        const data = await saveRunBoss(run_id, boss_name, timeToKill,defeated);
+        res.json({success: true, saved: data});
+    }
+    catch(err){
+        console.error("Error in POST /saveRunBoss:", err);
+        res.status(500).json({ error: "Failed to insert data to run_boss (check SQL console)" });
+    }
 });
 
 // --- SERVER START ---
