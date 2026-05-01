@@ -1,3 +1,7 @@
+-- Testing RF-48 and RF-50
+-- Which involves verifying the existance of CRUD operations in our database
+-- Also involves testing the first creation steps from our database
+
 USE anura;
 
 INSERT INTO playable_character (character_name, base_hp, base_speed, base_damage)
@@ -27,9 +31,9 @@ VALUES (1, 1, 120, TRUE),(1,2,150,FALSE),(1,3,140,FALSE);
 INSERT INTO mobs (mob_name,base_damage,base_hp,mosquito_reward)
 VALUES ('mosquito',0,2,1),('spider',10,5,5);
 
-#CHECAR ISSUE 50 CONSULTAS:
+-- CHECAR ISSUE 50 CONSULTAS:
 
-#Consultas simples
+-- Consultas simples
 SELECT * FROM anura.playable_character;
 SELECT anura.users.username, anura.users.password FROM anura.users;
 SELECT * FROM anura.mobs;
@@ -54,21 +58,21 @@ ON session_user_id = user_id
 GROUP BY (user_id);
 
 
-#Checar cambio si se añade una run
+-- Checar cambio si se añade una run
 INSERT INTO runs (run_session_id, mosquitoes_collected, bosses_defeated, victory, start_time)
 VALUES (1, 24,1,FALSE,NOW());
  
-#Consulta compleja
+-- Consulta compleja
 
-#Calcular tiempo promedio de pelea de un jefe
+-- Calcular tiempo promedio de pelea de un jefe
 SELECT X.boss_name, AVG(Y.time_to_defeat) AS avgTime2Defeat
 FROM anura.boss AS X INNER JOIN anura.run_boss AS Y 
 WHERE Y.defeated = FALSE
 GROUP BY (boss_id);
 
-#Mostrar UPDATES ISSUE 48
+-- Mostrar UPDATES ISSUE 48
 
-#Cambiable
+-- Cambiable
 
 UPDATE anura.users AS X
 SET X.username = "Em1Pro"
@@ -81,13 +85,13 @@ WHERE X.boss_name = "Snake";
 SELECT * FROM anura.boss;
 SELECT * FROM anura.sesions;
 
-#No cambiable
+-- No cambiable
 
 UPDATE anura.users AS X
 SET X.user_id = 12
-WHERE X.username = "july";  #En este caso si hay datos en sesions con ese ID no se puede cambiar el id del user
+WHERE X.username = "july";  -- En este caso si hay datos en sesions con ese ID no se puede cambiar el id del user
 
-#Si cambiable
+-- Si cambiable
 UPDATE anura.boss AS Y
 SET Y.boss_id = 10
 WHERE Y.boss_id = 1;
@@ -95,7 +99,7 @@ WHERE Y.boss_id = 1;
 SELECT * FROM anura.users;
 SELECT * FROM anura.run_boss;
 
-#DELETES ISSUE 50
+-- DELETES ISSUE 50
 
 DELETE FROM anura.users AS X
 WHERE X.user_id = 12; 

@@ -401,6 +401,13 @@ export async function loadBoss(boss_name){
     return values;
 }
 
+export async function saveRunBoss(run_id, boss_name,timeToKill, defeated){
+    const [data] = await pool.query("CALL saveRunBoss(?,?,?,?)",
+        [run_id, boss_name, timeToKill, defeated]);
+    console.log("Verify mob_boss: ", data);
+    return data;
+}
+
 
 /*
  FUTURE FUNCTIONS:
