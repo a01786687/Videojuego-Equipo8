@@ -1,5 +1,6 @@
 /*
- * Main game loop and canvas initialization; handles scene switching between title, login, register, play, and boss scenes.
+ * index.js
+ * Handles main loop, canvas setup, and scene management.
  * Authors: Renata Uruchurtu, Carlos Rosete, Emilio Torres
  */
 
@@ -215,7 +216,7 @@ function handleClick(event) {
     const mouseX = event.clientX - rect.left;
     const mouseY = event.clientY - rect.top;
 
-    console.log(mouseX, mouseY);
+    // console.log(mouseX, mouseY); DEBUGGING
 
 
     // --- VICTORY SCREEN CLICK ---

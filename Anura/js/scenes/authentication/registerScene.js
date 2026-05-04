@@ -1,5 +1,6 @@
 /*
- * Registration form scene with username, email, and password fields integrated with authentication API.
+ * registerScene.js
+ * Handles registration UI and account creation.
  * Authors: Renata Uruchurtu, Carlos Rosete, Emilio Torres
  */
 

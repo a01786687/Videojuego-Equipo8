@@ -1,7 +1,8 @@
 /*
-cards.js
-card definition and deck management
-*/
+ * cards.js
+ * Handles card data, effects, and deck management.
+ * Authors: Renata Uruchurtu, Carlos Rosete, Emilio Torres
+ */
  
 "use strict";
  
@@ -226,7 +227,7 @@ function clearAllMovementEffects() {
         frog.extraJumpCooldownTimer = 0;      // clear jump cooldown
     }
  
-    console.log("All movement effects cleared.");
+    // console.log("All movement effects cleared.");
 }
  
 // --- DECK ---

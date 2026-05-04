@@ -1,5 +1,6 @@
 /*
- * Title screen scene with buttons for new game, login, settings, and continue run (when logged in).
+ * titleScene.js
+ * Handles title screen UI, buttons, and menu music.
  * Authors: Renata Uruchurtu, Carlos Rosete, Emilio Torres
  */
 
