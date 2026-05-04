@@ -1,5 +1,6 @@
 /*
- * Reusable UI components, currently contains the back button for navigation across scenes.
+ * ui.js
+ * Handles reusable UI components like buttons.
  * Authors: Renata Uruchurtu, Carlos Rosete, Emilio Torres
  */
 

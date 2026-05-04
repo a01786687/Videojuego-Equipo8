@@ -1,20 +1,21 @@
 /*
-
-Temporary Backend for storing the list of users 
-
-*/
+ * auth.js
+ * Handles user registration, login, and session state.
+ * Authors: Renata Uruchurtu, Carlos Rosete, Emilio Torres
+ */
 
 "use strict";
 
 // stores all registered accs
 let users = []
 
-// stores who is currently playing or active
+// currently logged in user information
 // initialized with null because it is empty until someone logs in
 let activeUser = null;
-let activeUserId = null; // stores userId after login
+let activeUserId = null; 
+let activeSessionId = null; 
 
-let activeSessionId = null; // stores sessionId after login, used for creating runs
+// --- API FUNCTIONS ---
 
 // username and password parameters
 async function apiRegister(username, email,password ) {

@@ -121,7 +121,6 @@ export async function startRun(session_id){
     return result;
 }
 
-// Probar esta primero
 export async function saveRun(run_id,mosqCollect,bosses_defeated,victory){
     const [run] = await pool.query("CALL saveRun (?,?,?,?);",[run_id,mosqCollect,bosses_defeated,victory]);
 
@@ -136,7 +135,7 @@ export async function boughtCard(cost, session_id){
     return update_currency;
 }
 
-//Enemigos **Será de los primeros a probar en el javascript
+//Enemies
 export async function getMobData(name){
     const [mob_data] = await pool.query("SELECT * FROM anura.mobs WHERE mob_name = ?",[name]);
 
@@ -410,12 +409,6 @@ export async function saveRunBoss(run_id, boss_name,timeToKill, defeated){
 
 
 /*
- FUTURE FUNCTIONS:
-
- - getUserById(id)
- - createUser(data)
- - updateUser(id, data)
- - deleteUser(id)
 
  Keep all SQL queries in this file
 

@@ -1,3 +1,8 @@
+/*
+ * cardSelectionScene.js
+ * Handles card selection, purchases, and deck preview.
+ * Authors: Renata Uruchurtu, Carlos Rosete, Emilio Torres
+ */
 "use strict";
 
 let cardOptions = [];
@@ -23,28 +28,6 @@ async function generateCardOffers() {
         image: getImageByName(card.card_name)
 
     }));
-
-    /*
-
-    CODE FOR NO API BACKEND CONNECTION
-    // card pool array copy so the original pool doesn't get modified
-    let pool = [...cardPool]; // Spread Operator (...) -> way to unpack or expand elements of an array, string or object into individual pieces
-
-    // option 1
-    let index1 = randomRange(pool.length);
-    let option1 = pool.splice(index1, 1)[0];
-
-    // option 2
-    let index2 = randomRange(pool.length);
-    let option2 = pool.splice(index2, 1)[0];
-
-    // option 3
-    let index3 = randomRange(pool.length);
-    let option3 = pool.splice(index3, 1)[0];
-
-    // final result
-    cardOptions = [option1, option2, option3];
-    */
 }
 
 

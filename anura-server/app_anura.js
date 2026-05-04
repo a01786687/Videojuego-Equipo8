@@ -16,6 +16,8 @@
 - Frontend (client)
 - Backend logic (database + endpoints)
 
+Authors: Renata Uruchurtu, Carlos Rosete, Emilio Torres
+
  */
 
 
@@ -46,19 +48,6 @@ app.use(cors()); // Allows requests from other apps (like the frontend) since it
 
 // --- ROUTES (API ENDPOINTS) ---
 
-/* 
-
-    GET /users
-
-    Description:
-    - Fetches all users from the database
-
-    Flow:
-    Client → /users → server → db.js → MySQL → response → client
-
-*/
-
-//Pruebas
 app.get("/users", async (req, res) => {
     const users = await getUsers();
     res.send(users);
@@ -97,7 +86,7 @@ app.post("/createUser", async (req, res) => {
     });
 });
 
-//Primer get a usar en el juego
+//First get to use in game
 app.get("/getMobData/:mob_name",async (req, res) =>{
     const mob_name = req.params.mob_name;
 
@@ -394,7 +383,7 @@ app.listen(port, () => {
     console.log(`Anura server running on port ${port}`);
 });
 
-//Ejemplo:
+//Example:
 
 // app.get('/cartas/:dificultad', (req, res) => {
 

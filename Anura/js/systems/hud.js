@@ -1,7 +1,9 @@
 /*
- * Head-up display rendering including health bar, heart icon, mosquito counter, and game over screen.
+ * hud.js
+ * Handles HUD, health bar, mosquito counter, and game overlays.
  * Authors: Renata Uruchurtu, Carlos Rosete, Emilio Torres
  */
+
 "use strict";
 
 let HP_display;
@@ -20,33 +22,6 @@ function drawHeart(ctx, x, y, size) {
     }
 }
 
-/*
-function drawHeart(ctx, x, y, size) {
-    ctx.fillStyle = "red";
-    let s = size; 
-
-    ctx.fillRect(x + s, y, s, s);
-    ctx.fillRect(x + 3*s, y, s, s);
-
-    ctx.fillRect(x, y + s, s, s);
-    ctx.fillRect(x + s, y + s, s, s);
-    ctx.fillRect(x + 2*s, y + s, s, s);
-    ctx.fillRect(x + 3*s, y + s, s, s);
-    ctx.fillRect(x + 4*s, y + s, s, s);
-
-    ctx.fillRect(x, y + 2*s, s, s);
-    ctx.fillRect(x + s, y + 2*s, s, s);
-    ctx.fillRect(x + 2*s, y + 2*s, s, s);
-    ctx.fillRect(x + 3*s, y + 2*s, s, s);
-    ctx.fillRect(x + 4*s, y + 2*s, s, s);
-
-    ctx.fillRect(x + s, y + 3*s, s, s);
-    ctx.fillRect(x + 2*s, y + 3*s, s, s);
-    ctx.fillRect(x + 3*s, y + 3*s, s, s);
-
-    ctx.fillRect(x + 2*s, y + 4*s, s, s);
-}
-*/
 
 function drawMosquito(ctx, x, y, size) {
     if (mosquitoImage.complete) {
@@ -54,33 +29,6 @@ function drawMosquito(ctx, x, y, size) {
     }
 }
 
-/*
-function drawMosquito(ctx, x, y, size) {
-    ctx.fillStyle = "black";
-    let s = size;
-
-   
-    ctx.fillRect(x + 2*s, y, s, s);
-
-    
-    ctx.fillRect(x + 2*s, y + s, s, s);
-    ctx.fillRect(x + 2*s, y + 2*s, s, s);
-
-    
-    ctx.fillStyle = "lightgray";
-    ctx.fillRect(x + s, y + s, s, s);
-    ctx.fillRect(x + 3*s, y + s, s, s);
-
-    
-    ctx.fillStyle = "black";
-    ctx.fillRect(x + s, y + 3*s, s, s);
-    ctx.fillRect(x + 3*s, y + 3*s, s, s);
-
-    
-    ctx.fillRect(x + 2*s, y - s, s, s);
-}
-
-*/
 
 function drawHealthBar(ctx){
     const barWidth = 160;
@@ -119,11 +67,6 @@ function HealthBarDisplay(){
 function updateHealthHUD() {
     console.log('Health: ', currentHealth);
 }
-
-// function drawMosquitoHUD(){
-//     let mosquito_image = new GameObject(new Vector(canvasWidth - 120, 20), 15, 15);
-//     mosquito_image.setSprite("../assets/enemies/mosqSprite.png");
-// }
 
 // placeholder for the mosquito HUD RF-24
 function updateMosquitoHUD() {

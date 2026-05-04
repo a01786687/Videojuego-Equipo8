@@ -1,8 +1,7 @@
 /*
-
-settingsScene.js
-owns everything about the settings scene.
-Authors: Renata Uruchurtu, Carlos Rosete, Emilio Torres
+ * settingsScene.js
+ * Handles settings UI, brightness, and volume controls.
+ * Authors: Renata Uruchurtu, Carlos Rosete, Emilio Torres
  */
 
 "use strict";
